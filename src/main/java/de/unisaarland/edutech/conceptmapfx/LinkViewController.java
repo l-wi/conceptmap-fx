@@ -22,7 +22,7 @@ public class LinkViewController implements ConceptMovedListener, LinkDirectionUp
 		linkDirectionListener.add(l);
 	}
 
-	public void conceptMoved(ConceptViewController cv, User u) {
+	public void conceptMoved(double x, double y, double rotate, ConceptViewController cv, User u) {
 		// TODO implement concept moved
 
 	}

@@ -59,6 +59,10 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 
 	private int caretPosition;
 
+	private double dragX;
+
+	private double dragY;
+
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
 	}
@@ -76,9 +80,25 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		this.txtConcept.positionCaret(caretPosition);
 	}
 
-	public void conceptMoved(ConceptViewController cv, User u) {
-		//TODO implement concept moved
+	public void conceptMoved(double x, double y, double rotate, ConceptViewController cv, User u) {
+		cv.rotate(rotate);
+		cv.translate(x, y);
+	}
 
+	public void rotate(double d) {
+		conceptPane.setRotate(d);
+	}
+
+	public void translate(double x, double y) {
+		double rotation = Math.toRadians(conceptPane.getRotate());
+
+		// if we have a rotation we have to convert to the rotated coordinate
+		// system
+		double xRotated = x * Math.cos(rotation) - y * Math.sin(rotation);
+		double yRotated = x * Math.sin(rotation) + y * Math.cos(rotation);
+
+		conceptPane.setTranslateX(conceptPane.getTranslateX() + xRotated);
+		conceptPane.setTranslateY(conceptPane.getTranslateY() + yRotated);
 	}
 
 	public int getCaretPosition() {
@@ -102,6 +122,8 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 	@FXML
 	public void initialize() {
 
+		this.addConceptMovedListener(this);
+
 		addToggleListener(btnToogleUser1, 0);
 		addEventFilterToPreventUntoggle(btnToogleUser1);
 		addToggleListener(btnToogleUser2, 1);
@@ -122,6 +144,18 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 			this.caretPosition = n.intValue();
 
 		});
+
+		conceptPane.setOnMousePressed((evt) -> {
+			this.dragX = evt.getX();
+			this.dragY = evt.getY();
+		});
+		conceptPane.setOnMouseDragged((evt) -> {
+			this.fireConceptMoved(evt.getX() - dragX, evt.getY() - dragY, 0, this, null);
+		});
+	}
+
+	private void fireConceptMoved(double x, double y, int rotate, ConceptViewController cv, User u) {
+		conceptMovedListeners.forEach(l -> l.conceptMoved(x, y, rotate, cv, u));
 	}
 
 	public void inputClosed(User u) {
