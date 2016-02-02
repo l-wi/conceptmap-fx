@@ -40,11 +40,20 @@ public class ConceptMapViewController
 		conceptDeletedListners.add(l);
 	}
 
+	public void addInputViewController(InputViewController inputController) {
+		inputControllers.add(inputController);
+	}
+
 	public void addLinkDeletedListener(LinkDeletedListener l) {
 		linkDeletedListeners.add(l);
 	}
 
-	public void newLink(ConceptViewController cv1, ConceptViewController c2, User u) {
+	public void conceptDeleted(ConceptViewController cv, User u) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void linkDeleted(LinkViewController lv, User u) {
 		// TODO Auto-generated method stub
 
 	}
@@ -71,10 +80,13 @@ public class ConceptMapViewController
 		}
 	}
 
-	private Pane initConceptViewUI(InputViewController inputViewController, FXMLLoader loader) throws IOException {
-		Pane conceptViewPane = loader.load();
-		moveConceptToRightPosition(inputViewController, conceptViewPane);
-		return conceptViewPane;
+	public void newLink(ConceptViewController cv1, ConceptViewController c2, User u) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setConceptMap(ConceptMap conceptMap) {
+		this.conceptMap = conceptMap;
 	}
 
 	private Concept initConcept(InputViewController inputViewController) {
@@ -96,6 +108,12 @@ public class ConceptMapViewController
 		}
 
 		return conceptViewController;
+	}
+
+	private Pane initConceptViewUI(InputViewController inputViewController, FXMLLoader loader) throws IOException {
+		Pane conceptViewPane = loader.load();
+		moveConceptToRightPosition(inputViewController, conceptViewPane);
+		return conceptViewPane;
 	}
 
 	private void moveConceptToRightPosition(InputViewController inputViewController, Pane conceptViewPane) {
@@ -130,24 +148,6 @@ public class ConceptMapViewController
 	private void requestInput(User owner, ConceptViewController conceptViewController) {
 		LOG.info("requesting input for user:\t" + owner + " on new concept!");
 		conceptViewController.setUserEnabled(owner, true);
-	}
-
-	public void linkDeleted(LinkViewController lv, User u) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void conceptDeleted(ConceptViewController cv, User u) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setConceptMap(ConceptMap conceptMap) {
-		this.conceptMap = conceptMap;
-	}
-
-	public void addInputViewController(InputViewController inputController) {
-		inputControllers.add(inputController);
 	}
 
 }
