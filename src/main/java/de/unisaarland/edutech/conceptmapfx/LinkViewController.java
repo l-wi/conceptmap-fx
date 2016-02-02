@@ -23,17 +23,17 @@ public class LinkViewController implements ConceptMovedListener, LinkDirectionUp
 	}
 
 	public void conceptMoved(ConceptViewController cv, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement concept moved
 
 	}
 
 	public void linkDirectionUpdated(LinkViewController lv, Direction d, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement link direction update
 
 	}
 
 	public void inputClosed(User u) {
-		// TODO Auto-generated method stub
+		// TODO implement input closed on link
 
 	}
 }

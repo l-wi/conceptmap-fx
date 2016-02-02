@@ -62,7 +62,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			keyboard.setDisable(true);
 
 		} catch (IOException | URISyntaxException e) {
-			// TODO logging
+			LOG.error("Program cannot run!", e);
 			throw new RuntimeException("Program cannot run!", e);
 		}
 	}
@@ -137,17 +137,17 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	public void conceptDeleted(ConceptViewController cv, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement concept deleted
 
 	}
 
 	public void linkDeleted(LinkViewController lv, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement link deleted
 
 	}
 
 	public void linkEditRequested(LinkViewController cv, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement linkeditrequested
 
 	}
 

@@ -77,7 +77,7 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 	}
 
 	public void conceptMoved(ConceptViewController cv, User u) {
-		// TODO Auto-generated method stub
+		//TODO implement concept moved
 
 	}
 

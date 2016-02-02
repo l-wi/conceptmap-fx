@@ -18,13 +18,11 @@ import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 
 public class ConceptMapViewController
 		implements NewLinkListener, NewConceptListener, LinkDeletedListener, ConceptDeletedListener {
@@ -55,12 +53,12 @@ public class ConceptMapViewController
 	}
 
 	public void conceptDeleted(ConceptViewController cv, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement concept deleted
 
 	}
 
 	public void linkDeleted(LinkViewController lv, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement link deleted
 
 	}
 
@@ -80,13 +78,12 @@ public class ConceptMapViewController
 			newConceptInUIAndLogic(inputViewController, user);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
 	}
 
 	public void newLink(ConceptViewController cv1, ConceptViewController c2, User u) {
-		// TODO Auto-generated method stub
+		// TODO implement new link
 
 	}
 
