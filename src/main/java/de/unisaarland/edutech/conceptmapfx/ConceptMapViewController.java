@@ -25,7 +25,7 @@ import javafx.scene.layout.Pane;
 public class ConceptMapViewController
 		implements NewLinkListener, NewConceptListener, LinkDeletedListener, ConceptDeletedListener {
 
-	 private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
 	private List<ConceptDeletedListener> conceptDeletedListners = new ArrayList<ConceptDeletedListener>();
 	private List<LinkDeletedListener> linkDeletedListeners = new ArrayList<LinkDeletedListener>();
@@ -53,62 +53,83 @@ public class ConceptMapViewController
 		try {
 			// TODO before doing so test that there is no other empty concept
 			// for user
-			User owner = inputViewController.getUser();
-			Concept concept = new Concept(new CollaborativeString(owner));
-			conceptMap.addConcept(concept);
+			Concept concept = initConcept(inputViewController);
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("ConceptView.fxml"));
-			Pane conceptViewPane = loader.load();
 
-			ConceptViewController conceptViewController = loader.getController();
-
-			for (InputViewController i : inputControllers) {
-				conceptViewController.addConceptEditRequestedListener(i);
-				conceptViewController.addNewLinkListener(this);
-			}
-
-			conceptViewController.setConcept(concept);
-			conceptViewController.setParticipants(conceptMap.getExperiment().getParticipants());
-
-			// TODO what if current space is occupied
-			conceptViewPane.boundsInLocalProperty().addListener((c, n, o) -> {
-
-				Point2D p = new Point2D(0, -50);
-				Point2D pScene = inputViewController.transformLocalToScene(p);
-
-				double x = pScene.getX();
-				double y = pScene.getY();
-
-				if (inputViewController.getPosition() == Position.NORTH) {
-					x = x - n.getWidth();
-				} else if (inputViewController.getPosition() == Position.WEST) {
-					x = x - n.getWidth() / 2 + n.getHeight() / 2;
-					y = y + n.getWidth() / 2 - n.getHeight() / 2;
-				} else if (inputViewController.getPosition() == Position.EAST) {
-					x = x - n.getWidth() / 2 - n.getHeight() / 2;
-					y = y - n.getWidth() / 2 - n.getHeight() / 2;
-				} else if (inputViewController.getPosition() == Position.SOUTH) {
-					y = y - n.getHeight();
-				}
-
-				conceptViewPane.setTranslateX(x);
-				conceptViewPane.setTranslateY(y);
-
-				conceptViewPane.setRotate(inputViewController.getRotate());
-			});
-
+			// load and init UI
+			Pane conceptViewPane = initConceptViewUI(inputViewController, loader);
 			conceptMapPane.getChildren().add(conceptViewPane);
 
-			requestInput(owner, conceptViewController);
+			// init UI logic
+			ConceptViewController conceptViewController = initConceptViewController(concept, loader);
+			requestInput(concept.getOwner(), conceptViewController);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
 	}
 
+	private Pane initConceptViewUI(InputViewController inputViewController, FXMLLoader loader) throws IOException {
+		Pane conceptViewPane = loader.load();
+		moveConceptToRightPosition(inputViewController, conceptViewPane);
+		return conceptViewPane;
+	}
+
+	private Concept initConcept(InputViewController inputViewController) {
+		User owner = inputViewController.getUser();
+		Concept concept = new Concept(new CollaborativeString(owner));
+		conceptMap.addConcept(concept);
+		return concept;
+	}
+
+	private ConceptViewController initConceptViewController(Concept concept, FXMLLoader loader) {
+		ConceptViewController conceptViewController = loader.getController();
+
+		conceptViewController.setConcept(concept);
+		conceptViewController.setParticipants(conceptMap.getExperiment().getParticipants());
+
+		for (InputViewController inputController : inputControllers) {
+			conceptViewController.addConceptEditRequestedListener(inputController);
+			conceptViewController.addNewLinkListener(this);
+		}
+
+		return conceptViewController;
+	}
+
+	private void moveConceptToRightPosition(InputViewController inputViewController, Pane conceptViewPane) {
+		// TODO what if current space is occupied
+		conceptViewPane.boundsInLocalProperty().addListener((c, n, o) -> {
+
+			Point2D p = new Point2D(0, -50);
+			Point2D pScene = inputViewController.transformLocalToScene(p);
+
+			double x = pScene.getX();
+			double y = pScene.getY();
+
+			if (inputViewController.getPosition() == Position.NORTH) {
+				x = x - n.getWidth();
+			} else if (inputViewController.getPosition() == Position.WEST) {
+				x = x - n.getWidth() / 2 + n.getHeight() / 2;
+				y = y + n.getWidth() / 2 - n.getHeight() / 2;
+			} else if (inputViewController.getPosition() == Position.EAST) {
+				x = x - n.getWidth() / 2 - n.getHeight() / 2;
+				y = y - n.getWidth() / 2 - n.getHeight() / 2;
+			} else if (inputViewController.getPosition() == Position.SOUTH) {
+				y = y - n.getHeight();
+			}
+
+			conceptViewPane.setTranslateX(x);
+			conceptViewPane.setTranslateY(y);
+
+			conceptViewPane.setRotate(inputViewController.getRotate());
+		});
+	}
+
 	private void requestInput(User owner, ConceptViewController conceptViewController) {
-		LOG.info("requesting input for user:\t"+ owner + " on new concept!" );
-		conceptViewController.setUserEnabled(owner,true);
+		LOG.info("requesting input for user:\t" + owner + " on new concept!");
+		conceptViewController.setUserEnabled(owner, true);
 	}
 
 	public void linkDeleted(LinkViewController lv, User u) {
