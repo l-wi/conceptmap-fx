@@ -18,8 +18,11 @@ import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -121,39 +124,44 @@ public class ConceptMapViewController
 		return conceptViewController;
 	}
 
-	private Pane initConceptViewUI(InputViewController inputViewController, FXMLLoader loader) throws IOException {
+	private void initConceptViewUI(InputViewController inputViewController, FXMLLoader loader) throws IOException {
+
 		Pane conceptViewPane = loader.load();
+		//force the conceptMapPane to calculate the size of the conceptViewPane
+		conceptMapPane.getChildren().add(conceptViewPane);
+		conceptMapPane.applyCss();
+		conceptMapPane.layout();
 		moveConceptToRightPosition(inputViewController, conceptViewPane);
-		return conceptViewPane;
 	}
 
 	private void moveConceptToRightPosition(InputViewController inputViewController, Pane conceptViewPane) {
 		// TODO what if current space is occupied
-		conceptViewPane.boundsInLocalProperty().addListener((c, n, o) -> {
 
-			Point2D p = new Point2D(0, -50);
-			Point2D pScene = inputViewController.transformLocalToScene(p);
+		Point2D p = new Point2D(0, -50);
+		Point2D pScene = inputViewController.transformLocalToScene(p);
 
-			double x = pScene.getX();
-			double y = pScene.getY();
+		Pane n = conceptViewPane;
 
-			if (inputViewController.getPosition() == Position.NORTH) {
-				x = x - n.getWidth();
-			} else if (inputViewController.getPosition() == Position.WEST) {
-				x = x - n.getWidth() / 2 + n.getHeight() / 2;
-				y = y + n.getWidth() / 2 - n.getHeight() / 2;
-			} else if (inputViewController.getPosition() == Position.EAST) {
-				x = x - n.getWidth() / 2 - n.getHeight() / 2;
-				y = y - n.getWidth() / 2 - n.getHeight() / 2;
-			} else if (inputViewController.getPosition() == Position.SOUTH) {
-				y = y - n.getHeight();
-			}
+		double x = pScene.getX();
+		double y = pScene.getY();
 
-			conceptViewPane.setTranslateX(x);
-			conceptViewPane.setTranslateY(y);
+		if (inputViewController.getPosition() == Position.NORTH) {
+			x = x - n.getWidth();
+		} else if (inputViewController.getPosition() == Position.WEST) {
+			x = x - n.getWidth() / 2 + n.getHeight() / 2;
+			y = y + n.getWidth() / 2 - n.getHeight() / 2;
+		} else if (inputViewController.getPosition() == Position.EAST) {
+			x = x - n.getWidth() / 2 - n.getHeight() / 2;
+			y = y - n.getWidth() / 2 - n.getHeight() / 2;
+		} else if (inputViewController.getPosition() == Position.SOUTH) {
+			y = y - n.getHeight();
+		}
 
-			conceptViewPane.setRotate(inputViewController.getRotate());
-		});
+		conceptViewPane.setTranslateX(x);
+		conceptViewPane.setTranslateY(y);
+
+		conceptViewPane.setRotate(inputViewController.getRotate());
+
 	}
 
 	private void newConceptInUIAndLogic(InputViewController inputViewController, User user) throws IOException {
@@ -163,8 +171,7 @@ public class ConceptMapViewController
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("ConceptView.fxml"));
 
 		// load and init UI
-		Pane conceptViewPane = initConceptViewUI(inputViewController, loader);
-		conceptMapPane.getChildren().add(conceptViewPane);
+		initConceptViewUI(inputViewController, loader);
 
 		// init UI event-logic
 		ConceptViewController conceptViewController = initConceptViewController(concept, loader);
