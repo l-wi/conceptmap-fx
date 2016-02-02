@@ -1,0 +1,47 @@
+.pBtn{
+-fx-border-color:black;
+-fx-border-radius: 5.0;
+	
+}
+
+.pBtn:selected{
+-fx-border-color:white;
+-fx-border-radius: 10.0;
+-fx-background-radius: 10.0;
+-fx-font-size: 1.3em;
+-fx-text-fill:#ffffff;
+}
+
+
+#p1{
+-fx-background-color: #F6A4AC;
+}
+
+#p2{
+-fx-background-color:#FFEAAA;
+}
+
+#p3{
+-fx-background-color: #8180B2;
+}
+
+#p4{
+-fx-background-color: #9AD58E;	
+}
+
+
+#p1:selected{
+-fx-background-color: #7B151F;
+}
+
+#p2:selected{
+-fx-background-color:#554000;	
+}
+
+#p3:selected{
+-fx-background-color: #1B1A59;
+}
+
+#p4:selected{
+-fx-background-color: #0C4700;	
+}

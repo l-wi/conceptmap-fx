@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import org.comtel2000.keyboard.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import java.net.* ?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane fx:id="inputPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40" fx:controller="de.unisaarland.edutech.conceptmapfx.InputViewController">
+	<!-- TODO Add Nodes -->
+		<children>
+		<HBox>
+		<VBox fx:id="inputControls">
+			<children>
+				<HBox>
+					<Button fx:id="btnClose" mnemonicParsing="false" onAction="#onCloseAction" prefHeight="50.0" prefWidth="100.0" text="Close" />
+					<Label fx:id="lblStatus" text="" />
+				</HBox>
+				<HBox>
+					<children>
+						<KeyboardPane fx:id="keyboard" />
+						<ToggleButton id="voice" fx:id="btnSpeak" mnemonicParsing="false" prefHeight="200.0" prefWidth="100.0" />
+					</children>
+				</HBox>
+			</children>
+		</VBox>
+         <BorderPane>
+            <bottom>
+      			<Button fx:id="btnNewConcept"  text="New" onAction="#onNewAction" BorderPane.alignment="CENTER" />
+            </bottom>
+         </BorderPane>
+		</HBox>
+	</children>
+</AnchorPane>
