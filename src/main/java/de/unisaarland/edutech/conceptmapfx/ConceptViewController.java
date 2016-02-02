@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
@@ -49,6 +50,9 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 	private ToggleButton btnToogleUser3;
 	@FXML
 	private ToggleButton btnToogleUser4;
+
+	@FXML
+	private ToggleGroup toggleGroup;
 
 	private Concept concept;
 	private List<User> participants;
@@ -92,6 +96,10 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		addEventFilterToPreventUntoggle(btnToogleUser4);
 
 		constructResizableTextfield(txtConcept);
+		toggleGroup.selectedToggleProperty().addListener((c, o, n) -> {
+			if (n == null)
+				this.txtConcept.setDisable(true);
+		});
 	}
 
 	public void inputClosed(User u) {
