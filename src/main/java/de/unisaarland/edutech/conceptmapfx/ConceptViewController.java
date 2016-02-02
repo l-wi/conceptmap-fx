@@ -57,6 +57,8 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 	private Concept concept;
 	private List<User> participants;
 
+	private int caretPosition;
+
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
 	}
@@ -69,9 +71,9 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		newLinkListeners.add(l);
 	}
 
-	public void append(char ch, User u) {
-		this.concept.getName().append(u, String.valueOf(ch));
-		txtConcept.setText(this.concept.getOwner() + ":\t" + this.concept.getName().getContent());
+	public void adjustCaret() {
+		caretPosition = txtConcept.getText().length();
+		this.txtConcept.positionCaret(caretPosition);
 	}
 
 	public void conceptMoved(ConceptViewController cv, User u) {
@@ -79,8 +81,22 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 
 	}
 
+	public int getCaretPosition() {
+		return caretPosition;
+	}
+
 	public Concept getConcept() {
 		return concept;
+	}
+
+	public void highlightEmpty() {
+		FadeTransition ft = new FadeTransition(Duration.millis(300), conceptPane);
+		ft.setFromValue(1.0);
+		ft.setToValue(0.5);
+		ft.setAutoReverse(true);
+		ft.setCycleCount(2);
+		ft.play();
+
 	}
 
 	@FXML
@@ -99,6 +115,12 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		toggleGroup.selectedToggleProperty().addListener((c, o, n) -> {
 			if (n == null)
 				this.txtConcept.setDisable(true);
+
+		});
+
+		txtConcept.caretPositionProperty().addListener((c, o, n) -> {
+			this.caretPosition = n.intValue();
+
 		});
 	}
 
@@ -106,10 +128,33 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		setUserEnabled(u, false);
 	}
 
+	public void insert(User u, int index, char c) {
+		String str = String.valueOf(c);
+		concept.getName().insert(u, index, str);
+		txtConcept.insertText(index, str);
+
+	}
+
 	@FXML
 	public void onExpand() {
 		vboxTools.setManaged(btnExpand.isSelected());
 		vboxTools.setVisible(btnExpand.isSelected());
+	}
+
+	public void remove(int index) {
+		if (index >= 0) {
+			concept.getName().remove(index, 1);
+			txtConcept.deletePreviousChar();
+		}
+	}
+
+	// TODO write component for multifocus carets
+	public void requestTextFieldFocus() {
+		if (txtConcept.isFocused()) {
+			txtConcept.requestFocus();
+
+		}
+
 	}
 
 	public void setConcept(Concept concept) {
@@ -154,7 +199,6 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		b.selectedProperty().addListener((c, o, n) -> {
 			if (n.booleanValue())
 				enableAndFireEditRequest(participants.get(participant));
-			LOG.info("Button" + (participant + 1) + " becomes selected:" + n);
 
 		});
 	}
@@ -196,13 +240,4 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this, u));
 	}
 
-	public void highlightEmpty() {
-		FadeTransition ft = new FadeTransition(Duration.millis(300), conceptPane);
-		ft.setFromValue(1.0);
-		ft.setToValue(0.5);
-		ft.setAutoReverse(true);
-		ft.setCycleCount(2);
-		ft.play();
-
-	}
 }
