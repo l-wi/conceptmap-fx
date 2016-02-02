@@ -2,7 +2,9 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +18,13 @@ import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
 public class ConceptMapViewController
 		implements NewLinkListener, NewConceptListener, LinkDeletedListener, ConceptDeletedListener {
@@ -35,6 +39,8 @@ public class ConceptMapViewController
 
 	private ConceptMap conceptMap;
 	private List<InputViewController> inputControllers = new ArrayList<InputViewController>();
+
+	private Map<User, List<ConceptViewController>> userToConceptViewControllers = new HashMap<>();
 
 	public void addConceptDeletedListener(ConceptDeletedListener l) {
 		conceptDeletedListners.add(l);
@@ -60,19 +66,18 @@ public class ConceptMapViewController
 
 	public void newConcept(InputViewController inputViewController) {
 		try {
-			// TODO before doing so test that there is no other empty concept
-			// for user
-			Concept concept = initConcept(inputViewController);
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ConceptView.fxml"));
+			// check if there is already an empty concept for the user
+			User user = inputViewController.getUser();
+			ConceptViewController emptyConceptViewController = getEmptyConceptViewController(user);
 
-			// load and init UI
-			Pane conceptViewPane = initConceptViewUI(inputViewController, loader);
-			conceptMapPane.getChildren().add(conceptViewPane);
+			if (emptyConceptViewController != null) {
+				LOG.warn("there is still already an empty concept for user" + user);
+				emptyConceptViewController.highlightEmpty();
+				return;
+			}
 
-			// init UI logic
-			ConceptViewController conceptViewController = initConceptViewController(concept, loader);
-			requestInput(concept.getOwner(), conceptViewController);
+			newConceptInUIAndLogic(inputViewController, user);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -87,6 +92,15 @@ public class ConceptMapViewController
 
 	public void setConceptMap(ConceptMap conceptMap) {
 		this.conceptMap = conceptMap;
+		for (User u : conceptMap.getExperiment().getParticipants())
+			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());
+	}
+
+	private ConceptViewController getEmptyConceptViewController(User user) {
+		for (ConceptViewController controller : userToConceptViewControllers.get(user))
+			if (controller.getConcept().getName().getContent().equals(""))
+				return controller;
+		return null;
 	}
 
 	private Concept initConcept(InputViewController inputViewController) {
@@ -143,6 +157,23 @@ public class ConceptMapViewController
 
 			conceptViewPane.setRotate(inputViewController.getRotate());
 		});
+	}
+
+	private void newConceptInUIAndLogic(InputViewController inputViewController, User user) throws IOException {
+		// init logic
+		Concept concept = initConcept(inputViewController);
+
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("ConceptView.fxml"));
+
+		// load and init UI
+		Pane conceptViewPane = initConceptViewUI(inputViewController, loader);
+		conceptMapPane.getChildren().add(conceptViewPane);
+
+		// init UI event-logic
+		ConceptViewController conceptViewController = initConceptViewController(concept, loader);
+		requestInput(concept.getOwner(), conceptViewController);
+
+		this.userToConceptViewControllers.get(user).add(conceptViewController);
 	}
 
 	private void requestInput(User owner, ConceptViewController conceptViewController) {

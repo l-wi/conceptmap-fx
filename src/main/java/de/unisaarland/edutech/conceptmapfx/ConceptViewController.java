@@ -12,15 +12,18 @@ import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class ConceptViewController implements ConceptMovedListener, InputClosedListener {
 
@@ -30,6 +33,8 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
 	private List<NewLinkListener> newLinkListeners = new ArrayList<NewLinkListener>();
 
+	@FXML
+	private AnchorPane conceptPane;
 	@FXML
 	private TextField txtConcept;
 	@FXML
@@ -181,5 +186,15 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 
 	private void fireEditRequested(User u) {
 		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this, u));
+	}
+
+	public void highlightEmpty() {
+		FadeTransition ft = new FadeTransition(Duration.millis(300), conceptPane);
+		ft.setFromValue(1.0);
+		ft.setToValue(0.5);
+		ft.setAutoReverse(true);
+		ft.setCycleCount(2);
+		ft.play();
+
 	}
 }

@@ -10,11 +10,8 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
+<AnchorPane fx:id="conceptPane" fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
 	xmlns:fx="http://javafx.com/fxml/1">
-	<fx:define>
-		<ToggleGroup fx:id="toggleGroup" />
-	</fx:define>
 
 
 	<children>
