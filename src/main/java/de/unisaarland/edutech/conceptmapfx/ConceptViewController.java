@@ -150,11 +150,11 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 			this.dragY = evt.getY();
 		});
 		conceptPane.setOnMouseDragged((evt) -> {
-			this.fireConceptMoved(evt.getX() - dragX, evt.getY() - dragY, 0, this, null);
+			this.fireConceptMoved(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
 		});
 	}
 
-	private void fireConceptMoved(double x, double y, int rotate, ConceptViewController cv, User u) {
+	private void fireConceptMoved(double x, double y, double rotate, ConceptViewController cv, User u) {
 		conceptMovedListeners.forEach(l -> l.conceptMoved(x, y, rotate, cv, u));
 	}
 
