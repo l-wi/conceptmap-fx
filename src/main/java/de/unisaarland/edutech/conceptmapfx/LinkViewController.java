@@ -13,7 +13,6 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener.Di
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
