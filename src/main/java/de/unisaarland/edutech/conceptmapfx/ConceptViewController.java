@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -160,6 +161,10 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptPane.setOnMouseDragged((evt) -> {
 			this.fireConceptMoving(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
 		});
+		
+		conceptPane.setOnScroll(l -> {
+			this.rotate(this.getRotate()+l.getDeltaY()/40);
+		});
 	}
 
 	private void fireConceptMoved(MouseEvent evt) {
@@ -295,9 +300,27 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.txtConcept.setDisable(false);
 		this.fireEditRequested(u);
 	}
+	
+	
 
 	private void fireEditRequested(User u) {
 		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this, u));
 	}
 
+	public Point2D getCenterAsSceneCoordinates(){
+		Point2D p = new Point2D(conceptPane.getWidth()/2, conceptPane.getHeight()/2);
+		return conceptPane.getLocalToSceneTransform().transform(p);
+	}
+	
+	public double getRotate(){
+		return conceptPane.getRotate();
+	}
+
+	public double getWidth() {
+		return conceptPane.getWidth();
+	}
+
+	public double getHeight() {
+		return conceptPane.getHeight();
+	}
 }

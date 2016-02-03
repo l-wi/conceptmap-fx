@@ -59,22 +59,14 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	private void updateLinkBetween() {
-		Bounds cv1Bounds = cv1.getBoundsInScene();
-		Bounds cv2Bounds = cv2.getBoundsInScene();
 
-		double xCenterStart = cv1Bounds.getMinX() + cv1Bounds.getWidth() / 2;
-		double yCenterStart = cv1Bounds.getMinY() + cv1Bounds.getHeight() / 2;
+		Point2D centerStart = cv1.getCenterAsSceneCoordinates();
+		Point2D centerEnd = cv2.getCenterAsSceneCoordinates();
 
-		Point2D centerStart = new Point2D(xCenterStart, yCenterStart);
-
-		double xCenterEnd = cv2Bounds.getMinX() + cv2Bounds.getWidth() / 2;
-		double yCenterEnd = cv2Bounds.getMinY() + cv2Bounds.getHeight() / 2;
-
-		Point2D centerEnd = new Point2D(xCenterEnd, yCenterEnd);
 		Point2D betweenCenters = centerEnd.subtract(centerStart);
 
-		Point2D pTranslateCV1 = computeCenterAnchorTranslation(cv1Bounds, betweenCenters);
-		Point2D pTranslateCV2 = computeCenterAnchorTranslation(cv2Bounds, betweenCenters);
+		Point2D pTranslateCV1 = computeCenterAnchorTranslation(cv1, betweenCenters);
+		Point2D pTranslateCV2 = computeCenterAnchorTranslation(cv2, betweenCenters);
 
 		Point2D startAnchorPoint = centerStart.add(pTranslateCV1);
 		Point2D endAnchorPoint = centerEnd.subtract(pTranslateCV2);
@@ -85,6 +77,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		end.setX(endAnchorPoint.getX());
 		end.setY(endAnchorPoint.getY());
 
+		// calculate angle for anchors
 		Point2D betweenAnchors = endAnchorPoint.subtract(startAnchorPoint);
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
@@ -109,25 +102,39 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	}
 
-	private Point2D computeCenterAnchorTranslation(Bounds cvBounds, Point2D betweenVector) {
+	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
 		// FIXME when nodes are close together lines go through the nodes not
 		// taking best anchor point
-		double translationXCenter;
-		double translationYCenter;
 
-		double direction = 0;
+		Point2D xAxis = new Point2D(1, 0);
+		Point2D yAxis = new Point2D(0, 1);
 
-		if (Math.abs(betweenVector.getX()) > Math.abs(betweenVector.getY())) {
-			direction = (betweenVector.getX() > 0) ? 1 : -1;
-			translationXCenter = direction * cvBounds.getWidth() / 2;
-			translationYCenter = 0;
-		} else {
-			direction = (betweenVector.getY() > 0) ? 1 : -1;
-			translationXCenter = 0;
-			translationYCenter = direction * cvBounds.getHeight() / 2;
-		}
+		double rotation = Math.toRadians(controller.getRotate());
 
-		return new Point2D(translationXCenter, translationYCenter);
+		xAxis = rotatePoint2D(xAxis, rotation);
+		yAxis = rotatePoint2D(yAxis, rotation);
+
+		double angleX = xAxis.angle(betweenVector) - 90;
+		double angleY = yAxis.angle(betweenVector) - 90;
+
+		
+		
+		double directionX = (angleX >= 0)?  -1 : 1;
+		double directionY = (angleY >= 0)?  -1 : 1;
+		
+		if (Math.abs(angleX) > Math.abs(angleY))
+			// TODO direction
+			return xAxis.normalize().multiply(directionX* controller.getWidth() / 2);
+
+		else
+			return yAxis.normalize().multiply(directionY* controller.getHeight() / 2);
+	}
+
+	private Point2D rotatePoint2D(Point2D xAxis, double rotation) {
+		double xRotated = xAxis.getX() * Math.cos(rotation) - xAxis.getY() * Math.sin(rotation);
+		double yRotated = xAxis.getX() * Math.sin(rotation) + xAxis.getY() * Math.cos(rotation);
+
+		return new Point2D(xRotated, yRotated);
 	}
 
 	public void addLinkEditRequestedListener(LinkEditRequestedListener l) {
@@ -155,9 +162,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		LinkDirectionUpdatedListener.Direction d = Direction.NOT_DIRECTED;
 
 		a.toggle();
-		
+
 		if (a.isDirected() && b.isDirected()) {
-			//FIXME indicate that this is not possible on the UI!
+			// FIXME indicate that this is not possible on the UI!
 			a.toCircle();
 			return;
 		} else if (aStart.isDirected() && !aEnd.isDirected())

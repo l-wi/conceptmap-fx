@@ -96,6 +96,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	public void newLink(ConceptViewController cv1, ConceptViewController cv2) {
+		if (conceptMap.isAnyLinkExisting(cv1.getConcept(), cv2.getConcept())) {
+			LOG.warn("there is already a link between:" + cv1.getConcept() + " and " + cv2.getConcept());
+			return;
+		}
+
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
 
@@ -157,7 +162,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		// force the conceptMapPane to calculate the size of the conceptViewPane
 		conceptMapPane.getChildren().add(conceptViewPane);
 		conceptMapPane.applyCss();
-		conceptMapPane.layout();		// TODO load all the things that might already exit in that concept map
+		conceptMapPane.layout(); // TODO load all the things that might already
+									// exit in that concept map
 		// to UI
 
 		moveConceptToRightPosition(inputViewController, conceptViewPane);
@@ -247,10 +253,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	@Override
 	public void linkDirectionUpdated(LinkViewController lv, Direction d, User u) {
 		LOG.info("changing link direction: " + d);
-		if(d == Direction.START_TO_END)
+		if (d == Direction.START_TO_END)
 			conceptMap.removeDirectedLink(lv.getEnd(), lv.getStart());
-		else if(d == Direction.END_TO_START)
-			conceptMap.removeDirectedLink(lv.getStart(),lv.getEnd());
+		else if (d == Direction.END_TO_START)
+			conceptMap.removeDirectedLink(lv.getStart(), lv.getEnd());
 		else
 			conceptMap.setDirectedRelationToUndirected(lv.getStart(), lv.getEnd());
 	}
