@@ -246,7 +246,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		return result;
 	}
 
-	public void addAnchor(Anchor a) {
+	public void addAnchor(AnchorView a) {
 		this.conceptMapPane.getChildren().add(a);
 	}
 

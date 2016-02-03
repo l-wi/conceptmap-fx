@@ -31,9 +31,16 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private LineTo end;
 	private ConceptViewController cv1;
 	private ConceptViewController cv2;
-	private Anchor aStart;
-	private Anchor aEnd;
+	private AnchorView aStart;
+	private AnchorView aEnd;
 
+	/*
+	 * TODO Hier weitermachen: Implementieren eines Edits auf link
+	 * - Dazu bbrauchen wir einen View + Userauswahl
+	 * - Das egentliche Link Element hier irgendwo
+	 * 
+	 * 
+	 */
 	public LinkViewController(ConceptMapViewController cmv, ConceptViewController cv1, ConceptViewController cv2) {
 		this.cv1 = cv1;
 		this.cv2 = cv2;
@@ -41,8 +48,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.end = new LineTo();
 		this.link = new Path();
 
-		aStart = new Anchor(this, Color.BLUE, 25, 25);
-		aEnd = new Anchor(this, Color.BLUE, 25, 25);
+		aStart = new AnchorView(this, Color.BLUE, 25, 25);
+		aEnd = new AnchorView(this, Color.BLUE, 25, 25);
 
 		cmv.addAnchor(aStart);
 		cmv.addAnchor(aEnd);
@@ -61,8 +68,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		linkEditListners.add(l);
 	}
 
-	public void anchorAltered(Anchor a) {
-		Anchor b = (a.equals(aStart)) ? aEnd : aStart;
+	public void anchorAltered(AnchorView a) {
+		AnchorView b = (a.equals(aStart)) ? aEnd : aStart;
 
 		LinkDirectionUpdatedListener.Direction d = Direction.NOT_DIRECTED;
 

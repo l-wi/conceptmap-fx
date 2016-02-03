@@ -9,7 +9,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeType;
 
-public class Anchor extends Pane {
+public class AnchorView extends Pane {
 
 	private Circle circle;
 	private Polygon arrowPolygon;
@@ -21,7 +21,7 @@ public class Anchor extends Pane {
 		controller.anchorAltered(this);
 	};
 
-	Anchor(LinkViewController controller, Color color, double width, double height) {
+	AnchorView(LinkViewController controller, Color color, double width, double height) {
 		this.controller = controller;
 		createCircle(color, width, height);
 		createArrow(width, height);
