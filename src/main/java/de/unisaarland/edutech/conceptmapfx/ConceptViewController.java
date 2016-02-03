@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
@@ -16,6 +17,7 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -26,13 +28,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class ConceptViewController implements ConceptMovedListener, InputClosedListener {
+public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptViewController.class);
 
 	private List<ConceptEditRequestedListener> conceptEditListeners = new ArrayList<ConceptEditRequestedListener>();
+	private List<ConceptMovingListener> conceptMovingListeners = new ArrayList<ConceptMovingListener>();
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
-	private List<NewLinkListener> newLinkListeners = new ArrayList<NewLinkListener>();
+
 
 	@FXML
 	private AnchorPane conceptPane;
@@ -67,20 +70,21 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		conceptEditListeners.add(l);
 	}
 
+	public void addConceptMovingListener(ConceptMovingListener l) {
+		conceptMovingListeners.add(l);
+	}
+
 	public void addConceptMovedListener(ConceptMovedListener l) {
 		conceptMovedListeners.add(l);
 	}
 
-	public void addNewLinkListener(NewLinkListener l) {
-		newLinkListeners.add(l);
-	}
 
 	public void adjustCaret() {
 		caretPosition = txtConcept.getText().length();
 		this.txtConcept.positionCaret(caretPosition);
 	}
 
-	public void conceptMoved(double x, double y, double rotate, ConceptViewController cv, User u) {
+	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
 		cv.rotate(rotate);
 		cv.translate(x, y);
 	}
@@ -122,7 +126,7 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 	@FXML
 	public void initialize() {
 
-		this.addConceptMovedListener(this);
+		this.addConceptMovingListener(this);
 
 		addToggleListener(btnToogleUser1, 0);
 		addEventFilterToPreventUntoggle(btnToogleUser1);
@@ -149,13 +153,21 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 			this.dragX = evt.getX();
 			this.dragY = evt.getY();
 		});
+
+		conceptPane.setOnMouseReleased((evt) -> {
+			this.fireConceptMoved(evt);
+		});
 		conceptPane.setOnMouseDragged((evt) -> {
-			this.fireConceptMoved(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
+			this.fireConceptMoving(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
 		});
 	}
 
-	private void fireConceptMoved(double x, double y, double rotate, ConceptViewController cv, User u) {
-		conceptMovedListeners.forEach(l -> l.conceptMoved(x, y, rotate, cv, u));
+	private void fireConceptMoved(MouseEvent evt) {
+		conceptMovedListeners.forEach(l -> l.conceptMoved(this));
+	}
+
+	private void fireConceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
+		conceptMovingListeners.forEach(l -> l.conceptMoving(x, y, rotate, cv, u));
 	}
 
 	public void inputClosed(User u) {
@@ -190,6 +202,10 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 		}
 
 	}
+	
+	public AnchorPane getConceptPane() {
+		return conceptPane;
+	}
 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
@@ -215,6 +231,16 @@ public class ConceptViewController implements ConceptMovedListener, InputClosedL
 			btnToogleUser4.setSelected(state);
 			break;
 		}
+	}
+
+	public Bounds getBoundsInScene(){
+		return conceptPane.getLocalToSceneTransform().transform(conceptPane.getBoundsInLocal());
+	}
+	public boolean intersects(ConceptViewController other) {
+		Bounds myParentBounds = this.conceptPane.getBoundsInParent();
+		Bounds otherParentBounds = other.conceptPane.getBoundsInParent();
+
+		return myParentBounds.intersects(otherParentBounds);
 	}
 
 	private void addEventFilterToPreventUntoggle(ToggleButton b) {

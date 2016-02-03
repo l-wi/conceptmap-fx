@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	private ConceptMapViewController conceptMapController;
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -36,7 +36,7 @@ public class Main extends Application {
 		experiment.addParticipant(u2);
 		experiment.addParticipant(u3);
 		experiment.addParticipant(u4);
-		
+
 		ConceptMap conceptMap = new ConceptMap(experiment);
 
 		// Begin UI code
@@ -45,6 +45,7 @@ public class Main extends Application {
 		Pane conceptMapView = conceptMapLoader.load();
 		conceptMapController = conceptMapLoader.getController();
 		conceptMapController.setConceptMap(conceptMap);
+		conceptMapController.addNewLinkListener(conceptMapController);
 
 		Scene scene = new Scene(conceptMapView);
 
@@ -61,14 +62,14 @@ public class Main extends Application {
 	private void setInputPositions(Scene primaryStage, User u1, User u2, User u3, User u4, Pane conceptMapView)
 			throws IOException {
 		// north
-		final Pane v1 = addInputComponent(Position.NORTH,conceptMapView, u1);
+		final Pane v1 = addInputComponent(Position.NORTH, conceptMapView, u1);
 		v1.setRotate(180);
 		primaryStage.widthProperty().addListener((observeable, oldVal, newVal) -> {
 			v1.setLayoutX(newVal.doubleValue() * 0.6 - v1.getWidth() / 2);
 		});
 
 		// west
-		final Pane v2 = addInputComponent(Position.WEST,conceptMapView, u2);
+		final Pane v2 = addInputComponent(Position.WEST, conceptMapView, u2);
 		v2.setRotate(90);
 
 		// as we rotate around center, we need to readjust on screen

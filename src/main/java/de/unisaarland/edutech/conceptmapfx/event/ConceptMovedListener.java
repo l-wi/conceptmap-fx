@@ -5,5 +5,5 @@ import de.unisaarland.edutech.conceptmapping.User;
 
 public interface ConceptMovedListener {
 
-	void conceptMoved(double x, double y, double rotate, ConceptViewController cv, User u);
+	void conceptMoved( ConceptViewController cv);
 }

@@ -3,7 +3,7 @@ package de.unisaarland.edutech.conceptmapfx.event;
 import de.unisaarland.edutech.conceptmapfx.ConceptViewController;
 import de.unisaarland.edutech.conceptmapping.User;
 
-public interface NewLinkListener {
+public interface ConceptMovingListener {
 
-	void newLink(ConceptViewController cv1, ConceptViewController c2);
+	void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u);
 }

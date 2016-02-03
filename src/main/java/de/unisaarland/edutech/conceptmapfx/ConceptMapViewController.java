@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
@@ -24,20 +25,21 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
-public class ConceptMapViewController
-		implements NewLinkListener, NewConceptListener, LinkDeletedListener, ConceptDeletedListener {
+public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
+		ConceptDeletedListener, ConceptMovedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
 	private List<ConceptDeletedListener> conceptDeletedListners = new ArrayList<ConceptDeletedListener>();
 	private List<LinkDeletedListener> linkDeletedListeners = new ArrayList<LinkDeletedListener>();
+	private List<NewLinkListener> newLinkListeners = new ArrayList<NewLinkListener>();
 
 	@FXML
 	private AnchorPane conceptMapPane;
 
 	private ConceptMap conceptMap;
 	private List<InputViewController> inputControllers = new ArrayList<InputViewController>();
-
+	private List<LinkViewController> linkControllers = new ArrayList<LinkViewController>();
 	private Map<User, List<ConceptViewController>> userToConceptViewControllers = new HashMap<>();
 
 	public void addConceptDeletedListener(ConceptDeletedListener l) {
@@ -50,6 +52,10 @@ public class ConceptMapViewController
 
 	public void addLinkDeletedListener(LinkDeletedListener l) {
 		linkDeletedListeners.add(l);
+	}
+
+	public void addNewLinkListener(NewLinkListener l) {
+		newLinkListeners.add(l);
 	}
 
 	public void conceptDeleted(ConceptViewController cv, User u) {
@@ -82,9 +88,30 @@ public class ConceptMapViewController
 		}
 	}
 
-	public void newLink(ConceptViewController cv1, ConceptViewController c2, User u) {
-		// TODO implement new link
+	public void newLink(ConceptViewController cv1, ConceptViewController cv2) {
+		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
+				+ cv2.getConcept().getName().getContent());
 
+		/*
+		 * Hier weitermachen: - wir brauchen eine LinkView Klasse die einen Link
+		 * rendert. - wir müssen die Listener auf der entsprechend setzen.
+		 * 
+		 * - wir müssen uns die hier merken für das Löschen von links. - Wie
+		 * detektieren wir hier gesten? - Wie setzen wir einen Link aktiv?
+		 */
+
+		LinkViewController controller = new LinkViewController(this,cv1, cv2);
+
+		cv1.addConceptMovingListener(controller);
+		cv2.addConceptMovingListener(controller);
+		
+		linkControllers.add(controller);
+		inputControllers.forEach(l -> {
+			controller.addLinkEditRequestedListener(l);
+		});
+
+		
+		conceptMapPane.getChildren().add(controller.getLink());
 	}
 
 	public void setConceptMap(ConceptMap conceptMap) {
@@ -115,8 +142,8 @@ public class ConceptMapViewController
 
 		for (InputViewController inputController : inputControllers) {
 			conceptViewController.addConceptEditRequestedListener(inputController);
-			conceptViewController.addNewLinkListener(this);
 		}
+		conceptViewController.addConceptMovedListener(this);
 
 		return conceptViewController;
 	}
@@ -124,7 +151,7 @@ public class ConceptMapViewController
 	private void initConceptViewUI(InputViewController inputViewController, FXMLLoader loader) throws IOException {
 
 		Pane conceptViewPane = loader.load();
-		//force the conceptMapPane to calculate the size of the conceptViewPane
+		// force the conceptMapPane to calculate the size of the conceptViewPane
 		conceptMapPane.getChildren().add(conceptViewPane);
 		conceptMapPane.applyCss();
 		conceptMapPane.layout();
@@ -180,6 +207,36 @@ public class ConceptMapViewController
 	private void requestInput(User owner, ConceptViewController conceptViewController) {
 		LOG.info("requesting input for user:\t" + owner + " on new concept!");
 		conceptViewController.setUserEnabled(owner, true);
+	}
+
+	@Override
+	public void conceptMoved(ConceptViewController cv) {
+		List<ConceptViewController> intersections = findIntersections(cv);
+
+		for (ConceptViewController intersected : intersections) {
+			fireNewLinkListener(cv, intersected);
+		}
+
+	}
+
+	private void fireNewLinkListener(ConceptViewController cv, ConceptViewController intersected) {
+		newLinkListeners.forEach(l -> l.newLink(cv, intersected));
+	}
+
+	private List<ConceptViewController> findIntersections(ConceptViewController cv) {
+		List<ConceptViewController> result = new ArrayList<>();
+		for (List<ConceptViewController> list : userToConceptViewControllers.values()) {
+			for (ConceptViewController controller : list) {
+				if (!cv.equals(controller) && cv.intersects(controller)) {
+					result.add(controller);
+				}
+			}
+		}
+		return result;
+	}
+
+	public void addAnchor(Anchor a) {
+		this.conceptMapPane.getChildren().add(a);
 	}
 
 }
