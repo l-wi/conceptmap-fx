@@ -13,6 +13,7 @@ import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
+import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
@@ -26,7 +27,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
-		ConceptDeletedListener, ConceptMovedListener {
+		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
@@ -68,6 +69,12 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	}
 
+	@FXML
+	public void initialize() {
+		// TODO load all the things that might already exit in that concept map
+		// to UI
+	}
+
 	public void newConcept(InputViewController inputViewController) {
 		try {
 
@@ -92,25 +99,21 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
 
-		/*
-		 * Hier weitermachen: - wir brauchen eine LinkView Klasse die einen Link
-		 * rendert. - wir müssen die Listener auf der entsprechend setzen.
-		 * 
-		 * - wir müssen uns die hier merken für das Löschen von links. - Wie
-		 * detektieren wir hier gesten? - Wie setzen wir einen Link aktiv?
-		 */
-
-		LinkViewController controller = new LinkViewController(this,cv1, cv2);
+		LinkViewController controller = new LinkViewController(this, cv1, cv2);
 
 		cv1.addConceptMovingListener(controller);
 		cv2.addConceptMovingListener(controller);
-		
+
 		linkControllers.add(controller);
+
 		inputControllers.forEach(l -> {
 			controller.addLinkEditRequestedListener(l);
 		});
 
-		
+		controller.addLinkDirectionUpdatedListener(this);
+
+		conceptMap.addUndirectedLink(cv1.getConcept(), cv2.getConcept());
+
 		conceptMapPane.getChildren().add(controller.getLink());
 	}
 
@@ -154,7 +157,9 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		// force the conceptMapPane to calculate the size of the conceptViewPane
 		conceptMapPane.getChildren().add(conceptViewPane);
 		conceptMapPane.applyCss();
-		conceptMapPane.layout();
+		conceptMapPane.layout();		// TODO load all the things that might already exit in that concept map
+		// to UI
+
 		moveConceptToRightPosition(inputViewController, conceptViewPane);
 	}
 
@@ -237,6 +242,17 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	public void addAnchor(Anchor a) {
 		this.conceptMapPane.getChildren().add(a);
+	}
+
+	@Override
+	public void linkDirectionUpdated(LinkViewController lv, Direction d, User u) {
+		LOG.info("changing link direction: " + d);
+		if(d == Direction.START_TO_END)
+			conceptMap.removeDirectedLink(lv.getEnd(), lv.getStart());
+		else if(d == Direction.END_TO_START)
+			conceptMap.removeDirectedLink(lv.getStart(),lv.getEnd());
+		else
+			conceptMap.setDirectedRelationToUndirected(lv.getStart(), lv.getEnd());
 	}
 
 }

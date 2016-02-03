@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
+import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener.Direction;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
+import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -18,7 +20,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
-public class LinkViewController implements ConceptMovingListener, LinkDirectionUpdatedListener, InputClosedListener {
+public class LinkViewController implements ConceptMovingListener, InputClosedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LinkViewController.class);
 
@@ -40,8 +42,8 @@ public class LinkViewController implements ConceptMovingListener, LinkDirectionU
 		this.end = new LineTo();
 		this.link = new Path();
 
-		aStart = new Anchor(Color.BLUE, start.xProperty(), start.yProperty());
-		aEnd = new Anchor(Color.BLUE, end.xProperty(), end.yProperty());
+		aStart = new Anchor(this, Color.BLUE, 25, 25);
+		aEnd = new Anchor(this, Color.BLUE, 25, 25);
 
 		cmv.addAnchor(aStart);
 		cmv.addAnchor(aEnd);
@@ -69,10 +71,10 @@ public class LinkViewController implements ConceptMovingListener, LinkDirectionU
 		double yCenterEnd = cv2Bounds.getMinY() + cv2Bounds.getHeight() / 2;
 
 		Point2D centerEnd = new Point2D(xCenterEnd, yCenterEnd);
-		Point2D betweenVector = centerEnd.subtract(centerStart);
+		Point2D betweenCenters = centerEnd.subtract(centerStart);
 
-		Point2D pTranslateCV1 = computeCenterAnchorTranslation(cv1Bounds, betweenVector);
-		Point2D pTranslateCV2 = computeCenterAnchorTranslation(cv2Bounds, betweenVector);
+		Point2D pTranslateCV1 = computeCenterAnchorTranslation(cv1Bounds, betweenCenters);
+		Point2D pTranslateCV2 = computeCenterAnchorTranslation(cv2Bounds, betweenCenters);
 
 		Point2D startAnchorPoint = centerStart.add(pTranslateCV1);
 		Point2D endAnchorPoint = centerEnd.subtract(pTranslateCV2);
@@ -82,17 +84,39 @@ public class LinkViewController implements ConceptMovingListener, LinkDirectionU
 
 		end.setX(endAnchorPoint.getX());
 		end.setY(endAnchorPoint.getY());
+
+		Point2D betweenAnchors = endAnchorPoint.subtract(startAnchorPoint);
+		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
+		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
+
+		angleX = Math.toDegrees(angleX);
+		angleY = Math.toDegrees(angleY);
+
+		aStart.setTranslateX(start.getX() - aStart.getWidth() / 2);
+		aStart.setTranslateY(start.getY() - aStart.getHeight() / 2);
+
+		aEnd.setTranslateX(end.getX() - aEnd.getWidth() / 2);
+		aEnd.setTranslateY(end.getY() - aEnd.getHeight() / 2);
+
+		LOG.info("Angle:" + angleX);
+		if (angleY < 90) {
+			aStart.setRotate(angleX);
+			aEnd.setRotate(angleX + 180);
+		} else {
+			aStart.setRotate(-angleX);
+			aEnd.setRotate(-angleX + 180);
+		}
+
 	}
 
 	private Point2D computeCenterAnchorTranslation(Bounds cvBounds, Point2D betweenVector) {
-		//FIXME when nodes are close together lines go through the nodes not taking best anchor point
+		// FIXME when nodes are close together lines go through the nodes not
+		// taking best anchor point
 		double translationXCenter;
 		double translationYCenter;
 
 		double direction = 0;
 
-		LOG.info(betweenVector.toString());
-		
 		if (Math.abs(betweenVector.getX()) > Math.abs(betweenVector.getY())) {
 			direction = (betweenVector.getX() > 0) ? 1 : -1;
 			translationXCenter = direction * cvBounds.getWidth() / 2;
@@ -120,14 +144,41 @@ public class LinkViewController implements ConceptMovingListener, LinkDirectionU
 
 	}
 
-	public void linkDirectionUpdated(LinkViewController lv, Direction d, User u) {
-		// TODO implement link direction update
-
-	}
-
 	public void inputClosed(User u) {
 		// TODO implement input closed on link
 
+	}
+
+	public void anchorAltered(Anchor a) {
+		Anchor b = (a.equals(aStart)) ? aEnd : aStart;
+
+		LinkDirectionUpdatedListener.Direction d = Direction.NOT_DIRECTED;
+
+		a.toggle();
+		
+		if (a.isDirected() && b.isDirected()) {
+			//FIXME indicate that this is not possible on the UI!
+			a.toCircle();
+			return;
+		} else if (aStart.isDirected() && !aEnd.isDirected())
+			d = Direction.END_TO_START;
+		else if (!aStart.isDirected() && aEnd.isDirected())
+			d = Direction.START_TO_END;
+
+		fireLinkDirectionUpdate(d);
+
+	}
+
+	private void fireLinkDirectionUpdate(LinkDirectionUpdatedListener.Direction d) {
+		linkDirectionListener.forEach((l) -> l.linkDirectionUpdated(this, d, null));
+	}
+
+	public Concept getStart() {
+		return cv1.getConcept();
+	}
+
+	public Concept getEnd() {
+		return cv2.getConcept();
 	}
 
 }

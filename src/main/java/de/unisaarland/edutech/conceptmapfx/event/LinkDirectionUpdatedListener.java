@@ -9,7 +9,8 @@ public interface LinkDirectionUpdatedListener {
 	void linkDirectionUpdated(LinkViewController lv,Direction d, User u);
 	
 	enum Direction{
-		LEFT,RIGHT, BOTH
+		START_TO_END,END_TO_START, NOT_DIRECTED;
+		
 	}
 	
 }
