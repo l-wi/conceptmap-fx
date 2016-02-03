@@ -23,7 +23,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private static final Logger LOG = LoggerFactory.getLogger(LinkViewController.class);
 
-	private List<LinkDirectionUpdatedListener> linkDirectionListener = new ArrayList<LinkDirectionUpdatedListener>();
+	private List<LinkDirectionUpdatedListener> linkDirectionListeners = new ArrayList<LinkDirectionUpdatedListener>();
 	private List<LinkEditRequestedListener> linkEditListners = new ArrayList<LinkEditRequestedListener>();
 
 	private Path link;
@@ -53,8 +53,92 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		updateLinkBetween();
 	}
 
+	public void addLinkDirectionUpdatedListener(LinkDirectionUpdatedListener l) {
+		linkDirectionListeners.add(l);
+	}
+
+	public void addLinkEditRequestedListener(LinkEditRequestedListener l) {
+		linkEditListners.add(l);
+	}
+
+	public void anchorAltered(Anchor a) {
+		Anchor b = (a.equals(aStart)) ? aEnd : aStart;
+
+		LinkDirectionUpdatedListener.Direction d = Direction.NOT_DIRECTED;
+
+		a.toggle();
+
+		if (a.isDirected() && b.isDirected()) {
+			// FIXME indicate that this is not possible on the UI!
+			a.toCircle();
+			return;
+		} else if (aStart.isDirected() && !aEnd.isDirected())
+			d = Direction.END_TO_START;
+		else if (!aStart.isDirected() && aEnd.isDirected())
+			d = Direction.START_TO_END;
+
+		fireLinkDirectionUpdate(d);
+
+	}
+
+	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
+		if (cv1.equals(cv) || cv2.equals(cv))
+			updateLinkBetween();
+
+	}
+
+	public Concept getEnd() {
+		return cv2.getConcept();
+	}
+
 	public Path getLink() {
 		return link;
+	}
+
+	public Concept getStart() {
+		return cv1.getConcept();
+	}
+
+	public void inputClosed(User u) {
+		// TODO implement input closed on link
+
+	}
+
+	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
+		// FIXME when nodes are close together lines go through the nodes not
+		// taking best anchor point
+
+		Point2D xAxis = new Point2D(1, 0);
+		Point2D yAxis = new Point2D(0, 1);
+
+		double rotation = Math.toRadians(controller.getRotate());
+
+		xAxis = rotatePoint2D(xAxis, rotation);
+		yAxis = rotatePoint2D(yAxis, rotation);
+
+		double angleX = xAxis.angle(betweenVector) - 90;
+		double angleY = yAxis.angle(betweenVector) - 90;
+
+		double directionX = (angleX >= 0) ? -1 : 1;
+		double directionY = (angleY >= 0) ? -1 : 1;
+
+		if (Math.abs(angleX) > Math.abs(angleY))
+			return xAxis.normalize().multiply(directionX * controller.getWidth() / 2);
+
+		else
+			return yAxis.normalize().multiply(directionY * controller.getHeight() / 2);
+	}
+
+	private void fireLinkDirectionUpdate(LinkDirectionUpdatedListener.Direction d) {
+		LOG.info("firing LinkDirectionUodated events");
+		linkDirectionListeners.forEach((l) -> l.linkDirectionUpdated(this, d, null));
+	}
+
+	private Point2D rotatePoint2D(Point2D xAxis, double rotation) {
+		double xRotated = xAxis.getX() * Math.cos(rotation) - xAxis.getY() * Math.sin(rotation);
+		double yRotated = xAxis.getX() * Math.sin(rotation) + xAxis.getY() * Math.cos(rotation);
+
+		return new Point2D(xRotated, yRotated);
 	}
 
 	private void updateLinkBetween() {
@@ -90,7 +174,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		aEnd.setTranslateX(end.getX() - aEnd.getWidth() / 2);
 		aEnd.setTranslateY(end.getY() - aEnd.getHeight() / 2);
 
-		LOG.info("Angle:" + angleX);
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
 			aEnd.setRotate(angleX + 180);
@@ -99,91 +182,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			aEnd.setRotate(-angleX + 180);
 		}
 
-	}
-
-	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
-		// FIXME when nodes are close together lines go through the nodes not
-		// taking best anchor point
-
-		Point2D xAxis = new Point2D(1, 0);
-		Point2D yAxis = new Point2D(0, 1);
-
-		double rotation = Math.toRadians(controller.getRotate());
-
-		xAxis = rotatePoint2D(xAxis, rotation);
-		yAxis = rotatePoint2D(yAxis, rotation);
-
-		double angleX = xAxis.angle(betweenVector) - 90;
-		double angleY = yAxis.angle(betweenVector) - 90;
-
-		
-		
-		double directionX = (angleX >= 0)?  -1 : 1;
-		double directionY = (angleY >= 0)?  -1 : 1;
-		
-		if (Math.abs(angleX) > Math.abs(angleY))
-			return xAxis.normalize().multiply(directionX* controller.getWidth() / 2);
-
-		else
-			return yAxis.normalize().multiply(directionY* controller.getHeight() / 2);
-	}
-
-	private Point2D rotatePoint2D(Point2D xAxis, double rotation) {
-		double xRotated = xAxis.getX() * Math.cos(rotation) - xAxis.getY() * Math.sin(rotation);
-		double yRotated = xAxis.getX() * Math.sin(rotation) + xAxis.getY() * Math.cos(rotation);
-
-		return new Point2D(xRotated, yRotated);
-	}
-
-	public void addLinkEditRequestedListener(LinkEditRequestedListener l) {
-		linkEditListners.add(l);
-	}
-
-	public void addLinkDirectionUpdatedListener(LinkDirectionUpdatedListener l) {
-		linkDirectionListener.add(l);
-	}
-
-	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
-		if (cv1.equals(cv) || cv2.equals(cv))
-			updateLinkBetween();
-
-	}
-
-	public void inputClosed(User u) {
-		// TODO implement input closed on link
-
-	}
-
-	public void anchorAltered(Anchor a) {
-		Anchor b = (a.equals(aStart)) ? aEnd : aStart;
-
-		LinkDirectionUpdatedListener.Direction d = Direction.NOT_DIRECTED;
-
-		a.toggle();
-
-		if (a.isDirected() && b.isDirected()) {
-			// FIXME indicate that this is not possible on the UI!
-			a.toCircle();
-			return;
-		} else if (aStart.isDirected() && !aEnd.isDirected())
-			d = Direction.END_TO_START;
-		else if (!aStart.isDirected() && aEnd.isDirected())
-			d = Direction.START_TO_END;
-
-		fireLinkDirectionUpdate(d);
-
-	}
-
-	private void fireLinkDirectionUpdate(LinkDirectionUpdatedListener.Direction d) {
-		linkDirectionListener.forEach((l) -> l.linkDirectionUpdated(this, d, null));
-	}
-
-	public Concept getStart() {
-		return cv1.getConcept();
-	}
-
-	public Concept getEnd() {
-		return cv2.getConcept();
 	}
 
 }
