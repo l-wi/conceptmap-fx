@@ -37,7 +37,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<ConceptMovingListener> conceptMovingListeners = new ArrayList<ConceptMovingListener>();
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
 
-
 	@FXML
 	private AnchorPane conceptPane;
 	@FXML
@@ -78,7 +77,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public void addConceptMovedListener(ConceptMovedListener l) {
 		conceptMovedListeners.add(l);
 	}
-
 
 	public void adjustCaret() {
 		caretPosition = txtConcept.getText().length();
@@ -161,9 +159,11 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptPane.setOnMouseDragged((evt) -> {
 			this.fireConceptMoving(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
 		});
-		
+
 		conceptPane.setOnScroll(l -> {
-			this.rotate(this.getRotate()+l.getDeltaY()/40);
+			this.rotate(this.getRotate() + l.getDeltaY() / 40);
+			fireConceptMoving(0, 0, this.getRotate() + l.getDeltaY() / 40, this, null);
+
 		});
 	}
 
@@ -207,7 +207,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		}
 
 	}
-	
+
 	public AnchorPane getConceptPane() {
 		return conceptPane;
 	}
@@ -238,9 +238,10 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		}
 	}
 
-	public Bounds getBoundsInScene(){
+	public Bounds getBoundsInScene() {
 		return conceptPane.getLocalToSceneTransform().transform(conceptPane.getBoundsInLocal());
 	}
+
 	public boolean intersects(ConceptViewController other) {
 		Bounds myParentBounds = this.conceptPane.getBoundsInParent();
 		Bounds otherParentBounds = other.conceptPane.getBoundsInParent();
@@ -300,19 +301,17 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.txtConcept.setDisable(false);
 		this.fireEditRequested(u);
 	}
-	
-	
 
 	private void fireEditRequested(User u) {
 		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this, u));
 	}
 
-	public Point2D getCenterAsSceneCoordinates(){
-		Point2D p = new Point2D(conceptPane.getWidth()/2, conceptPane.getHeight()/2);
+	public Point2D getCenterAsSceneCoordinates() {
+		Point2D p = new Point2D(conceptPane.getWidth() / 2, conceptPane.getHeight() / 2);
 		return conceptPane.getLocalToSceneTransform().transform(p);
 	}
-	
-	public double getRotate(){
+
+	public double getRotate() {
 		return conceptPane.getRotate();
 	}
 

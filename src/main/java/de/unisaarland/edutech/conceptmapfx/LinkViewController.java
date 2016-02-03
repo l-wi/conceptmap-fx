@@ -123,7 +123,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double directionY = (angleY >= 0)?  -1 : 1;
 		
 		if (Math.abs(angleX) > Math.abs(angleY))
-			// TODO direction
 			return xAxis.normalize().multiply(directionX* controller.getWidth() / 2);
 
 		else
