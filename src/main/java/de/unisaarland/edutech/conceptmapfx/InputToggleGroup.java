@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.event.EventHandler;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 
 public class InputToggleGroup {
@@ -24,6 +25,7 @@ public class InputToggleGroup {
 			addToggleListener(b, i);
 			addEventFilterToPreventUntoggle(b);
 		}
+
 	}
 
 	private void addToggleListener(ToggleButton b, int participant) {
@@ -48,6 +50,6 @@ public class InputToggleGroup {
 
 	public void setUserEnabled(int index, boolean state) {
 		toggleButtons[index].setSelected(state);
-		
+
 	}
 }

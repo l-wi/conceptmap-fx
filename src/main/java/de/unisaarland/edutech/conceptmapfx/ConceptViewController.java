@@ -150,6 +150,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 			fireConceptMoving(0, 0, this.getRotate() + l.getDeltaY() / 40, this, null);
 
 		});
+
+		//TODO move the whole thing into input toggle group
+		toggleGroup.selectedToggleProperty().addListener((l,c,n) -> {
+			if (n == null)
+				txtConcept.setDisable(true);
+		});
 	}
 
 	public void inputClosed(User u) {

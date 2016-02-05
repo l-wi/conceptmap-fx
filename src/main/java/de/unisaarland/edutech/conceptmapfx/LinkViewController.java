@@ -19,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
@@ -54,6 +55,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private Link link;
 
 	private Pane cmv;
+
+	private InputToggleGroup inputToggleGroup;
+
+	private ToggleGroup group;
 
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
@@ -100,7 +105,22 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			this.btnToogleUser4 = (ToggleButton) view.lookup("#p4");
 			this.txtLink = (TextField) view.lookup("#txtLink");
 			this.editable = new Editable(link.getCaption(), txtLink);
-			new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3, btnToogleUser4);
+
+			//TODO move the whole thing into input toggle group
+			this.group = new ToggleGroup();
+			group.getToggles().add(btnToogleUser1);
+			group.getToggles().add(btnToogleUser2);
+			group.getToggles().add(btnToogleUser3);
+			group.getToggles().add(btnToogleUser4);
+
+			
+			group.selectedToggleProperty().addListener((l,c,n) -> {
+				if (n == null)
+					txtLink.setDisable(true);
+			});
+
+			this.inputToggleGroup = new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3,
+					btnToogleUser4);
 
 		} catch (IOException e) {
 			// should never happen (FXML broken)
@@ -166,8 +186,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	public void inputClosed(User u) {
-		// TODO implement input closed on link
-
+		inputToggleGroup.setUserEnabled(participants.indexOf(u), false);
+		this.txtLink.setDisable(true);
 	}
 
 	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
