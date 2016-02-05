@@ -70,12 +70,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptEditListeners.add(l);
 	}
 
-	public void addConceptMovingListener(ConceptMovingListener l) {
-		conceptMovingListeners.add(l);
-	}
-
 	public void addConceptMovedListener(ConceptMovedListener l) {
 		conceptMovedListeners.add(l);
+	}
+
+	public void addConceptMovingListener(ConceptMovingListener l) {
+		conceptMovingListeners.add(l);
 	}
 
 	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
@@ -83,24 +83,33 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		cv.translate(x, y);
 	}
 
-	public void rotate(double d) {
-		conceptPane.setRotate(d);
+	public Bounds getBoundsInScene() {
+		return conceptPane.getLocalToSceneTransform().transform(conceptPane.getBoundsInLocal());
 	}
 
-	public void translate(double x, double y) {
-		double rotation = Math.toRadians(conceptPane.getRotate());
-
-		// if we have a rotation we have to convert to the rotated coordinate
-		// system
-		double xRotated = x * Math.cos(rotation) - y * Math.sin(rotation);
-		double yRotated = x * Math.sin(rotation) + y * Math.cos(rotation);
-
-		conceptPane.setTranslateX(conceptPane.getTranslateX() + xRotated);
-		conceptPane.setTranslateY(conceptPane.getTranslateY() + yRotated);
+	public Point2D getCenterAsSceneCoordinates() {
+		Point2D p = new Point2D(conceptPane.getWidth() / 2, conceptPane.getHeight() / 2);
+		return conceptPane.getLocalToSceneTransform().transform(p);
 	}
 
 	public Concept getConcept() {
 		return concept;
+	}
+
+	public AnchorPane getConceptPane() {
+		return conceptPane;
+	}
+
+	public double getHeight() {
+		return conceptPane.getHeight();
+	}
+
+	public double getRotate() {
+		return conceptPane.getRotate();
+	}
+
+	public double getWidth() {
+		return conceptPane.getWidth();
 	}
 
 	public void highlightEmpty() {
@@ -122,12 +131,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 				btnToogleUser4);
 
 		constructResizableTextfield(txtConcept);
-
-//		 toggleGroup.selectedToggleProperty().addListener((c, o, n) -> {
-//		 if (n == null)
-//		 this.txtConcept.setDisable(true);
-//		
-//		 });
 
 		txtConcept.caretPositionProperty().addListener((c, o, n) -> {
 			this.editable.setCaretPosition(n.intValue());
@@ -153,16 +156,15 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		});
 	}
 
-	private void fireConceptMoved(MouseEvent evt) {
-		conceptMovedListeners.forEach(l -> l.conceptMoved(this));
-	}
-
-	private void fireConceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
-		conceptMovingListeners.forEach(l -> l.conceptMoving(x, y, rotate, cv, u));
-	}
-
 	public void inputClosed(User u) {
 		inputToggleGroup.setUserEnabled(participants.indexOf(u), false);
+	}
+
+	public boolean intersects(ConceptViewController other) {
+		Bounds myParentBounds = this.conceptPane.getBoundsInParent();
+		Bounds otherParentBounds = other.conceptPane.getBoundsInParent();
+
+		return myParentBounds.intersects(otherParentBounds);
 	}
 
 	@FXML
@@ -171,8 +173,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		vboxTools.setVisible(btnExpand.isSelected());
 	}
 
-	public AnchorPane getConceptPane() {
-		return conceptPane;
+	public void rotate(double d) {
+		conceptPane.setRotate(d);
 	}
 
 	public void setConcept(Concept concept) {
@@ -185,15 +187,25 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.participants = participants;
 	}
 
-	public Bounds getBoundsInScene() {
-		return conceptPane.getLocalToSceneTransform().transform(conceptPane.getBoundsInLocal());
+	public void setUserEnabled(User owner, boolean b) {
+		inputToggleGroup.setUserEnabled(participants.indexOf(owner), b);
 	}
 
-	public boolean intersects(ConceptViewController other) {
-		Bounds myParentBounds = this.conceptPane.getBoundsInParent();
-		Bounds otherParentBounds = other.conceptPane.getBoundsInParent();
+	public void translate(double x, double y) {
+		double rotation = Math.toRadians(conceptPane.getRotate());
 
-		return myParentBounds.intersects(otherParentBounds);
+		// if we have a rotation we have to convert to the rotated coordinate
+		// system
+		double xRotated = x * Math.cos(rotation) - y * Math.sin(rotation);
+		double yRotated = x * Math.sin(rotation) + y * Math.cos(rotation);
+
+		conceptPane.setTranslateX(conceptPane.getTranslateX() + xRotated);
+		conceptPane.setTranslateY(conceptPane.getTranslateY() + yRotated);
+	}
+
+	public void userToggleEnabled(int buttonID) {
+		this.txtConcept.setDisable(false);
+		this.fireEditRequested(participants.get(buttonID));
 	}
 
 	private void constructResizableTextfield(TextField txt) {
@@ -224,33 +236,15 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		});
 	}
 
-	public void userToggleEnabled(int buttonID) {
-		this.txtConcept.setDisable(false);
-		this.fireEditRequested(participants.get(buttonID));
+	private void fireConceptMoved(MouseEvent evt) {
+		conceptMovedListeners.forEach(l -> l.conceptMoved(this));
+	}
+
+	private void fireConceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
+		conceptMovingListeners.forEach(l -> l.conceptMoving(x, y, rotate, cv, u));
 	}
 
 	private void fireEditRequested(User u) {
 		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this.editable, u));
-	}
-
-	public Point2D getCenterAsSceneCoordinates() {
-		Point2D p = new Point2D(conceptPane.getWidth() / 2, conceptPane.getHeight() / 2);
-		return conceptPane.getLocalToSceneTransform().transform(p);
-	}
-
-	public double getRotate() {
-		return conceptPane.getRotate();
-	}
-
-	public double getWidth() {
-		return conceptPane.getWidth();
-	}
-
-	public double getHeight() {
-		return conceptPane.getHeight();
-	}
-
-	public void setUserEnabled(User owner, boolean b) {
-		inputToggleGroup.setUserEnabled(participants.indexOf(owner), b);
 	}
 }
