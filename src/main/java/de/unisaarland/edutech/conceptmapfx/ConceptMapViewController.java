@@ -19,6 +19,7 @@ import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
+import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -104,7 +105,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
 
-		LinkViewController controller = new LinkViewController(this, cv1, cv2);
+		Link link = conceptMap.addUndirectedLink(cv1.getConcept(), cv2.getConcept());
+
+		LinkViewController controller = new LinkViewController(link, this.conceptMap.getExperiment().getParticipants(),
+				this.conceptMapPane, cv1, cv2);
 
 		cv1.addConceptMovingListener(controller);
 		cv2.addConceptMovingListener(controller);
@@ -117,9 +121,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		controller.addLinkDirectionUpdatedListener(this);
 
-		conceptMap.addUndirectedLink(cv1.getConcept(), cv2.getConcept());
-
-		conceptMapPane.getChildren().add(controller.getLink());
 	}
 
 	public void setConceptMap(ConceptMap conceptMap) {
@@ -244,10 +245,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			}
 		}
 		return result;
-	}
-
-	public void addAnchor(AnchorView a) {
-		this.conceptMapPane.getChildren().add(a);
 	}
 
 	@Override

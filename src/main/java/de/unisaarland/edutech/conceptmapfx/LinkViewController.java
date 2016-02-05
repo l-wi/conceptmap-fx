@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,21 +13,33 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener.Direction;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
+import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
-public class LinkViewController implements ConceptMovingListener, InputClosedListener {
+public class LinkViewController implements ConceptMovingListener, InputClosedListener, UserToggleEnabledListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LinkViewController.class);
 
 	private List<LinkDirectionUpdatedListener> linkDirectionListeners = new ArrayList<LinkDirectionUpdatedListener>();
-	private List<LinkEditRequestedListener> linkEditListners = new ArrayList<LinkEditRequestedListener>();
+	private List<LinkEditRequestedListener> linkEditListeners = new ArrayList<LinkEditRequestedListener>();
 
-	private Path link;
+	private ToggleButton btnToogleUser1;
+	private ToggleButton btnToogleUser2;
+	private ToggleButton btnToogleUser3;
+	private ToggleButton btnToogleUser4;
+	private TextField txtLink;
+	private Pane linkViewEditor;
+
+	private Path linkingPath;
 	private MoveTo start;
 	private LineTo end;
 	private ConceptViewController cv1;
@@ -34,30 +47,61 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private AnchorView aStart;
 	private AnchorView aEnd;
 
+	private List<User> participants = new ArrayList<User>();
+
+	private Editable editable;
+
+	private Link link;
+
 	/*
-	 * TODO Hier weitermachen: Implementieren eines Edits auf link
-	 * - Dazu bbrauchen wir einen View + Userauswahl
-	 * - Das egentliche Link Element hier irgendwo
+	 * TODO Hier weitermachen: Implementieren eines Edits auf link - Dazu
+	 * bbrauchen wir einen View + Userauswahl - Das egentliche Link Element hier
+	 * irgendwo
 	 * 
 	 * 
 	 */
-	public LinkViewController(ConceptMapViewController cmv, ConceptViewController cv1, ConceptViewController cv2) {
+	public LinkViewController(Link link,  List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
+		this.link = link;
+		initEditorComponent();
 		this.cv1 = cv1;
 		this.cv2 = cv2;
 		this.start = new MoveTo();
 		this.end = new LineTo();
-		this.link = new Path();
+		this.linkingPath = new Path();
+		
 
 		aStart = new AnchorView(this, Color.BLUE, 25, 25);
 		aEnd = new AnchorView(this, Color.BLUE, 25, 25);
 
-		cmv.addAnchor(aStart);
-		cmv.addAnchor(aEnd);
+		cmv.getChildren().add(aStart);
+		cmv.getChildren().add(aEnd);
 
-		this.link.getElements().add(start);
-		this.link.getElements().add(end);
+		this.linkingPath.getElements().add(start);
+		this.linkingPath.getElements().add(end);
 
-		updateLinkBetween();
+		cmv.getChildren().add(linkingPath);
+		cmv.getChildren().add(linkViewEditor);
+		
+		this.participants = participants;
+
+	}
+
+	public void initEditorComponent() {
+		try {
+			Pane view = (Pane) FXMLLoader.load(getClass().getResource("LinkView.fxml"));
+			this.linkViewEditor = view;
+			this.btnToogleUser1 = (ToggleButton) view.lookup("#p1");
+			this.btnToogleUser2 = (ToggleButton) view.lookup("#p2");
+			this.btnToogleUser3 = (ToggleButton) view.lookup("#p3");
+			this.btnToogleUser4 = (ToggleButton) view.lookup("#p4");
+			this.txtLink = (TextField) view.lookup("#txtLink");
+			this.editable = new Editable(link.getCaption(), txtLink);
+			new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3, btnToogleUser4);
+
+		} catch (IOException e) {
+			//should never happen (FXML broken)
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void addLinkDirectionUpdatedListener(LinkDirectionUpdatedListener l) {
@@ -65,7 +109,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	public void addLinkEditRequestedListener(LinkEditRequestedListener l) {
-		linkEditListners.add(l);
+		linkEditListeners.add(l);
 	}
 
 	public void anchorAltered(AnchorView a) {
@@ -96,10 +140,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public Concept getEnd() {
 		return cv2.getConcept();
-	}
-
-	public Path getLink() {
-		return link;
 	}
 
 	public Concept getStart() {
@@ -172,6 +212,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
 
+		linkViewEditor.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkViewEditor.getWidth()/2);
+		linkViewEditor.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2);
+
 		angleX = Math.toDegrees(angleX);
 		angleY = Math.toDegrees(angleY);
 
@@ -184,11 +227,25 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
 			aEnd.setRotate(angleX + 180);
+			linkViewEditor.setRotate(angleX);
 		} else {
 			aStart.setRotate(-angleX);
 			aEnd.setRotate(-angleX + 180);
+			linkViewEditor.setRotate(-angleX);
 		}
 
 	}
+
+	@Override
+	public void userToggleEnabled(int buttonID) {
+		this.txtLink.setDisable(false);
+		this.fireEditRequested(participants.get(buttonID));
+	}
+
+	private void fireEditRequested(User u) {
+		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
+	}
+
+	
 
 }

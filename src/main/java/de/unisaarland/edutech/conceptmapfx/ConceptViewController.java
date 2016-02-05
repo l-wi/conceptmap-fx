@@ -58,11 +58,13 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private Concept concept;
 	private List<User> participants;
 
-	private int caretPosition;
-
 	private double dragX;
 
 	private double dragY;
+
+	private Editable editable;
+
+	private InputToggleGroup inputToggleGroup;
 
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
@@ -74,11 +76,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void addConceptMovedListener(ConceptMovedListener l) {
 		conceptMovedListeners.add(l);
-	}
-
-	public void adjustCaret() {
-		caretPosition = txtConcept.getText().length();
-		this.txtConcept.positionCaret(caretPosition);
 	}
 
 	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
@@ -102,10 +99,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptPane.setTranslateY(conceptPane.getTranslateY() + yRotated);
 	}
 
-	public int getCaretPosition() {
-		return caretPosition;
-	}
-
 	public Concept getConcept() {
 		return concept;
 	}
@@ -125,17 +118,19 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		this.addConceptMovingListener(this);
 
-		new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3, btnToogleUser4);
+		this.inputToggleGroup = new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3,
+				btnToogleUser4);
 
 		constructResizableTextfield(txtConcept);
-		toggleGroup.selectedToggleProperty().addListener((c, o, n) -> {
-			if (n == null)
-				this.txtConcept.setDisable(true);
 
-		});
+//		 toggleGroup.selectedToggleProperty().addListener((c, o, n) -> {
+//		 if (n == null)
+//		 this.txtConcept.setDisable(true);
+//		
+//		 });
 
 		txtConcept.caretPositionProperty().addListener((c, o, n) -> {
-			this.caretPosition = n.intValue();
+			this.editable.setCaretPosition(n.intValue());
 
 		});
 
@@ -167,14 +162,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	public void inputClosed(User u) {
-		setUserEnabled(u, false);
-	}
-
-	public void insert(User u, int index, char c) {
-		String str = String.valueOf(c);
-		concept.getName().insert(u, index, str);
-		txtConcept.insertText(index, str);
-
+		inputToggleGroup.setUserEnabled(participants.indexOf(u), false);
 	}
 
 	@FXML
@@ -183,47 +171,18 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		vboxTools.setVisible(btnExpand.isSelected());
 	}
 
-	public void remove(int index) {
-		if (index >= 0) {
-			concept.getName().remove(index, 1);
-			txtConcept.deletePreviousChar();
-		}
-	}
-
-	// TODO write component for multifocus carets
-	public void requestTextFieldFocus() {
-		if (txtConcept.isFocused())
-			txtConcept.requestFocus();
-	}
-
 	public AnchorPane getConceptPane() {
 		return conceptPane;
 	}
 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
+		this.editable = new Editable(concept.getName(), txtConcept);
+
 	}
 
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
-	}
-
-	public void setUserEnabled(User u, boolean state) {
-		int index = participants.indexOf(u);
-		switch (index) {
-		case 0:
-			btnToogleUser1.setSelected(state);
-			break;
-		case 1:
-			btnToogleUser2.setSelected(state);
-			break;
-		case 2:
-			btnToogleUser3.setSelected(state);
-			break;
-		case 3:
-			btnToogleUser4.setSelected(state);
-			break;
-		}
 	}
 
 	public Bounds getBoundsInScene() {
@@ -271,7 +230,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void fireEditRequested(User u) {
-		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this, u));
+		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this.editable, u));
 	}
 
 	public Point2D getCenterAsSceneCoordinates() {
@@ -289,5 +248,9 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public double getHeight() {
 		return conceptPane.getHeight();
+	}
+
+	public void setUserEnabled(User owner, boolean b) {
+		inputToggleGroup.setUserEnabled(participants.indexOf(owner), b);
 	}
 }

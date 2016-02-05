@@ -6,10 +6,10 @@ import de.unisaarland.edutech.conceptmapping.User;
 
 public class UserRobotHandler implements IRobot {
 
-	private ConceptViewController cv;
+	private Editable cv;
 	private User u;
 
-	public UserRobotHandler(ConceptViewController cv, User u) {
+	public UserRobotHandler(Editable cv, User u) {
 		this.cv = cv;
 		this.u = u;
 		cv.adjustCaret();

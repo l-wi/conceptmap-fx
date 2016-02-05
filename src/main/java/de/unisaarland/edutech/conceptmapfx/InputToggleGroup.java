@@ -3,6 +3,7 @@ package de.unisaarland.edutech.conceptmapfx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapping.User;
 import javafx.event.EventHandler;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
@@ -45,4 +46,8 @@ public class InputToggleGroup {
 		});
 	}
 
+	public void setUserEnabled(int index, boolean state) {
+		toggleButtons[index].setSelected(state);
+		
+	}
 }

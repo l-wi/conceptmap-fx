@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+
+	<fx:define>
+		<ToggleGroup fx:id="toggleGroup" />
+	</fx:define>
+
+	<children>
+		<VBox prefHeight="78.0" prefWidth="272.0">
+			<children>
+				<TextField id="txtLink" prefHeight="31.0" prefWidth="167.0" />
+
+				<HBox>
+					<children>
+
+						<ToggleButton id="p1" mnemonicParsing="false"
+							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Ben"
+							toggleGroup="$toggleGroup" />
+
+
+						<ToggleButton id="p2" mnemonicParsing="false"
+							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Han"
+							toggleGroup="$toggleGroup" />
+
+						<ToggleButton id="p3" mnemonicParsing="false"
+							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Chewi"
+							toggleGroup="$toggleGroup" />
+
+						<ToggleButton id="p4" mnemonicParsing="false"
+							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Lea"
+							toggleGroup="$toggleGroup" />
+
+					</children>
+				</HBox>
+
+
+			</children>
+		</VBox>
+	</children>
+</AnchorPane>

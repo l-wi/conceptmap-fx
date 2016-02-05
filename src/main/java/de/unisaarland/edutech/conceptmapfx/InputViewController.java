@@ -50,7 +50,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private UserRobotHandler currentRobotHandler;
 
-	private ConceptViewController cv;
+	private Editable cv;
 
 	@FXML
 	public void initialize() {
@@ -94,11 +94,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		closedListener = l;
 	}
 
-	public void conceptEditRequested(InputClosedListener l, ConceptViewController cv, User u) {
+	public void conceptEditRequested(InputClosedListener l, Editable editable, User u) {	
+		editRequested(l, editable, u);
+	}
 
-		
+	private void editRequested(InputClosedListener l, Editable editable, User u) {
 		// does somebody else want to work on our current node
-		if (cv.equals(this.cv) && !u.equals(this.user))
+		if (editable.equals(this.cv) && !u.equals(this.user))
 			releaseInput();
 
 		// it is not an edit request for us.
@@ -109,17 +111,28 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		releaseInput();
 
 		setInputClosedListener(l);
-		acquireInput(cv, u);
+		acquireInput(editable, u);
 		keyboard.setDisable(false);
+		
+	}
+	
+	@Override
+	public void linkEditRequested(InputClosedListener l, Editable cv, User u) {
+		editRequested(l, cv, u);
 	}
 
-	private void acquireInput(ConceptViewController cv, User u) {
+	private void acquireInput(Editable cv, User u) {
 
 		LOG.info("acquiring input for user:\t" + this.user);
 
 		currentRobotHandler = new UserRobotHandler(cv, u);
 		this.keyboard.addRobotHandler(currentRobotHandler);
 		this.cv = cv;
+
+		FadeTransition ft = new FadeTransition(Duration.millis(300), inputControls);
+		ft.setFromValue(0.0);
+		ft.setToValue(1.0);
+		ft.play();
 
 	}
 
@@ -143,11 +156,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void linkDeleted(LinkViewController lv, User u) {
 		// TODO implement link deleted
-
-	}
-
-	public void linkEditRequested(LinkViewController cv, User u) {
-		// TODO implement linkeditrequested
 
 	}
 
@@ -178,4 +186,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public double getRotate() {
 		return inputPane.getRotate();
 	}
+
 }
+
