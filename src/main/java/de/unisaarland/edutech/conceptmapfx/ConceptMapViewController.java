@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,11 +82,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 			// check if there is already an empty concept for the user
 			User user = inputViewController.getUser();
-			ConceptViewController emptyConceptViewController = getEmptyConceptViewController(user);
+			Optional<ConceptViewController> emptyConceptViewController = nextEmptyConcept(user);
 
-			if (emptyConceptViewController != null) {
+			if (emptyConceptViewController.isPresent()) {
 				LOG.warn("there is still already an empty concept for user" + user);
-				emptyConceptViewController.highlightEmpty();
+				emptyConceptViewController.get().highlightEmpty();
 				return;
 			}
 
@@ -129,11 +130,12 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());
 	}
 
-	private ConceptViewController getEmptyConceptViewController(User user) {
+	private Optional<ConceptViewController> nextEmptyConcept(User user) {
+		
 		for (ConceptViewController controller : userToConceptViewControllers.get(user))
 			if (controller.getConcept().getName().getContent().equals(""))
-				return controller;
-		return null;
+				return Optional.of(controller);
+		return Optional.ofNullable(null);
 	}
 
 	private Concept initConcept(InputViewController inputViewController) {
