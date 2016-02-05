@@ -84,7 +84,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		Optional<ConceptViewController> emptyConceptViewController = nextEmptyConcept(user);
 
 		if (emptyConceptViewController.isPresent()) {
-			LOG.warn("there is still already an empty concept for user" + user);
+			LOG.warn("there is  already an empty concept for user" + user);
 			emptyConceptViewController.get().highlightEmpty();
 			return;
 		}
