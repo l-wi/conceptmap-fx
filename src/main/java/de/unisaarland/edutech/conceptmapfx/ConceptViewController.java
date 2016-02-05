@@ -96,10 +96,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		return concept;
 	}
 
-	public AnchorPane getConceptPane() {
-		return conceptPane;
-	}
-
 	public double getHeight() {
 		return conceptPane.getHeight();
 	}
