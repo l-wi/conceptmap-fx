@@ -55,6 +55,8 @@ public class AnchorView extends Pane {
 	}
 
 	public void toArrow() {
+		if (currentlyActive instanceof Polygon)
+			return;
 		this.getChildren().remove(circle);
 		this.getChildren().add(arrowPolygon);
 		this.currentlyActive = arrowPolygon;
@@ -62,6 +64,8 @@ public class AnchorView extends Pane {
 	}
 
 	public void toCircle() {
+		if (currentlyActive instanceof Circle)
+			return;
 		this.getChildren().add(circle);
 		this.getChildren().remove(arrowPolygon);
 		this.currentlyActive = circle;

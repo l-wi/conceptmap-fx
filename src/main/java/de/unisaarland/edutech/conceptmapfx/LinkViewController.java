@@ -53,40 +53,44 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private Link link;
 
-	/*
-	 * TODO Hier weitermachen: Implementieren eines Edits auf link - Dazu
-	 * bbrauchen wir einen View + Userauswahl - Das egentliche Link Element hier
-	 * irgendwo
-	 * 
-	 * 
-	 */
-	public LinkViewController(Link link,  List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
-		this.link = link;
-		initEditorComponent();
+	private Pane cmv;
+
+	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
+
+		this.cmv = cmv;
 		this.cv1 = cv1;
 		this.cv2 = cv2;
 		this.start = new MoveTo();
 		this.end = new LineTo();
 		this.linkingPath = new Path();
-		
 
 		aStart = new AnchorView(this, Color.BLUE, 25, 25);
 		aEnd = new AnchorView(this, Color.BLUE, 25, 25);
 
-		cmv.getChildren().add(aStart);
-		cmv.getChildren().add(aEnd);
-
 		this.linkingPath.getElements().add(start);
 		this.linkingPath.getElements().add(end);
 
-		cmv.getChildren().add(linkingPath);
-		cmv.getChildren().add(linkViewEditor);
-		
 		this.participants = participants;
 
 	}
 
-	public void initEditorComponent() {
+	public void initialize() {
+		initEditorComponent();
+
+		cmv.getChildren().add(aStart);
+		cmv.getChildren().add(aEnd);
+
+		cmv.getChildren().add(linkingPath);
+		cmv.getChildren().add(linkViewEditor);
+		
+		layout();
+	}
+
+	public void setLink(Link link) {
+		this.link = link;
+	}
+
+	private void initEditorComponent() {
 		try {
 			Pane view = (Pane) FXMLLoader.load(getClass().getResource("LinkView.fxml"));
 			this.linkViewEditor = view;
@@ -99,7 +103,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3, btnToogleUser4);
 
 		} catch (IOException e) {
-			//should never happen (FXML broken)
+			// should never happen (FXML broken)
 			throw new RuntimeException(e);
 		}
 	}
@@ -132,9 +136,24 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	}
 
+	public void setDirected(Direction d) {
+		if (d == Direction.START_TO_END) {
+			aEnd.toArrow();
+			aStart.toCircle();
+		} else if (d == Direction.END_TO_START) {
+			aEnd.toCircle();
+			aStart.toArrow();
+		} else {
+			aStart.toCircle();
+			aEnd.toCircle();
+		}
+
+		fireLinkDirectionUpdate(d);
+	}
+
 	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
 		if (cv1.equals(cv) || cv2.equals(cv))
-			updateLinkBetween();
+			layout();
 
 	}
 
@@ -188,8 +207,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		return new Point2D(xRotated, yRotated);
 	}
 
-	private void updateLinkBetween() {
+	public void layout() {
 
+		
 		Point2D centerStart = cv1.getCenterAsSceneCoordinates();
 		Point2D centerEnd = cv2.getCenterAsSceneCoordinates();
 
@@ -212,7 +232,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
 
-		linkViewEditor.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkViewEditor.getWidth()/2);
+		linkViewEditor
+				.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkViewEditor.getWidth() / 2);
 		linkViewEditor.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2);
 
 		angleX = Math.toDegrees(angleX);
@@ -245,7 +266,5 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private void fireEditRequested(User u) {
 		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
 	}
-
-	
 
 }

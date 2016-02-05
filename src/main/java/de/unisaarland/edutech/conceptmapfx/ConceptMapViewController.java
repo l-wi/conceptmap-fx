@@ -114,21 +114,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
 
-		Link link = conceptMap.addUndirectedLink(cv1.getConcept(), cv2.getConcept());
-
-		LinkViewController controller = new LinkViewController(link, this.conceptMap.getExperiment().getParticipants(),
-				this.conceptMapPane, cv1, cv2);
-
-		cv1.addConceptMovingListener(controller);
-		cv2.addConceptMovingListener(controller);
-
-		linkControllers.add(controller);
-
-		inputControllers.forEach(l -> {
-			controller.addLinkEditRequestedListener(l);
-		});
-
-		controller.addLinkDirectionUpdatedListener(this);
+		LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, cv1, cv2);
+		builder.withDirectionListener(this).forNewLink();
+		inputControllers.forEach((l) -> builder.withEditListener(l));
+		LinkViewController lvc = builder.buildUndirectedAndAdd();
+		linkControllers.add(lvc);
 
 	}
 
@@ -145,18 +135,44 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		for (User u : conceptMap.getExperiment().getParticipants())
 			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());
-		
+
 		loadMap();
 	}
 
 	private void loadMap() {
 
-
+		boolean first = true;
+		ArrayList<ConceptViewController> tempList = new ArrayList<ConceptViewController>();
 		for (int i = 0; i < conceptMap.getConceptCount(); i++) {
-			Concept c = conceptMap.getConcept(i);
-			ConceptViewController controller = buildForExistingConcept(c);
-			this.userToConceptViewControllers.get(c.getOwner()).add(controller);
+
+			for (int j = 0; j < conceptMap.getConceptCount(); j++) {
+
+				if (first) {
+					Concept c = conceptMap.getConcept(j);
+					ConceptViewController controller = buildForExistingConcept(c);
+					this.userToConceptViewControllers.get(c.getOwner()).add(controller);
+					tempList.add(controller);
+				}
+
+				LinkViewController lvc = null;
+				LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, tempList.get(i),
+						tempList.get(j));
+				builder.withDirectionListener(this);
+				inputControllers.forEach((l) -> builder.withEditListener(l));
+
+				if (conceptMap.isLinkedDirectedStartToEnd(i, j)) {
+					lvc = builder.withLink(conceptMap.getLink(i, j)).buildDirectedAndAdd(Direction.START_TO_END);
+				} else if (conceptMap.isLinkedUndirected(i, j))
+					lvc = builder.withLink(conceptMap.getLink(i, j)).buildDirectedAndAdd(Direction.NOT_DIRECTED);
+
+				if (lvc != null)
+					linkControllers.add(lvc);
+
+			}
+
+			first = false;
 		}
+
 	}
 
 	public void layout() {
@@ -170,6 +186,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 				cv.translateAbsolute(x, y);
 				cv.setRotate(c.getRotate());
 			}
+		}
+		
+		for(LinkViewController lvc : linkControllers){
+			lvc.layout();
 		}
 	}
 
@@ -198,7 +218,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		cv.getConcept().setX(cv.getOrigin().getX() / sceneWidth.doubleValue());
 		cv.getConcept().setY(cv.getOrigin().getY() / sceneHeight.doubleValue());
 		cv.getConcept().setRotate(cv.getRotate());
-		
+
 		for (ConceptViewController intersected : intersections) {
 			fireNewLinkListener(cv, intersected);
 		}

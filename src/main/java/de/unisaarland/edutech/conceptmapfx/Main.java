@@ -8,6 +8,7 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
+import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -41,11 +42,22 @@ public class Main extends Application {
 
 		ConceptMap conceptMap = new ConceptMap(experiment);
 
-		Concept existingConcept = new Concept(new CollaborativeString(u2, "A Test"));
-		existingConcept.setX(0.5);
-		existingConcept.setY(0.5);
-		existingConcept.setRotate(90);
-		conceptMap.addConcept(existingConcept);
+		Concept lightsaber = new Concept(new CollaborativeString(u2, "Lightsaber"));
+		lightsaber.setX(0.5);
+		lightsaber.setY(0.5);
+		lightsaber.setRotate(30);
+		conceptMap.addConcept(lightsaber);
+		
+		Concept loss = new Concept(new CollaborativeString(u4, "Arm loss"));
+		loss.setX(0.2);
+		loss.setY(0.664);
+		loss.setRotate(0);
+		conceptMap.addConcept(loss);
+//		
+		Link causes = conceptMap.addDirectedLink(lightsaber, loss);
+		causes.getCaption().append(u1, "causes");
+		
+		
 		// Begin UI code
 		primaryStage.setMaximized(true);
 		primaryStage.setTitle("Concept Mapping");
