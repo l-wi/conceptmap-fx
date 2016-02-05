@@ -14,7 +14,6 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -28,7 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
+public class ConceptViewController implements ConceptMovingListener, InputClosedListener, UserToggleEnabledListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptViewController.class);
 
@@ -126,14 +125,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		this.addConceptMovingListener(this);
 
-		addToggleListener(btnToogleUser1, 0);
-		addEventFilterToPreventUntoggle(btnToogleUser1);
-		addToggleListener(btnToogleUser2, 1);
-		addEventFilterToPreventUntoggle(btnToogleUser2);
-		addToggleListener(btnToogleUser3, 2);
-		addEventFilterToPreventUntoggle(btnToogleUser3);
-		addToggleListener(btnToogleUser4, 3);
-		addEventFilterToPreventUntoggle(btnToogleUser4);
+		new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3, btnToogleUser4);
 
 		constructResizableTextfield(txtConcept);
 		toggleGroup.selectedToggleProperty().addListener((c, o, n) -> {
@@ -200,11 +192,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	// TODO write component for multifocus carets
 	public void requestTextFieldFocus() {
-		if (txtConcept.isFocused()) {
+		if (txtConcept.isFocused())
 			txtConcept.requestFocus();
-
-		}
-
 	}
 
 	public AnchorPane getConceptPane() {
@@ -248,26 +237,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		return myParentBounds.intersects(otherParentBounds);
 	}
 
-	private void addEventFilterToPreventUntoggle(ToggleButton b) {
-		b.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				if (b.isSelected()) {
-					LOG.info("stopping untoggle event as at least one button has to be toggled!");
-					mouseEvent.consume();
-				}
-			}
-		});
-	}
-
-	private void addToggleListener(ToggleButton b, int participant) {
-		b.selectedProperty().addListener((c, o, n) -> {
-			if (n.booleanValue())
-				enableAndFireEditRequest(participants.get(participant));
-
-		});
-	}
-
 	private void constructResizableTextfield(TextField txt) {
 		txt.setMaxWidth(Region.USE_PREF_SIZE);
 		txt.textProperty().addListener((ov, prevText, currText) -> {
@@ -296,9 +265,9 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		});
 	}
 
-	private void enableAndFireEditRequest(User u) {
+	public void userToggleEnabled(int buttonID) {
 		this.txtConcept.setDisable(false);
-		this.fireEditRequested(u);
+		this.fireEditRequested(participants.get(buttonID));
 	}
 
 	private void fireEditRequested(User u) {
