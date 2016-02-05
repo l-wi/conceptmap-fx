@@ -29,7 +29,7 @@ public class ConceptViewBuilder {
 			this.controller = loader.getController();
 			this.controller.setParticipants(map.getExperiment().getParticipants());
 		} catch (IOException e) {
-			//should never happen fxml error
+			// should never happen fxml error
 			throw new RuntimeException(e);
 		}
 
@@ -45,6 +45,15 @@ public class ConceptViewBuilder {
 
 		requestInput(controller);
 		return controller;
+	}
+
+	public ConceptViewController buildControllerAndAddView(Pane conceptMapPane) {
+		
+		conceptMapPane.getChildren().add(conceptViewPane);
+
+		requestInput(controller);
+		return controller;
+
 	}
 
 	public ConceptViewBuilder forConcept(Concept c) {

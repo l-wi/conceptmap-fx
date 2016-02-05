@@ -23,6 +23,8 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
@@ -45,6 +47,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	private List<InputViewController> inputControllers = new ArrayList<InputViewController>();
 	private List<LinkViewController> linkControllers = new ArrayList<LinkViewController>();
 	private Map<User, List<ConceptViewController>> userToConceptViewControllers = new HashMap<>();
+
+	private DoubleProperty sceneWidth = new SimpleDoubleProperty(0);
+
+	private DoubleProperty sceneHeight = new SimpleDoubleProperty(0);
 
 	public void addConceptDeletedListener(ConceptDeletedListener l) {
 		conceptDeletedListners.add(l);
@@ -74,12 +80,12 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	@FXML
 	public void initialize() {
-		// TODO load all the things that might already exit in that concept map
-		// to UI
+		sceneWidth.addListener((c, o, n) -> layout());
+		sceneHeight.addListener((c, o, n) -> layout());
 	}
 
 	public void newConcept(InputViewController inputViewController) {
-	
+
 		User user = inputViewController.getUser();
 		Optional<ConceptViewController> emptyConceptViewController = nextEmptyConcept(user);
 
@@ -91,10 +97,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		ConceptViewBuilder builder = new ConceptViewBuilder(this.conceptMap);
 		builder = builder.withNewConcept(user).withMovedListener(this);
-		
+
 		for (ConceptEditRequestedListener l : inputControllers)
 			builder.withEditRequestedListener(l);
-		
+
 		ConceptViewController controller = builder.buildControllerAndAddView(inputViewController, this.conceptMapPane);
 		this.userToConceptViewControllers.get(user).add(controller);
 	}
@@ -126,10 +132,55 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	}
 
+	public DoubleProperty sceneWidthProperty() {
+		return sceneWidth;
+	}
+
+	public DoubleProperty sceneHeightProperty() {
+		return sceneHeight;
+	}
+
 	public void setConceptMap(ConceptMap conceptMap) {
 		this.conceptMap = conceptMap;
+
 		for (User u : conceptMap.getExperiment().getParticipants())
 			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());
+		
+		loadMap();
+	}
+
+	private void loadMap() {
+
+
+		for (int i = 0; i < conceptMap.getConceptCount(); i++) {
+			Concept c = conceptMap.getConcept(i);
+			ConceptViewController controller = buildForExistingConcept(c);
+			this.userToConceptViewControllers.get(c.getOwner()).add(controller);
+		}
+	}
+
+	public void layout() {
+
+		for (List<ConceptViewController> list : userToConceptViewControllers.values()) {
+			for (ConceptViewController cv : list) {
+				Concept c = cv.getConcept();
+				double x = c.getX() * this.sceneWidth.doubleValue();
+				double y = c.getY() * this.sceneHeight.doubleValue();
+				LOG.info("moving after rescale: x / y " + x + "/" + y);
+				cv.translateAbsolute(x, y);
+				cv.setRotate(c.getRotate());
+			}
+		}
+	}
+
+	private ConceptViewController buildForExistingConcept(Concept c) {
+		ConceptViewBuilder builder = new ConceptViewBuilder(conceptMap);
+		builder.forConcept(c).withMovedListener(this);
+
+		for (ConceptEditRequestedListener l : inputControllers)
+			builder.withEditRequestedListener(l);
+
+		return builder.buildControllerAndAddView(this.conceptMapPane);
 	}
 
 	private Optional<ConceptViewController> nextEmptyConcept(User user) {
@@ -144,6 +195,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void conceptMoved(ConceptViewController cv) {
 		List<ConceptViewController> intersections = findIntersections(cv);
 
+		cv.getConcept().setX(cv.getOrigin().getX() / sceneWidth.doubleValue());
+		cv.getConcept().setY(cv.getOrigin().getY() / sceneHeight.doubleValue());
+		cv.getConcept().setRotate(cv.getRotate());
+		
 		for (ConceptViewController intersected : intersections) {
 			fireNewLinkListener(cv, intersected);
 		}

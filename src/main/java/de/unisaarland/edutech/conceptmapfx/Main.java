@@ -3,6 +3,8 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.io.IOException;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
+import de.unisaarland.edutech.conceptmapping.CollaborativeString;
+import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
@@ -39,24 +41,35 @@ public class Main extends Application {
 
 		ConceptMap conceptMap = new ConceptMap(experiment);
 
+		Concept existingConcept = new Concept(new CollaborativeString(u2, "A Test"));
+		existingConcept.setX(0.5);
+		existingConcept.setY(0.5);
+		existingConcept.setRotate(90);
+		conceptMap.addConcept(existingConcept);
 		// Begin UI code
+		primaryStage.setMaximized(true);
+		primaryStage.setTitle("Concept Mapping");
 
 		FXMLLoader conceptMapLoader = new FXMLLoader(getClass().getResource("ConceptMapView.fxml"));
 		Pane conceptMapView = conceptMapLoader.load();
-		conceptMapController = conceptMapLoader.getController();
-		conceptMapController.setConceptMap(conceptMap);
-		conceptMapController.addNewLinkListener(conceptMapController);
-
 		Scene scene = new Scene(conceptMapView);
+
+		conceptMapController = conceptMapLoader.getController();
+		// TODO the width / height values are probably off as we did not show
+		// yet
+
+		conceptMapController.addNewLinkListener(conceptMapController);
 
 		setInputPositions(scene, u1, u2, u3, u4, conceptMapView);
 
-		primaryStage.setMaximized(true);
-		primaryStage.setScene(scene);
-		primaryStage.setTitle("Concept Mapping");
-
+		conceptMapController.sceneWidthProperty().bind(primaryStage.widthProperty());
+		conceptMapController.sceneHeightProperty().bind(primaryStage.heightProperty());
+		
+		conceptMapController.setConceptMap(conceptMap);
+		
 		primaryStage.setScene(scene);
 		primaryStage.show();
+
 	}
 
 	private void setInputPositions(Scene primaryStage, User u1, User u2, User u3, User u4, Pane conceptMapView)

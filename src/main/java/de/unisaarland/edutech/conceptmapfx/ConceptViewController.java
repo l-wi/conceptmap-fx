@@ -176,6 +176,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 		this.editable = new Editable(concept.getName(), txtConcept);
+		
 
 	}
 
@@ -195,13 +196,24 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		double xRotated = x * Math.cos(rotation) - y * Math.sin(rotation);
 		double yRotated = x * Math.sin(rotation) + y * Math.cos(rotation);
 
-		conceptPane.setTranslateX(conceptPane.getTranslateX() + xRotated);
-		conceptPane.setTranslateY(conceptPane.getTranslateY() + yRotated);
+		translateAbsolute(conceptPane.getTranslateX() + xRotated, conceptPane.getTranslateY() + yRotated);
+	}
+
+	public void translateAbsolute(double x, double y) {
+		conceptPane.setTranslateX(x);
+		conceptPane.setTranslateY(y);
 	}
 
 	public void userToggleEnabled(int buttonID) {
 		this.txtConcept.setDisable(false);
 		this.fireEditRequested(participants.get(buttonID));
+	}
+
+	public Point2D getOrigin() {
+		double x = this.conceptPane.getLayoutX() + conceptPane.getTranslateX();
+		double y = this.conceptPane.getLayoutY() + conceptPane.getTranslateY();
+		return new Point2D(x, y);
+
 	}
 
 	private void constructResizableTextfield(TextField txt) {
@@ -242,5 +254,9 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	private void fireEditRequested(User u) {
 		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this.editable, u));
+	}
+
+	public void setRotate(double rotate) {
+		this.conceptPane.setRotate(rotate);
 	}
 }

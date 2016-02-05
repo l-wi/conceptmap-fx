@@ -13,6 +13,7 @@ public class Editable {
 	public Editable(CollaborativeString string, TextField textField) {
 		this.textField = textField;
 		this.collaborativeString = string;
+		this.textField.setText(collaborativeString.getContent());
 	}
 
 	public void remove(int index) {
