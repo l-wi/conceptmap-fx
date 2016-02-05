@@ -176,7 +176,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 		this.editable = new Editable(concept.getName(), txtConcept);
-		
 
 	}
 
@@ -249,6 +248,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void fireConceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
+		// TODO when to overlap here we should somehow indicate on UI that they
+		// will be linked when dropped
 		conceptMovingListeners.forEach(l -> l.conceptMoving(x, y, rotate, cv, u));
 	}
 

@@ -82,7 +82,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		cmv.getChildren().add(linkingPath);
 		cmv.getChildren().add(linkViewEditor);
-		
+
 		layout();
 	}
 
@@ -173,6 +173,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
 		// FIXME when nodes are close together lines go through the nodes not
 		// taking best anchor point
+		// FIXME when we have multiple nodes connected they all use the same
+		// anchor point, hence we cannot change direction
 
 		Point2D xAxis = new Point2D(1, 0);
 		Point2D yAxis = new Point2D(0, 1);
@@ -209,7 +211,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void layout() {
 
-		
 		Point2D centerStart = cv1.getCenterAsSceneCoordinates();
 		Point2D centerEnd = cv2.getCenterAsSceneCoordinates();
 
