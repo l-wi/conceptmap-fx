@@ -13,6 +13,8 @@ import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -21,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -133,29 +136,28 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		});
 
-		conceptPane.setOnMousePressed((evt) -> {
-			this.dragX = evt.getX();
-			this.dragY = evt.getY();
-		});
+	}
 
-		conceptPane.setOnMouseReleased((evt) -> {
-			this.fireConceptMoved(evt);
-		});
-		conceptPane.setOnMouseDragged((evt) -> {
-			this.fireConceptMoving(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
-		});
+	@FXML
+	public void onRotate(ScrollEvent l) {
+		this.rotate(this.getRotate() + l.getDeltaY() / 40);
+		fireConceptMoving(0, 0, this.getRotate() + l.getDeltaY() / 40, this, null);
+	}
 
-		conceptPane.setOnScroll(l -> {
-			this.rotate(this.getRotate() + l.getDeltaY() / 40);
-			fireConceptMoving(0, 0, this.getRotate() + l.getDeltaY() / 40, this, null);
+	@FXML
+	public void onMoving(MouseEvent evt) {
+		this.fireConceptMoving(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
+	}
 
-		});
+	@FXML
+	public void onMoved(MouseEvent evt) {
+		this.fireConceptMoved();
+	}
 
-		//TODO move the whole thing into input toggle group
-		toggleGroup.selectedToggleProperty().addListener((l,c,n) -> {
-			if (n == null)
-				txtConcept.setDisable(true);
-		});
+	@FXML
+	public void onMovingStarted(MouseEvent evt) {
+		this.dragX = evt.getX();
+		this.dragY = evt.getY();
 	}
 
 	public void inputClosed(User u) {
@@ -167,12 +169,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		Bounds otherParentBounds = other.conceptPane.getBoundsInParent();
 
 		return myParentBounds.intersects(otherParentBounds);
-	}
-
-	@FXML
-	public void onExpand() {
-		vboxTools.setManaged(btnExpand.isSelected());
-		vboxTools.setVisible(btnExpand.isSelected());
 	}
 
 	public void rotate(double d) {
@@ -249,7 +245,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		});
 	}
 
-	private void fireConceptMoved(MouseEvent evt) {
+	private void fireConceptMoved() {
 		conceptMovedListeners.forEach(l -> l.conceptMoved(this));
 	}
 
@@ -265,5 +261,25 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void setRotate(double rotate) {
 		this.conceptPane.setRotate(rotate);
+	}
+
+	@FXML
+	public void onTxtMousePressed(MouseEvent evt) {
+		showTools(true);
+		onMovingStarted(evt);
+	}
+
+	private void showTools(boolean b) {
+		vboxTools.setManaged(b);
+		vboxTools.setVisible(b);
+	}
+
+	@FXML
+	public void onTxtMouseReleased(MouseEvent evt) {
+		Timeline t = new Timeline(new KeyFrame(Duration.seconds(1), (abs) -> {
+			showTools(false);
+		}));
+		t.play();
+
 	}
 }

@@ -11,27 +11,29 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane fx:id="conceptPane" fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
-	xmlns:fx="http://javafx.com/fxml/1">
+	xmlns:fx="http://javafx.com/fxml/1"
+	
+	onMousePressed="#onMovingStarted"
+	onMouseReleased="#onMoved"
+	onMouseDragged="#onMoving"
+	onScroll="#onRotate">
 
 	<fx:define>
 		<ToggleGroup fx:id="toggleGroup" />
 	</fx:define>
 
 	<children>
-		<VBox alignment="center">
+		<VBox alignment="center" >
 			<children>
 				<!-- <AnchorPane id="grabPoint" prefHeight="55.0" /> -->
 				<HBox>
 					<children>
 						<TextField fx:id="txtConcept" disable="true" prefHeight="50.0"
-							minWidth="250" prefWidth="200" />
-						<ToggleButton id="expand" fx:id="btnExpand"
-							mnemonicParsing="false" onAction="#onExpand" prefHeight="50.0"
-							selected="true"
-							prefWidth="100.0" />
+							minWidth="250" prefWidth="200"  onMousePressed="#onTxtMousePressed" onMouseDragged="#onMoving" onMouseReleased="#onTxtMouseReleased"
+							/>
 					</children>
 				</HBox>
-				<VBox fx:id="vboxTools">
+				<VBox fx:id="vboxTools" managed="false" visible="false">
 					<children>
 						<HBox>
 							<children>
