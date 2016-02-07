@@ -29,7 +29,7 @@
 				<HBox>
 					<children>
 						<TextField fx:id="txtConcept" disable="true" prefHeight="50.0"
-							minWidth="250" prefWidth="200"  onMousePressed="#onTxtMousePressed" onMouseDragged="#onMoving" onMouseReleased="#onTxtMouseReleased"
+							onMousePressed="#onTxtMousePressed" onMouseDragged="#onMoving" onMouseReleased="#onTxtMouseReleased"
 							/>
 					</children>
 				</HBox>

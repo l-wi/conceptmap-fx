@@ -4,6 +4,11 @@
 	
 }
 
+TextField{
+-fx-text-box-border: transparent;
+-fx-background-color: transparent;
+}
+
 .pBtn:selected{
 -fx-border-color:white;
 -fx-border-radius: 10.0;
