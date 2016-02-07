@@ -30,6 +30,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+//FIXME the edit component appends at the wrong spot
 public class LinkViewController implements ConceptMovingListener, InputClosedListener, UserToggleEnabledListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LinkViewController.class);
@@ -108,7 +109,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private void initEditorComponent() {
 		try {
-			Pane view = (Pane) FXMLLoader.load(getClass().getResource("LinkView.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("LinkView.fxml"));
+			Pane view = (Pane) loader.load();
 			this.linkViewEditor = view;
 			this.btnToogleUser1 = (ToggleButton) view.lookup("#p1");
 			this.btnToogleUser2 = (ToggleButton) view.lookup("#p2");
@@ -206,7 +208,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void inputClosed(User u) {
 		inputToggleGroup.setUserEnabled(participants.indexOf(u), false);
-		this.txtLink.setDisable(true);
 	}
 
 	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
@@ -214,7 +215,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		// taking best anchor point
 		// FIXME when we have multiple nodes connected they all use the same
 		// anchor point, hence we cannot change direction
-
+		// FIXME when caption of link is upside down, it is to far away from line
 		Point2D xAxis = new Point2D(1, 0);
 		Point2D yAxis = new Point2D(0, 1);
 
@@ -299,7 +300,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	@Override
 	public void userToggleEnabled(int buttonID) {
-		this.txtLink.setDisable(false);
 		this.fireEditRequested(participants.get(buttonID));
 	}
 
