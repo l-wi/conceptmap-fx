@@ -16,7 +16,7 @@
 			<children>
 				<TextField id="txtLink" prefHeight="31.0" prefWidth="167.0" />
 
-				<HBox>
+				<HBox id="tools" visible="false" managed="false"  >
 					<children>
 
 						<ToggleButton id="p1" mnemonicParsing="false"

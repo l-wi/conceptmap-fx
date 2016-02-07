@@ -15,16 +15,20 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.util.Duration;
 
 public class LinkViewController implements ConceptMovingListener, InputClosedListener, UserToggleEnabledListener {
 
@@ -60,6 +64,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private ToggleGroup group;
 
+	private HBox tools;
+
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
 		this.cmv = cmv;
@@ -76,7 +82,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.linkingPath.getElements().add(end);
 
 		this.participants = participants;
-		
 
 	}
 
@@ -89,11 +94,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		cmv.getChildren().add(linkingPath);
 		cmv.getChildren().add(linkViewEditor);
 
-		cv1.widthProperty().addListener((c,o,n) -> this.layout());
-		cv1.heightProperty().addListener((c,o,n) -> this.layout());
-		cv2.widthProperty().addListener((c,o,n) -> this.layout());
-		cv2.heightProperty().addListener((c,o,n) -> this.layout());
-		
+		cv1.widthProperty().addListener((c, o, n) -> this.layout());
+		cv1.heightProperty().addListener((c, o, n) -> this.layout());
+		cv2.widthProperty().addListener((c, o, n) -> this.layout());
+		cv2.heightProperty().addListener((c, o, n) -> this.layout());
+
 		layout();
 	}
 
@@ -109,24 +114,32 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			this.btnToogleUser2 = (ToggleButton) view.lookup("#p2");
 			this.btnToogleUser3 = (ToggleButton) view.lookup("#p3");
 			this.btnToogleUser4 = (ToggleButton) view.lookup("#p4");
+			this.tools = (HBox) view.lookup("#tools");
 			this.txtLink = (TextField) view.lookup("#txtLink");
 			this.editable = new Editable(link.getCaption(), txtLink);
 
-			//TODO move the whole thing into input toggle group
+			// TODO move the whole thing into input toggle group
 			this.group = new ToggleGroup();
 			group.getToggles().add(btnToogleUser1);
 			group.getToggles().add(btnToogleUser2);
 			group.getToggles().add(btnToogleUser3);
 			group.getToggles().add(btnToogleUser4);
 
-			
-			group.selectedToggleProperty().addListener((l,c,n) -> {
+			group.selectedToggleProperty().addListener((l, c, n) -> {
 				if (n == null)
 					txtLink.setDisable(true);
 			});
 
 			this.inputToggleGroup = new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3,
 					btnToogleUser4);
+
+			txtLink.setOnMousePressed((l) -> showTools(true));
+			txtLink.setOnMouseReleased((l) -> {
+				Timeline t = new Timeline(new KeyFrame(Duration.seconds(1), (abs) -> {
+					showTools(false);
+				}));
+				t.play();
+			});
 
 		} catch (IOException e) {
 			// should never happen (FXML broken)
@@ -294,4 +307,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
 	}
 
+	private void showTools(boolean b) {
+		this.tools.setManaged(b);
+		this.tools.setVisible(b);
+	}
 }
