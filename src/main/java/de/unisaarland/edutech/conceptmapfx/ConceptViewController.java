@@ -16,6 +16,9 @@ import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -281,5 +284,13 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		}));
 		t.play();
 
+	}
+	
+	public ReadOnlyDoubleProperty widthProperty(){
+		return this.conceptPane.widthProperty();
+	}
+	
+	public ReadOnlyDoubleProperty heightProperty(){
+		return this.conceptPane.heightProperty();
 	}
 }

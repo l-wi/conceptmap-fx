@@ -76,6 +76,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.linkingPath.getElements().add(end);
 
 		this.participants = participants;
+		
 
 	}
 
@@ -88,6 +89,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		cmv.getChildren().add(linkingPath);
 		cmv.getChildren().add(linkViewEditor);
 
+		cv1.widthProperty().addListener((c,o,n) -> this.layout());
+		cv1.heightProperty().addListener((c,o,n) -> this.layout());
+		cv2.widthProperty().addListener((c,o,n) -> this.layout());
+		cv2.heightProperty().addListener((c,o,n) -> this.layout());
+		
 		layout();
 	}
 
