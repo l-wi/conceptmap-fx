@@ -48,6 +48,16 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.14</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.tuio</groupId>
+			<artifactId>tuio</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jfxtras</groupId>
+			<artifactId>jfxtras-common</artifactId>
+			<version>8.0-r4</version>
+		</dependency>
 	</dependencies>
 
 

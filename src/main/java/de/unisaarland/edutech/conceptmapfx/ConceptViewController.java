@@ -27,6 +27,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.TouchEvent;
+import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -148,19 +150,40 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	@FXML
-	public void onMoving(MouseEvent evt) {
+	public void onMouseMoving(MouseEvent evt) {
 		this.fireConceptMoving(evt.getX() - dragX, evt.getY() - dragY, conceptPane.getRotate(), this, null);
 	}
 
 	@FXML
-	public void onMoved(MouseEvent evt) {
+	public void onTouchMoving(TouchEvent evt) {
+		TouchPoint p = evt.getTouchPoint();
+		this.fireConceptMoving(p.getX() - dragX, p.getY() - dragY, conceptPane.getRotate(), this, null);
+	}
+
+	@FXML
+	public void onMouseMoved(MouseEvent evt) {
 		this.fireConceptMoved();
 	}
 
 	@FXML
-	public void onMovingStarted(MouseEvent evt) {
-		this.dragX = evt.getX();
-		this.dragY = evt.getY();
+	public void onTouchMoved(TouchEvent evt) {
+		this.fireConceptMoved();
+	}
+
+	@FXML
+	public void onMouseMovingStarted(MouseEvent evt) {
+		movingStarted(evt.getX(), evt.getY());
+	}
+
+	@FXML
+	public void onTouchMovingStarted(TouchEvent evt) {
+		movingStarted(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
+
+	}
+
+	private void movingStarted(double x, double y) {
+		this.dragX = x;
+		this.dragY = y;
 	}
 
 	public void inputClosed(User u) {
@@ -269,7 +292,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	@FXML
 	public void onTxtMousePressed(MouseEvent evt) {
 		showTools(true);
-		onMovingStarted(evt);
+		onMouseMovingStarted(evt);
 	}
 
 	private void showTools(boolean b) {
@@ -285,12 +308,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		t.play();
 
 	}
-	
-	public ReadOnlyDoubleProperty widthProperty(){
+
+	public ReadOnlyDoubleProperty widthProperty() {
 		return this.conceptPane.widthProperty();
 	}
-	
-	public ReadOnlyDoubleProperty heightProperty(){
+
+	public ReadOnlyDoubleProperty heightProperty() {
 		return this.conceptPane.heightProperty();
 	}
 }

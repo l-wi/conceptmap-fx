@@ -13,9 +13,13 @@
 <AnchorPane fx:id="conceptPane" fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
 	xmlns:fx="http://javafx.com/fxml/1"
 	
-	onMousePressed="#onMovingStarted"
-	onMouseReleased="#onMoved"
-	onMouseDragged="#onMoving"
+	onMousePressed="#onMouseMovingStarted"
+	onTouchPressed="#onTouchMovingStarted"
+	onMouseReleased="#onMouseMoved"
+	onTouchReleased="#onTouchMoved"
+	
+	onMouseDragged="#onMouseMoving"
+	onTouchMoved="#onTouchMoving"
 	onScroll="#onRotate">
 
 	<fx:define>
@@ -29,7 +33,8 @@
 				<HBox>
 					<children>
 						<TextField fx:id="txtConcept" disable="true" prefHeight="50.0"
-							onMousePressed="#onTxtMousePressed" onMouseDragged="#onMoving" onMouseReleased="#onTxtMouseReleased"
+							onMousePressed="#onTxtMousePressed" onMouseDragged="#onMouseMoving" onMouseReleased="#onTxtMouseReleased"
+							
 							/>
 					</children>
 				</HBox>

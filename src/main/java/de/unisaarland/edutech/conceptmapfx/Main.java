@@ -81,6 +81,9 @@ public class Main extends Application {
 		
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
+		TUIOWrapper wrapper = new TUIOWrapper(scene,primaryStage);
+		wrapper.start();
 
 	}
 
@@ -131,6 +134,8 @@ public class Main extends Application {
 		primaryStage.heightProperty().addListener((observeable, oldVal, newVal) -> {
 			v4.setLayoutY(newVal.doubleValue() * 0.5);
 		});
+		
+
 
 	}
 
