@@ -54,8 +54,8 @@ public class Main extends Application {
 		loss.setRotate(0);
 		conceptMap.addConcept(loss);
 //		
-		Link causes = conceptMap.addDirectedLink(lightsaber, loss);
-		causes.getCaption().append(u1, "causes");
+//		Link causes = conceptMap.addDirectedLink(lightsaber, loss);
+//		causes.getCaption().append(u1, "causes");
 		
 		
 		// Begin UI code

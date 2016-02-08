@@ -9,67 +9,53 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 
-<AnchorPane fx:id="conceptPane" fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
-	xmlns:fx="http://javafx.com/fxml/1"
-	
-	onMousePressed="#onMouseMovingStarted"
-	onTouchPressed="#onTouchMovingStarted"
-	onMouseReleased="#onMouseMoved"
-	onTouchReleased="#onTouchMoved"
-	
-	onMouseDragged="#onMouseMoving"
-	onTouchMoved="#onTouchMoving"
-	onScroll="#onRotate">
+<BorderPane fx:id="conceptPane"
+	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
+	xmlns:fx="http://javafx.com/fxml/1" onMousePressed="#onMouseMovingStarted"
+	onMouseReleased="#onMouseMoved" onMouseDragged="#onMouseMoving"
+	onTouchMoved="#onTouchMoving" onScroll="#onRotate">
 
 	<fx:define>
 		<ToggleGroup fx:id="toggleGroup" />
 	</fx:define>
 
-	<children>
-		<VBox alignment="center" >
-			<children>
-				<!-- <AnchorPane id="grabPoint" prefHeight="55.0" /> -->
-				<HBox>
-					<children>
-						<TextField fx:id="txtConcept" disable="true" prefHeight="50.0"
-							onMousePressed="#onTxtMousePressed" onMouseDragged="#onMouseMoving" onMouseReleased="#onTxtMouseReleased"
-							onTouchMoved="#onTouchMoved" onTouchPressed="#onTxtTouchPressed" onTouchReleased="#onTxtTouchReleased"
-							/>
-					</children>
-				</HBox>
-				<VBox fx:id="vboxTools" managed="false" visible="false">
-					<children>
-						<HBox>
-							<children>
+	<top >
+			<ToggleButton visible="false" managed="false" disable="true"  id="p1" BorderPane.alignment="CENTER"  fx:id="btnToogleUser1" styleClass="pBtn"
+			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Ben"
+			toggleGroup="$toggleGroup" />
+		
+	</top>
+	<left>
+	<ToggleButton visible="false" managed="false" disable="true" BorderPane.alignment="CENTER"  id="p2" fx:id="btnToogleUser2" styleClass="pBtn"
+			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Han"
+			toggleGroup="$toggleGroup" />
+	</left>
+	<right >
+	<ToggleButton visible="false" managed="false" disable="true"  BorderPane.alignment="CENTER" id="p4" fx:id="btnToogleUser4" styleClass="pBtn"
+			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Lea"
+			toggleGroup="$toggleGroup" />
+		
+	</right>
 
-								<ToggleButton id="p1" fx:id="btnToogleUser1"
-									styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-									prefWidth="100.0" text="Ben" toggleGroup="$toggleGroup" />
+	<center >
+		<TextField BorderPane.alignment="CENTER"  fx:id="txtConcept" disable="true" prefHeight="50.0"
+			onMousePressed="#onTxtMousePressed" onMouseDragged="#onMouseMoving"
+			onTouchMoved="#onTouchMoving" onMouseReleased="#onTxtMouseReleased" />
+	</center>
+	
+	<bottom>
 
-								<ToggleButton id="p2" fx:id="btnToogleUser2"
-									styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-									prefWidth="100.0" text="Han" toggleGroup="$toggleGroup" />
+		<ToggleButton visible="false" managed="false" disable="true"  BorderPane.alignment="CENTER" id="p3" fx:id="btnToogleUser3" styleClass="pBtn"
+			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Chewi"
+			toggleGroup="$toggleGroup" />
 
-								<ToggleButton id="p3" fx:id="btnToogleUser3"
-									styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-									prefWidth="100.0" text="Chewi" toggleGroup="$toggleGroup" />
+	</bottom>
 
-								<ToggleButton id="p4" fx:id="btnToogleUser4"
-									styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-									prefWidth="100.0" text="Lea" toggleGroup="$toggleGroup" />
 
-							</children>
-						</HBox>
-
-					</children>
-				</VBox>
-
-			</children>
-		</VBox>
-	</children>
 	<stylesheets>
 		<URL value="@editable.css" />
 	</stylesheets>
-</AnchorPane>
 
+</BorderPane>

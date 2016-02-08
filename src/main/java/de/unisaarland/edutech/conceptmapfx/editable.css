@@ -1,12 +1,13 @@
 .pBtn{
 -fx-border-color:black;
 -fx-border-radius: 5.0;
-	
+
 }
 
 TextField{
 -fx-text-box-border: transparent;
 -fx-background-color: transparent;
+-fx-font-size:1.5em;
 }
 
 .pBtn:selected{

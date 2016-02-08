@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,6 @@ import TUIO.TuioListener;
 import TUIO.TuioObject;
 import TUIO.TuioTime;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.Node;
@@ -33,10 +31,25 @@ import javafx.scene.input.TouchPoint.State;
 import javafx.stage.Stage;
 import jfxtras.util.NodeUtil;
 
+/*
+ * 
+ * TODO hier weitermachen BUGS:
+ *  1. Firing Toggle Button while moving Concept
+ *  2. Springen beim herummoven von einem neuen Concept
+ *  3. Keypress verhindert eingabe von A etc. (immer umlaute auswählen)
+ *  4. Feedback auf Tastatur anzeigen (letzter gedrückter knopf)
+ *  5. Beim Verschieben bleibt das Element nicht auf dem richtigen punkt stehen weil 
+ *  	die Auswahlleiste ja dann nochmal zuklappt
+ *  6. Setzen des  Caret funktioniert nicht
+ *  7. Wieso können wir da null im Pick haben?
+ *  8. TextFields sind manchmal enabled und manchmal disabled. Keine Ahnung ob das so stimmt
+ *  9. Anchor Toggle touch geht nicht
+ *  10. 
+ */
 public class TUIOWrapper implements TuioListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TUIOWrapper.class);
-	private static final int FRAME_RATE = 90;
+	private static final int FRAME_RATE = 20;
 
 	private int eventSetId = 0;
 
@@ -45,7 +58,7 @@ public class TUIOWrapper implements TuioListener {
 	private Stage stage;
 
 	private Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
-	private Queue<Event> queue = new LinkedList<Event>();
+	private Queue<Event> queue = new ConcurrentLinkedQueue<Event>();
 
 	Runnable emptyQueue = () -> {
 		while (!queue.isEmpty()) {
@@ -79,12 +92,15 @@ public class TUIOWrapper implements TuioListener {
 			src = scene.getRoot();
 		}
 
-		Optional<Event> evtT = getEventForCursor(src, c, TouchEvent.TOUCH_PRESSED);
-//		Optional<Event> evtM = getMouseEventForCursor(src, c, MouseEvent.MOUSE_PRESSED);
-//
-//		addIfPresent(evtM);
-		addIfPresent(evtT);
 
+		LOG.info("add on:" + src + " isVisible" + src.isVisible() + "isManaged" + src.isManaged());
+		Optional<Event> evtT = getEventForCursor(src, c, TouchEvent.TOUCH_PRESSED);
+		Optional<Event> evtM = getMouseEventForCursor(src, c, MouseEvent.MOUSE_PRESSED);
+
+
+		addIfPresent(evtT);
+		addIfPresent(evtM);
+		
 		updateOnApplicationThread(c);
 	}
 
@@ -93,11 +109,13 @@ public class TUIOWrapper implements TuioListener {
 		Node src = nodeMap.remove(c.getCursorID());
 
 		Optional<Event> evtT = getEventForCursor(src, c, TouchEvent.TOUCH_RELEASED);
-//		Optional<Event> evtM = getMouseEventForCursor(src, c, MouseEvent.MOUSE_RELEASED);
-//
-//		addIfPresent(evtM);
-		addIfPresent(evtT);
+		Optional<Event> evtM = getMouseEventForCursor(src, c, MouseEvent.MOUSE_RELEASED);
 
+		addIfPresent(evtT);
+		addIfPresent(evtM);
+
+
+		LOG.info("release on" + src);
 		updateOnApplicationThread(c);
 
 	}
@@ -159,8 +177,9 @@ public class TUIOWrapper implements TuioListener {
 		
 		// this is insane
 		Event event = new MouseEvent(this, src, type, getSceneX(c), getSceneY(c), getScreenX(c), getScreenY(c),
-				MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null);
+				MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, true, false, false, null);
 
+	
 		return Optional.of(event);
 	}
 
@@ -196,9 +215,22 @@ public class TUIOWrapper implements TuioListener {
 		// find control component
 		Node n = NodeUtil.getNode(scene.getRoot(), sceneX, sceneY, Control.class);
 		// only if there is no control component, pick container
-		if (n == null)
-			NodeUtil.getNode(scene.getRoot(), sceneX, sceneY, Node.class);
+
+		
+		if (n == null || !checkVisibility(n) )
+			return NodeUtil.getNode(scene.getRoot(), sceneX, sceneY, Node.class);
+		
 		return n;
+	}
+
+	private boolean checkVisibility(Node n) {
+		if(n.isVisible()){
+			if(n.getParent() != null)
+				return checkVisibility(n.getParent());
+			return true;
+		}
+		
+		return false;
 	}
 
 	private double getScreenX(TuioCursor c) {

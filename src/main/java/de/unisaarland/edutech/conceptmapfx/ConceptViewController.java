@@ -2,6 +2,7 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -30,6 +32,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -44,11 +47,11 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
 
 	@FXML
-	private AnchorPane conceptPane;
+	private Pane conceptPane;
 	@FXML
 	private TextField txtConcept;
-	@FXML
-	private VBox vboxTools;
+	// @FXML
+	// private VBox vboxTools;
 	@FXML
 	private ToggleButton btnExpand;
 	@FXML
@@ -158,6 +161,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public void onTouchMoving(TouchEvent evt) {
 		TouchPoint p = evt.getTouchPoint();
 		this.fireConceptMoving(p.getX() - dragX, p.getY() - dragY, conceptPane.getRotate(), this, null);
+		evt.consume();
 	}
 
 	@FXML
@@ -168,6 +172,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	@FXML
 	public void onTouchMoved(TouchEvent evt) {
 		this.fireConceptMoved();
+		evt.consume();
 	}
 
 	@FXML
@@ -178,7 +183,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	@FXML
 	public void onTouchMovingStarted(TouchEvent evt) {
 		movingStarted(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
-
+		evt.consume();
 	}
 
 	private void movingStarted(double x, double y) {
@@ -291,40 +296,45 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	@FXML
 	public void onTxtMousePressed(MouseEvent evt) {
-		txtPressed(evt.getX(),evt.getY());
-	}
-	
-	@FXML
-	public void onTxtTouchPressed(TouchEvent evt) {
-		txtPressed(evt.getTouchPoint().getX(),evt.getTouchPoint().getY());
+		txtPressed(evt.getX(), evt.getY());
 	}
 
-	private void txtPressed(double x, double y) {LOG.info("here");
+	@FXML
+	public void onTxtTouchPressed(TouchEvent evt) {
+		txtPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
+	}
+
+	private void txtPressed(double x, double y) {
 		showTools(true);
 		movingStarted(x, y);
 	}
 
 	private void showTools(boolean b) {
-		vboxTools.setManaged(b);
-		vboxTools.setVisible(b);
+		// vboxTools.setManaged(b);
+		// vboxTools.setVisible(b);
+		Set<Node> lookupAll = conceptPane.lookupAll(".pBtn");
+		for (Node n : lookupAll) {
+			n.setVisible(b);
+			n.setManaged(b);
+			n.setDisable(!b);
+		}
 	}
 
 	@FXML
 	public void onTxtMouseReleased(MouseEvent evt) {
-		onTxtRelease();
+		onTxtReleased();
 
 	}
-	
+
 	@FXML
 	public void onTxtTouchReleased(TouchEvent evt) {
-		onTxtRelease();
+		onTxtReleased();
 	}
 
-	private void onTxtRelease() {
-		Timeline t = new Timeline(new KeyFrame(Duration.seconds(1), (abs) -> {
-			showTools(false);
-		}));
-		t.play();
+	private void onTxtReleased() {
+		showTools(false);
+		this.fireConceptMoved();
+
 	}
 
 	public ReadOnlyDoubleProperty widthProperty() {
