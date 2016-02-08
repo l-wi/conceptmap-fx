@@ -25,6 +25,8 @@ import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.scene.input.TouchPoint.State;
@@ -70,18 +72,31 @@ public class TUIOWrapper implements TuioListener {
 	public void addTuioCursor(TuioCursor c) {
 		lastTime = c.getTuioTime();
 
-		Optional<Event> evt = pressed(c);
-		if (evt.isPresent())
-			queue.add(evt.get());
+		Node src = pick(c);
+		nodeMap.put(c.getCursorID(), src);
+
+		if (src == null) {
+			src = scene.getRoot();
+		}
+
+		Optional<Event> evtT = getEventForCursor(src, c, TouchEvent.TOUCH_PRESSED);
+//		Optional<Event> evtM = getMouseEventForCursor(src, c, MouseEvent.MOUSE_PRESSED);
+//
+//		addIfPresent(evtM);
+		addIfPresent(evtT);
 
 		updateOnApplicationThread(c);
 	}
 
 	@Override
 	public void removeTuioCursor(TuioCursor c) {
-		Optional<Event> evt = released(c);
-		if (evt.isPresent())
-			queue.add(evt.get());
+		Node src = nodeMap.remove(c.getCursorID());
+
+		Optional<Event> evtT = getEventForCursor(src, c, TouchEvent.TOUCH_RELEASED);
+//		Optional<Event> evtM = getMouseEventForCursor(src, c, MouseEvent.MOUSE_RELEASED);
+//
+//		addIfPresent(evtM);
+		addIfPresent(evtT);
 
 		updateOnApplicationThread(c);
 
@@ -89,10 +104,10 @@ public class TUIOWrapper implements TuioListener {
 
 	@Override
 	public void updateTuioCursor(TuioCursor c) {
+		Node src = nodeMap.get(c.getCursorID());
+		Optional<Event> evtT = getEventForCursor(src, c, TouchEvent.TOUCH_MOVED);
 
-		Optional<Event> evt = moved(c);
-		if (evt.isPresent())
-			queue.add(evt.get());
+		addIfPresent(evtT);
 
 		updateOnApplicationThread(c);
 
@@ -107,26 +122,9 @@ public class TUIOWrapper implements TuioListener {
 		lastTime = c.getTuioTime();
 	}
 
-	private Optional<Event> moved(TuioCursor c) {
-		Node src = nodeMap.get(c.getCursorID());
-		return getEventForCursor(src, c, TouchEvent.TOUCH_MOVED);
-	}
-
-	private Optional<Event> pressed(TuioCursor c) {
-		Node src = pick(c);
-		nodeMap.put(c.getCursorID(), src);
-
-		if (src == null) {
-			src = scene.getRoot();
-		}
-
-		EventType<TouchEvent> type = TouchEvent.TOUCH_PRESSED;
-		return getEventForCursor(src, c, type);
-	}
-
-	private Optional<Event> released(TuioCursor c) {
-		Node src = nodeMap.remove(c.getCursorID());
-		return getEventForCursor(src, c, TouchEvent.TOUCH_RELEASED);
+	private void addIfPresent(Optional<Event> evtT) {
+		if (evtT.isPresent())
+			queue.add(evtT.get());
 	}
 
 	private Optional<Event> getEventForCursor(Node src, TuioCursor c, EventType<TouchEvent> type) {
@@ -144,6 +142,24 @@ public class TUIOWrapper implements TuioListener {
 
 		Event event = new TouchEvent(this, src, type, touchPoint, touchPoints, eventSetId++, shiftDown, controlDown,
 				altDown, metaDown);
+
+		return Optional.of(event);
+	}
+
+	private Optional<Event> getMouseEventForCursor(Node src, TuioCursor c, EventType<MouseEvent> type) {
+
+		if (src == null)
+			return Optional.empty();
+
+		MouseButton b;
+		if (type == MouseEvent.MOUSE_RELEASED)
+			b = MouseButton.NONE;
+		else
+			b = MouseButton.PRIMARY;
+		
+		// this is insane
+		Event event = new MouseEvent(this, src, type, getSceneX(c), getSceneY(c), getScreenX(c), getScreenY(c),
+				MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null);
 
 		return Optional.of(event);
 	}
@@ -169,7 +185,7 @@ public class TUIOWrapper implements TuioListener {
 		else
 			state = State.MOVED;
 
-		return new TouchPoint(c.getCursorID(), state, getSceneX(c), getSceneY(c), getScreenX(c), getScreenY(c), pick(c),
+		return new TouchPoint(c.getCursorID(), state, getSceneX(c), getSceneY(c), getScreenX(c), getScreenY(c), n,
 				null);
 	}
 
@@ -177,7 +193,7 @@ public class TUIOWrapper implements TuioListener {
 		double sceneX = getSceneX(c);
 		double sceneY = getSceneY(c);
 
-		//find control component
+		// find control component
 		Node n = NodeUtil.getNode(scene.getRoot(), sceneX, sceneY, Control.class);
 		// only if there is no control component, pick container
 		if (n == null)
