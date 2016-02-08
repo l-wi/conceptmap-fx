@@ -1,0 +1,5 @@
+.root {
+	-fx-background-image: url("textureMetal2.jpg");
+	/*-fx-background-color:#2E4172;*/
+	-fx-background-size: cover;
+}

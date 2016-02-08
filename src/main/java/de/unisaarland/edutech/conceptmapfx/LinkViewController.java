@@ -25,6 +25,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -74,10 +75,13 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.cv2 = cv2;
 		this.start = new MoveTo();
 		this.end = new LineTo();
+		
 		this.linkingPath = new Path();
-
-		aStart = new AnchorView(this, Color.BLUE, 25, 25);
-		aEnd = new AnchorView(this, Color.BLUE, 25, 25);
+		linkingPath.setStrokeWidth(5);
+		linkingPath.setStroke(Paint.valueOf("White"));
+		
+		aStart = new AnchorView(this, Color.WHITE, 25, 25);
+		aEnd = new AnchorView(this, Color.WHITE, 25, 25);
 
 		this.linkingPath.getElements().add(start);
 		this.linkingPath.getElements().add(end);

@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.AnchorPane?>
+<?import java.net.*?>
 
-<AnchorPane fx:id="conceptMapPane" fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptMapViewController" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane styleClass="root" fx:id="conceptMapPane" fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptMapViewController" xmlns:fx="http://javafx.com/fxml/1">
 	<!-- TODO Add Nodes -->
+	
+	
+	<stylesheets>
+		<URL value="@conceptMapPane.css" />
+	</stylesheets>
+	
 </AnchorPane>
 

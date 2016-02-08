@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane fx:id="inputPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40" fx:controller="de.unisaarland.edutech.conceptmapfx.InputViewController">
+<AnchorPane styleClass="input" fx:id="inputPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40" fx:controller="de.unisaarland.edutech.conceptmapfx.InputViewController">
 	<!-- TODO Add Nodes -->
 		<children>
 		<HBox>
@@ -23,7 +23,7 @@
 				</HBox>
 				<HBox>
 					<children>
-						<KeyboardPane fx:id="keyboard" />
+						<KeyboardPane  fx:id="keyboard" />
 						<ToggleButton id="voice" fx:id="btnSpeak" mnemonicParsing="false" prefHeight="200.0" prefWidth="100.0" />
 					</children>
 				</HBox>
@@ -36,4 +36,7 @@
          </BorderPane>
 		</HBox>
 	</children>
+		<stylesheets>
+		<URL value="@input.css" />
+	</stylesheets>
 </AnchorPane>

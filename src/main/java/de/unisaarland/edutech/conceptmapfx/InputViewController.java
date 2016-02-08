@@ -55,10 +55,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	public void initialize() {
 		try {
+			//TODO set right keymap
+			keyboard.setKeyBoardStyle(getClass().getResource("input.css").toString());
 			keyboard.load();
+			
 			// remove the default handler
 			IRobot defaultHandler = keyboard.getRobotHandler().get(0);
 			keyboard.removeRobotHandler(defaultHandler);
+			
 			keyboard.setDisable(true);
 
 		} catch (IOException | URISyntaxException e) {

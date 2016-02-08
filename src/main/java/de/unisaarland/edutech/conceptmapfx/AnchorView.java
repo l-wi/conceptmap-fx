@@ -24,7 +24,7 @@ public class AnchorView extends Pane {
 	AnchorView(LinkViewController controller, Color color, double width, double height) {
 		this.controller = controller;
 		createCircle(color, width, height);
-		createArrow(width, height);
+		createArrow(color, width, 1.5*height);
 
 		this.getChildren().add(circle);
 		circle.setOnMouseClicked(onClickToggle);
@@ -36,15 +36,16 @@ public class AnchorView extends Pane {
 
 	private void createCircle(Color color, double width, double height) {
 		circle = new Circle(width / 2, height / 2, width / 2);
-		circle.setFill(color.deriveColor(1, 1, 1, 0.5));
+		circle.setFill(color.deriveColor(0, 0, 0, 0.8));
 		circle.setStroke(color);
 		circle.setStrokeWidth(2);
 		circle.setStrokeType(StrokeType.OUTSIDE);
 	}
 
-	private void createArrow(double width, double height) {
+	private void createArrow(Color color, double width, double height) {
 		double[] arrowShape = new double[] { width / 2, height / 2, width, height, width, 0 };
 		arrowPolygon = new Polygon(arrowShape);
+		arrowPolygon.setFill(color);
 	}
 
 	public void toggle() {
