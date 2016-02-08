@@ -35,7 +35,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.unisaarland.edutech</groupId>
-			<artifactId>conceptmapping</artifactId>
+			<artifactId>conceptmap</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
