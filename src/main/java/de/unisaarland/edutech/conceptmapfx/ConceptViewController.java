@@ -291,8 +291,17 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	@FXML
 	public void onTxtMousePressed(MouseEvent evt) {
+		txtPressed(evt.getX(),evt.getY());
+	}
+	
+	@FXML
+	public void onTxtTouchPressed(TouchEvent evt) {
+		txtPressed(evt.getTouchPoint().getX(),evt.getTouchPoint().getY());
+	}
+
+	private void txtPressed(double x, double y) {LOG.info("here");
 		showTools(true);
-		onMouseMovingStarted(evt);
+		movingStarted(x, y);
 	}
 
 	private void showTools(boolean b) {
@@ -302,11 +311,20 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	@FXML
 	public void onTxtMouseReleased(MouseEvent evt) {
+		onTxtRelease();
+
+	}
+	
+	@FXML
+	public void onTxtTouchReleased(TouchEvent evt) {
+		onTxtRelease();
+	}
+
+	private void onTxtRelease() {
 		Timeline t = new Timeline(new KeyFrame(Duration.seconds(1), (abs) -> {
 			showTools(false);
 		}));
 		t.play();
-
 	}
 
 	public ReadOnlyDoubleProperty widthProperty() {

@@ -24,6 +24,7 @@ import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Control;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.scene.input.TouchPoint.State;
@@ -41,25 +42,21 @@ public class TUIOWrapper implements TuioListener {
 
 	private Stage stage;
 
-
 	private Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
 	private Queue<Event> queue = new LinkedList<Event>();
 
-	Runnable emptyQueue =  () -> {
-		while(!queue.isEmpty())
-		{
+	Runnable emptyQueue = () -> {
+		while (!queue.isEmpty()) {
 			Event e = queue.poll();
 			Event.fireEvent(e.getTarget(), e);
 		}
 	};
 	private TuioTime lastTime;
-	
+
 	public TUIOWrapper(Scene scene, Stage stage) {
 		this.scene = scene;
 		this.stage = stage;
 		this.queue = new LinkedList<Event>();
-		
-
 
 	}
 
@@ -72,22 +69,20 @@ public class TUIOWrapper implements TuioListener {
 	@Override
 	public void addTuioCursor(TuioCursor c) {
 		lastTime = c.getTuioTime();
-		
+
 		Optional<Event> evt = pressed(c);
 		if (evt.isPresent())
 			queue.add(evt.get());
-		
-		
+
 		updateOnApplicationThread(c);
 	}
-
 
 	@Override
 	public void removeTuioCursor(TuioCursor c) {
 		Optional<Event> evt = released(c);
 		if (evt.isPresent())
 			queue.add(evt.get());
-		
+
 		updateOnApplicationThread(c);
 
 	}
@@ -98,21 +93,20 @@ public class TUIOWrapper implements TuioListener {
 		Optional<Event> evt = moved(c);
 		if (evt.isPresent())
 			queue.add(evt.get());
-		
+
 		updateOnApplicationThread(c);
 
 	}
 
 	private void updateOnApplicationThread(TuioCursor c) {
-		long delta = c.getTuioTime().subtract(lastTime) .getTotalMilliseconds() / 1000;
-		
-		if(delta < 1d / FRAME_RATE)
+		long delta = c.getTuioTime().subtract(lastTime).getTotalMilliseconds() / 1000;
+
+		if (delta < 1d / FRAME_RATE)
 			Platform.runLater(emptyQueue);
-		
+
 		lastTime = c.getTuioTime();
 	}
 
-	
 	private Optional<Event> moved(TuioCursor c) {
 		Node src = nodeMap.get(c.getCursorID());
 		return getEventForCursor(src, c, TouchEvent.TOUCH_MOVED);
@@ -182,7 +176,13 @@ public class TUIOWrapper implements TuioListener {
 	private Node pick(TuioCursor c) {
 		double sceneX = getSceneX(c);
 		double sceneY = getSceneY(c);
-		return NodeUtil.getNode(scene.getRoot(), sceneX, sceneY, Node.class);
+
+		//find control component
+		Node n = NodeUtil.getNode(scene.getRoot(), sceneX, sceneY, Control.class);
+		// only if there is no control component, pick container
+		if (n == null)
+			NodeUtil.getNode(scene.getRoot(), sceneX, sceneY, Node.class);
+		return n;
 	}
 
 	private double getScreenX(TuioCursor c) {

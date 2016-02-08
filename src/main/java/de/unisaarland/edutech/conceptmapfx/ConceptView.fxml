@@ -34,7 +34,7 @@
 					<children>
 						<TextField fx:id="txtConcept" disable="true" prefHeight="50.0"
 							onMousePressed="#onTxtMousePressed" onMouseDragged="#onMouseMoving" onMouseReleased="#onTxtMouseReleased"
-							
+							onTouchMoved="#onTouchMoved" onTouchPressed="#onTxtTouchPressed" onTouchReleased="#onTxtTouchReleased"
 							/>
 					</children>
 				</HBox>
