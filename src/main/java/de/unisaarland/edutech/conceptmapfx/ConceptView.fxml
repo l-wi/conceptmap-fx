@@ -15,7 +15,7 @@
 	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
 	xmlns:fx="http://javafx.com/fxml/1" onMousePressed="#onMouseMovingStarted"
 	onMouseReleased="#onMouseMoved" onMouseDragged="#onMouseMoving"
-	onTouchMoved="#onTouchMoving" onScroll="#onRotate">
+	onTouchMoved="#onTouchMoving" onScroll="#onMouseRotate" onRotate="#onTouchRotate">
 
 	<fx:define>
 		<ToggleGroup fx:id="toggleGroup" />
