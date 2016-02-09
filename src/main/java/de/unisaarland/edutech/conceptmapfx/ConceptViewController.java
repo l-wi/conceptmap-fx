@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -50,7 +51,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	@FXML
 	private Pane conceptPane;
 	@FXML
-	private TextField txtConcept;
+	private Label txtConcept;
 	// @FXML
 	// private VBox vboxTools;
 	@FXML
@@ -95,7 +96,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		cv.translate(x, y);
 	}
 
-	private void constructResizableTextfield(TextField txt) {
+	private void constructResizableTextfield(Label txt) {
 		txt.setMaxWidth(Region.USE_PREF_SIZE);
 		txt.textProperty().addListener((ov, prevText, currText) -> {
 			// Do this in a Platform.runLater because of Textfield has no
@@ -116,7 +117,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 																					// TextField
 						+ 2d; // Add some spacing
 				txt.setPrefWidth(width); // Set the width
-				txt.positionCaret(txt.getCaretPosition()); // If you remove this
+//				txt.positionCaret(txt.getCaretPosition()); // If you remove this
 															// line, it flashes
 															// a little bit
 			});
@@ -193,10 +194,10 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		constructResizableTextfield(txtConcept);
 
-		txtConcept.caretPositionProperty().addListener((c, o, n) -> {
-			this.editable.setCaretPosition(n.intValue());
-
-		});
+//		txtConcept.caretPositionProperty().addListener((c, o, n) -> {
+//			this.editable.setCaretPosition(n.intValue());
+//
+//		});
 
 	}
 

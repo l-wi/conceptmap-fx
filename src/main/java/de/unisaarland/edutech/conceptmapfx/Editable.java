@@ -2,50 +2,31 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 
 public class Editable {
 
-	private TextField textField;
+	private Label caption;
 	private CollaborativeString collaborativeString;
-	private int caretPosition;
 
-	public Editable(CollaborativeString string, TextField textField) {
-		this.textField = textField;
+	public Editable(CollaborativeString string, Label textField) {
+		this.caption = textField;
 		this.collaborativeString = string;
-		this.textField.setText(collaborativeString.getContent());
+		this.caption.setText(collaborativeString.getContent());
 	}
 
-	public void remove(int index) {
-		if (index >= 0) {
-			collaborativeString.remove(index, 1);
-			textField.deletePreviousChar();
-		}
+	public void append(User u, char c) {
+		collaborativeString.append(u, String.valueOf(c));
+		update();
 	}
 
-	// TODO write component for multifocus carets
-	public void requestTextFieldFocus() {
-		if (textField.isFocused())
-			textField.requestFocus();
+	public void removeLast() {
+		collaborativeString.removeLast(1);
+		update();
 	}
 
-	public void adjustCaret() {
-		caretPosition = textField.getText().length();
-		this.textField.positionCaret(caretPosition);
-	}
-
-	public void insert(User u, int index, char c) {
-		String str = String.valueOf(c);
-		collaborativeString.insert(u, index, str);
-		textField.insertText(index, str);
-	}
-
-	public int getCaretPosition() {
-		return caretPosition;
-	}
-
-	public void setCaretPosition(int pos) {
-		this.caretPosition = pos;
+	private void update() {
+		caption.setText(collaborativeString.getContent());
 	}
 
 }

@@ -19,6 +19,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -43,7 +44,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private ToggleButton btnToogleUser2;
 	private ToggleButton btnToogleUser3;
 	private ToggleButton btnToogleUser4;
-	private TextField txtLink;
+	private Label txtLink;
 	private Pane linkViewEditor;
 
 	private Path linkingPath;
@@ -121,7 +122,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			this.btnToogleUser3 = (ToggleButton) view.lookup("#p3");
 			this.btnToogleUser4 = (ToggleButton) view.lookup("#p4");
 			this.tools = (HBox) view.lookup("#tools");
-			this.txtLink = (TextField) view.lookup("#txtLink");
+			this.txtLink = (Label) view.lookup("#txtLink");
 			this.editable = new Editable(link.getCaption(), txtLink);
 
 			// TODO move the whole thing into input toggle group

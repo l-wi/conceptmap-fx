@@ -43,7 +43,7 @@
 	</right>
 
 	<center>
-		<TextField styleClass="concept" BorderPane.alignment="CENTER"
+		<Label styleClass="concept" BorderPane.alignment="CENTER"
 			fx:id="txtConcept" disable="true" prefHeight="50.0" onMousePressed="#onTxtMousePressed"
 			onMouseDragged="#onMouseMoving" onTouchMoved="#onTouchMoving"
 			onMouseReleased="#onTxtMouseReleased" onTouchReleased="#onTxtTouchReleased"
