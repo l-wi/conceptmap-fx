@@ -44,8 +44,8 @@
 		<Label styleClass="concept" BorderPane.alignment="CENTER" fx:id="txtConcept"
 			disable="true" prefHeight="50.0" onMousePressed="#onMousePressed"
 			onTouchPressed="#onTouchPressed" onTouchMoved="#onTouchMoving"
-			onMouseDragged="#onMouseMoving" onMouseReleased="#onReleased"
-			onTouchReleased="#onReleased" />
+			onMouseDragged="#onMouseMoving" onMouseReleased="#onMouseReleased"
+			onTouchReleased="#onTouchReleased" onScroll="#onMouseRotate" onRotate="#onTouchRotate" onRotationStarted="#onRotateStarted" onRotationFinished="#onRotateFinished"/>
 	</center>
 
 	<bottom>
