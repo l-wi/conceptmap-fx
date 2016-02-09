@@ -1,16 +1,25 @@
 .concept{
 
-		-fx-background-color:#FFFFFF;	
-		/*-fx-background-color:#222222;*/
+	-fx-background-color:#FFFFFF;	
+	/*-fx-background-color:#222222;*/
 	-fx-text-fill: black;
-		/*-fx-text-fill: white;*/
+	/*-fx-text-fill: white;*/
 	-fx-padding:20.0;
 	-fx-border-color:black;
- 	-fx-border-radius:20;
-	 -fx-background-radius: 20;
+ 	-fx-border-radius:20.0;
+	 -fx-background-radius: 20.0;
 	/*-fx-effect: dropshadow(three-pass-box, rgba(255.0,255.0,255.0,0.6), 30.0, 0.0, 0.0, 0.0);*/
-	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10.0, 0.0, 0.0, 0.0);
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,0.6), 10.0, 0.0, 0.0, 0.0);
 
+}
+
+.empty{
+		-fx-background-color:#FF0000;
+}
+
+.link{
+	/*-fx-background-color:#FFFFFF;*/	
+	-fx-text-fill: white;
 }
 
 .pBtn{

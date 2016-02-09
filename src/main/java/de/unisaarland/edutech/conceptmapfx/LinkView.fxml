@@ -13,28 +13,28 @@
 	</fx:define>
 
 	<children>
-		<VBox prefHeight="78.0" prefWidth="272.0">
+		<VBox prefHeight="78.0">
 			<children>
-				<Label  id="txtLink" prefHeight="31.0" prefWidth="167.0" />
+				<Label styleClass="link" id="txtLink" prefHeight="31.0" prefWidth="40.0" />
 
 				<HBox id="tools" visible="false" managed="false"  >
 					<children>
 
 						<ToggleButton id="p1" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Ben"
+							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Ben"
 							toggleGroup="$toggleGroup" />
 
 
 						<ToggleButton id="p2" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Han"
+							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Han"
 							toggleGroup="$toggleGroup" />
 
 						<ToggleButton id="p3" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Chewi"
+							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Chewi"
 							toggleGroup="$toggleGroup" />
 
 						<ToggleButton id="p4" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="100.0" styleClass="pBtn" text="Lea"
+							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Lea"
 							toggleGroup="$toggleGroup" />
 
 					</children>

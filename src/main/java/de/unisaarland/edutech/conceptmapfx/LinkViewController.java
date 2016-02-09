@@ -17,6 +17,7 @@ import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
@@ -25,11 +26,13 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 //FIXME the edit component appends at the wrong spot
@@ -76,11 +79,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.cv2 = cv2;
 		this.start = new MoveTo();
 		this.end = new LineTo();
-		
+
 		this.linkingPath = new Path();
 		linkingPath.setStrokeWidth(5);
 		linkingPath.setStroke(Paint.valueOf("White"));
-		
+
 		aStart = new AnchorView(this, Color.WHITE, 25, 25);
 		aEnd = new AnchorView(this, Color.WHITE, 25, 25);
 
@@ -132,10 +135,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			group.getToggles().add(btnToogleUser3);
 			group.getToggles().add(btnToogleUser4);
 
-			group.selectedToggleProperty().addListener((l, c, n) -> {
-				if (n == null)
-					txtLink.setDisable(true);
-			});
+		
 
 			this.inputToggleGroup = new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3,
 					btnToogleUser4);
@@ -220,7 +220,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		// taking best anchor point
 		// FIXME when we have multiple nodes connected they all use the same
 		// anchor point, hence we cannot change direction
-		// FIXME when caption of link is upside down, it is to far away from line
+		// FIXME when caption of link is upside down, it is to far away from
+		// line
 		Point2D xAxis = new Point2D(1, 0);
 		Point2D yAxis = new Point2D(0, 1);
 
@@ -278,9 +279,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
 
-		linkViewEditor
-				.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkViewEditor.getWidth() / 2);
-		linkViewEditor.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2);
+		linkViewEditor.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - txtLink.getWidth() / 2);
+		linkViewEditor.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2 + txtLink.getHeight());
 
 		angleX = Math.toDegrees(angleX);
 		angleY = Math.toDegrees(angleY);

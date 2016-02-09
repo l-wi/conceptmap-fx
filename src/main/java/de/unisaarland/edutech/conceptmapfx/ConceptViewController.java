@@ -107,35 +107,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		cv.translate(x, y);
 	}
 
-	private void constructResizableTextfield(Label txt) {
-		txt.setMaxWidth(Region.USE_PREF_SIZE);
-		txt.textProperty().addListener((ov, prevText, currText) -> {
-			// Do this in a Platform.runLater because of Textfield has no
-			// padding at first time and so on
-			Platform.runLater(() -> {
-				Text text = new Text(currText);
-				text.setFont(txt.getFont()); // Set the same font, so the size
-												// is the same
-				double width = text.getLayoutBounds().getWidth() // This big is
-																	// the Text
-																	// in the
-																	// TextField
-						+ txt.getPadding().getLeft() + txt.getPadding().getRight() // Add
-																					// the
-																					// padding
-																					// of
-																					// the
-																					// TextField
-						+ 2d; // Add some spacing
-				txt.setPrefWidth(width); // Set the width
-				// txt.positionCaret(txt.getCaretPosition()); // If you remove
-				// this
-				// line, it flashes
-				// a little bit
-			});
-		});
-	}
-
 	private void fireConceptMoved() {
 		conceptMovedListeners.forEach(l -> l.conceptMoved(this));
 	}
@@ -205,7 +176,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.inputToggleGroup = new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3,
 				btnToogleUser4);
 
-		constructResizableTextfield(txtConcept);
 		RotateTransition rotateTranstion = new RotateTransition(Duration.millis(100), this.conceptPane);
 		rotateTranstion.setByAngle(10);
 		rotateTranstion.setCycleCount(4);
