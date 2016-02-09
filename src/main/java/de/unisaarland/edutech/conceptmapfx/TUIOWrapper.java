@@ -67,6 +67,7 @@ public class TUIOWrapper implements TuioListener {
 		}
 	};
 	private TuioTime lastTime;
+	private TuioClient client;
 
 	public TUIOWrapper(Scene scene, Stage stage) {
 		this.scene = scene;
@@ -76,7 +77,7 @@ public class TUIOWrapper implements TuioListener {
 	}
 
 	public void start() {
-		TuioClient client = new TuioClient();
+		this.client = new TuioClient();
 		client.addTuioListener(this);
 		client.connect();
 	}
@@ -265,6 +266,10 @@ public class TUIOWrapper implements TuioListener {
 
 	@Override
 	public void updateTuioObject(TuioObject o) {
+	}
+
+	public void shutdown() {
+		this.client.disconnect();
 	}
 
 }

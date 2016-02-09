@@ -84,6 +84,7 @@ public class Main extends Application {
 		
 		TUIOWrapper wrapper = new TUIOWrapper(scene,primaryStage);
 		wrapper.start();
+		primaryStage.setOnCloseRequest((e) -> wrapper.shutdown());
 
 	}
 
