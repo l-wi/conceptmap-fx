@@ -82,9 +82,9 @@ public class Main extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
-		TUIOWrapper wrapper = new TUIOWrapper(scene,primaryStage);
-		wrapper.start();
-		primaryStage.setOnCloseRequest((e) -> wrapper.shutdown());
+//		TUIOWrapper wrapper = new TUIOWrapper(scene,primaryStage);
+//		wrapper.start();
+//		primaryStage.setOnCloseRequest((e) -> wrapper.shutdown());
 
 	}
 
