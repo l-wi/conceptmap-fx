@@ -13,9 +13,7 @@
 
 <BorderPane fx:id="conceptPane"
 	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
-	xmlns:fx="http://javafx.com/fxml/1" onMousePressed="#onMouseMovingStarted"
-	onMouseReleased="#onMouseMoved" onMouseDragged="#onMouseMoving"
-	onTouchMoved="#onTouchMoving" onScroll="#onMouseRotate" onRotate="#onTouchRotate">
+	xmlns:fx="http://javafx.com/fxml/1">
 
 	<fx:define>
 		<ToggleGroup fx:id="toggleGroup" />
@@ -43,11 +41,9 @@
 	</right>
 
 	<center>
-		<Label styleClass="concept" BorderPane.alignment="CENTER"
-			fx:id="txtConcept" disable="true" prefHeight="50.0" onMousePressed="#onTxtMousePressed"
-			onMouseDragged="#onMouseMoving" onTouchMoved="#onTouchMoving"
-			onMouseReleased="#onTxtMouseReleased" onTouchReleased="#onTxtTouchReleased"
-			onTouchPressed="#onTxtTouchPressed" />
+		<Label styleClass="concept" BorderPane.alignment="CENTER" fx:id="txtConcept"
+			disable="true" prefHeight="50.0" onMousePressed="#onPressed"
+			onMouseDragged="#onMouseMoving" onMouseReleased="#onReleased" />
 	</center>
 
 	<bottom>
