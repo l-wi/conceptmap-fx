@@ -21,35 +21,41 @@
 		<ToggleGroup fx:id="toggleGroup" />
 	</fx:define>
 
-	<top >
-			<ToggleButton visible="false" managed="false" disable="true"  id="p1" BorderPane.alignment="CENTER"  fx:id="btnToogleUser1" styleClass="pBtn"
-			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Ben"
-			toggleGroup="$toggleGroup" />
-		
+	<top>
+		<ToggleButton visible="false" managed="false" disable="true"
+			id="p1" BorderPane.alignment="CENTER" fx:id="btnToogleUser1"
+			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
+			prefWidth="50" text="Ben" toggleGroup="$toggleGroup" />
+
 	</top>
 	<left>
-	<ToggleButton visible="false" managed="false" disable="true" BorderPane.alignment="CENTER"  id="p2" fx:id="btnToogleUser2" styleClass="pBtn"
-			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Han"
-			toggleGroup="$toggleGroup" />
+		<ToggleButton visible="false" managed="false" disable="true"
+			BorderPane.alignment="CENTER" id="p2" fx:id="btnToogleUser2"
+			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
+			prefWidth="50" text="Han" toggleGroup="$toggleGroup" />
 	</left>
-	<right >
-	<ToggleButton visible="false" managed="false" disable="true"  BorderPane.alignment="CENTER" id="p4" fx:id="btnToogleUser4" styleClass="pBtn"
-			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Lea"
-			toggleGroup="$toggleGroup" />
-		
+	<right>
+		<ToggleButton visible="false" managed="false" disable="true"
+			BorderPane.alignment="CENTER" id="p4" fx:id="btnToogleUser4"
+			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
+			prefWidth="50" text="Lea" toggleGroup="$toggleGroup" />
+
 	</right>
 
-	<center >
-		<TextField  styleClass="concept"  BorderPane.alignment="CENTER"  fx:id="txtConcept" disable="true" prefHeight="50.0"
-			onMousePressed="#onTxtMousePressed" onMouseDragged="#onMouseMoving"
-			onTouchMoved="#onTouchMoving" onMouseReleased="#onTxtMouseReleased" />
+	<center>
+		<TextField styleClass="concept" BorderPane.alignment="CENTER"
+			fx:id="txtConcept" disable="true" prefHeight="50.0" onMousePressed="#onTxtMousePressed"
+			onMouseDragged="#onMouseMoving" onTouchMoved="#onTouchMoving"
+			onMouseReleased="#onTxtMouseReleased" onTouchReleased="#onTxtTouchReleased"
+			onTouchPressed="#onTxtTouchPressed" />
 	</center>
-	
+
 	<bottom>
 
-		<ToggleButton visible="false" managed="false" disable="true"  BorderPane.alignment="CENTER" id="p3" fx:id="btnToogleUser3" styleClass="pBtn"
-			mnemonicParsing="false" prefHeight="50.0" prefWidth="50" text="Chewi"
-			toggleGroup="$toggleGroup" />
+		<ToggleButton visible="false" managed="false" disable="true"
+			BorderPane.alignment="CENTER" id="p3" fx:id="btnToogleUser3"
+			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
+			prefWidth="50" text="Chewi" toggleGroup="$toggleGroup" />
 
 	</bottom>
 

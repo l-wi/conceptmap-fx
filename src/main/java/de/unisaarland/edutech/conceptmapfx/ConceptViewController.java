@@ -138,7 +138,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 				btnToogleUser4);
 
 		constructResizableTextfield(txtConcept);
-
+		
 		txtConcept.caretPositionProperty().addListener((c, o, n) -> {
 			this.editable.setCaretPosition(n.intValue());
 
@@ -227,7 +227,10 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		// system
 		double xRotated = x * Math.cos(rotation) - y * Math.sin(rotation);
 		double yRotated = x * Math.sin(rotation) + y * Math.cos(rotation);
+		translateRelative(xRotated, yRotated);
+	}
 
+	private void translateRelative(double xRotated, double yRotated) {
 		translateAbsolute(conceptPane.getTranslateX() + xRotated, conceptPane.getTranslateY() + yRotated);
 	}
 
@@ -310,14 +313,19 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void showTools(boolean b) {
-		// vboxTools.setManaged(b);
-		// vboxTools.setVisible(b);
+
 		Set<Node> lookupAll = conceptPane.lookupAll(".pBtn");
 		for (Node n : lookupAll) {
 			n.setVisible(b);
 			n.setManaged(b);
 			n.setDisable(!b);
 		}
+
+		if (b)
+			translateRelative(-btnToogleUser1.getWidth(), -btnToogleUser1.getHeight());
+		else
+			translateRelative(btnToogleUser1.getWidth(), btnToogleUser1.getHeight());
+
 	}
 
 	@FXML
