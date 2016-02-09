@@ -42,8 +42,10 @@
 
 	<center>
 		<Label styleClass="concept" BorderPane.alignment="CENTER" fx:id="txtConcept"
-			disable="true" prefHeight="50.0" onMousePressed="#onPressed"
-			onMouseDragged="#onMouseMoving" onMouseReleased="#onReleased" />
+			disable="true" prefHeight="50.0" onMousePressed="#onMousePressed"
+			onTouchPressed="#onTouchPressed" onTouchMoved="#onTouchMoving"
+			onMouseDragged="#onMouseMoving" onMouseReleased="#onReleased"
+			onTouchReleased="#onReleased" />
 	</center>
 
 	<bottom>

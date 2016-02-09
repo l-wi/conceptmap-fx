@@ -219,7 +219,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		movingStopedAnimation.setToY(DOWNSCALE_FACTOR);
 
 		btnToogleUser1.widthProperty().addListener((l, o, n) -> {
-			LOG.info("width" + n.doubleValue());
 			if (btnToogleUser1.isVisible())
 				translateRelative(-n.doubleValue(), 0);
 			else
@@ -253,13 +252,22 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	@FXML
-	public void onPressed(MouseEvent evt) {
-		if (animationIsRunning(movingStopedAnimation))
+	public void onMousePressed(MouseEvent evt) {
+		onPressed(evt.getX(), evt.getY());
+	}
+
+	@FXML
+	public void onTouchPressed(TouchEvent evt) {
+		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
+	}
+
+	private void onPressed(double x, double y) {
+		if (isMovingStateEnabled || animationIsRunning(movingStopedAnimation))
 			return;
 		movingStartedAnimation.setOnFinished((e) -> {
 
 			showTools(true);
-			setStartCoordinates(evt.getX(), evt.getY());
+			setStartCoordinates(x, y);
 
 		});
 		movingStartedAnimation.play();
@@ -276,7 +284,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void onMoved() {
-
 		this.fireConceptMoved();
 	}
 
@@ -312,7 +319,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	@FXML
 	public void onTouchMoving(TouchEvent evt) {
 		TouchPoint p = evt.getTouchPoint();
-		onMoving(p.getX() - dragX, p.getY() - dragY, conceptPane.getRotate());
+		onMoving(p.getX(), p.getY(), conceptPane.getRotate());
 		evt.consume();
 	}
 

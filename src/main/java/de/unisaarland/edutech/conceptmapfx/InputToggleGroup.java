@@ -34,6 +34,10 @@ public class InputToggleGroup {
 				l.userToggleEnabled(participant);
 
 		});
+		b.setOnTouchReleased((l) -> {
+			if (!b.isSelected())
+				b.setSelected(true);
+		});
 	}
 
 	private void addEventFilterToPreventUntoggle(ToggleButton b) {
