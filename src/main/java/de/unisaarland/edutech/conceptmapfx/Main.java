@@ -2,6 +2,8 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
@@ -47,17 +49,17 @@ public class Main extends Application {
 		lightsaber.setY(0.5);
 		lightsaber.setRotate(30);
 		conceptMap.addConcept(lightsaber);
-		
+
 		Concept loss = new Concept(new CollaborativeString(u4, "Arm loss"));
 		loss.setX(0.2);
 		loss.setY(0.664);
 		loss.setRotate(0);
 		conceptMap.addConcept(loss);
-//		
-//		Link causes = conceptMap.addDirectedLink(lightsaber, loss);
-//		causes.getCaption().append(u1, "causes");
-		
-		
+		//
+
+		// Link causes = conceptMap.addDirectedLink(lightsaber, loss);
+		// causes.getCaption().append(u1, "causes");
+
 		// Begin UI code
 		primaryStage.setMaximized(true);
 		primaryStage.setTitle("Concept Mapping");
@@ -65,6 +67,13 @@ public class Main extends Application {
 		FXMLLoader conceptMapLoader = new FXMLLoader(getClass().getResource("ConceptMapView.fxml"));
 		Pane conceptMapView = conceptMapLoader.load();
 		Scene scene = new Scene(conceptMapView);
+
+		scene.setOnKeyTyped((l) -> {
+
+			if ( l.getCharacter().equals("f"))
+				primaryStage.setFullScreen(true);
+		});
+		// primaryStage.setFullScreen(true);
 
 		conceptMapController = conceptMapLoader.getController();
 		// TODO the width / height values are probably off as we did not show
@@ -76,15 +85,15 @@ public class Main extends Application {
 
 		conceptMapController.sceneWidthProperty().bind(primaryStage.widthProperty());
 		conceptMapController.sceneHeightProperty().bind(primaryStage.heightProperty());
-		
+
 		conceptMapController.setConceptMap(conceptMap);
-		
+
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-//		TUIOWrapper wrapper = new TUIOWrapper(scene,primaryStage);
-//		wrapper.start();
-//		primaryStage.setOnCloseRequest((e) -> wrapper.shutdown());
+
+		// TUIOWrapper wrapper = new TUIOWrapper(scene,primaryStage);
+		// wrapper.start();
+		// primaryStage.setOnCloseRequest((e) -> wrapper.shutdown());
 
 	}
 
@@ -135,8 +144,6 @@ public class Main extends Application {
 		primaryStage.heightProperty().addListener((observeable, oldVal, newVal) -> {
 			v4.setLayoutY(newVal.doubleValue() * 0.5);
 		});
-		
-
 
 	}
 
