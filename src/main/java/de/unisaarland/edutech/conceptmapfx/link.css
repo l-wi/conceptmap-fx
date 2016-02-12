@@ -1,0 +1,71 @@
+#caption{
+
+	
+	/*-fx-background-color:#222222;*/
+	-fx-text-fill: white;
+	/*-fx-text-fill: white;*/
+	-fx-padding:20.0;
+	-fx-border-color:trasparent;
+ 	-fx-border-radius:20.0;
+	 -fx-background-radius: 20.0;
+	/*-fx-effect: dropshadow(three-pass-box, rgba(255.0,255.0,255.0,0.6), 30.0, 0.0, 0.0, 0.0);*/
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,0.6), 10.0, 0.0, 0.0, 0.0);
+
+}
+
+.empty{
+	-fx-background-color:#FF0000;
+}
+
+Label{
+	-fx-background-color:transparent;	
+}
+
+.fourUserEditable-toggle{
+-fx-border-color:black;
+-fx-border-radius: 5.0;
+
+}
+
+
+.fourUserEditable-toggle:selected{
+-fx-border-color:white;
+-fx-border-radius: 10.0;
+-fx-background-radius: 10.0;
+-fx-font-size: 1.3em;
+-fx-text-fill:#ffffff;
+}
+
+
+#fourUserEditable-topToggle{
+-fx-background-color: #F6A4AC;
+}
+
+#fourUserEditable-leftToggle{
+-fx-background-color:#FFEAAA;
+}
+
+#fourUserEditable-rightToggle{
+-fx-background-color: #8180B2;
+}
+
+#fourUserEditable-bottomToggle{
+-fx-background-color: #9AD58E;	
+}
+
+
+#fourUserEditable-topToggle:selected{
+-fx-background-color: #7B151F;
+}
+
+#fourUserEditable-leftToggle:selected{
+-fx-background-color:#554000;	
+}
+
+#fourUserEditable-rightToggle:selected{
+-fx-background-color: #1B1A59;
+}
+
+#fourUserEditable-bottomToggle:selected{
+-fx-background-color: #0C4700;	
+}

@@ -2,93 +2,57 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.RotateTransition;
-import javafx.animation.ScaleTransition;
-import javafx.application.Platform;
+import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class ConceptViewController implements ConceptMovingListener, InputClosedListener, UserToggleEnabledListener {
+public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptViewController.class);
-
-	private static final float UPSCALE_FACTOR = 1.1f;
-	private static final float DOWNSCALE_FACTOR = 1.0f;
 
 	private List<ConceptEditRequestedListener> conceptEditListeners = new ArrayList<ConceptEditRequestedListener>();
 	private List<ConceptMovingListener> conceptMovingListeners = new ArrayList<ConceptMovingListener>();
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
 
 	@FXML
-	private Pane conceptPane;
-	@FXML
-	private Label txtConcept;
-
-	@FXML
-	private ToggleButton btnExpand;
-	@FXML
-	private ToggleButton btnToogleUser1;
-	@FXML
-	private ToggleButton btnToogleUser2;
-	@FXML
-	private ToggleButton btnToogleUser3;
-	@FXML
-	private ToggleButton btnToogleUser4;
-
-	@FXML
-	private ToggleGroup toggleGroup;
+	private FourUserTouchEditable fourUserTouchEditable;
 
 	private Concept concept;
+
 	private List<User> participants;
 
 	private double dragX;
 
 	private double dragY;
 
-	private Editable editable;
-
-	private InputToggleGroup inputToggleGroup;
-
-	private boolean isMovingStateEnabled = true;
-
-	private ScaleTransition movingStopedAnimation;
-
-	private ParallelTransition movingStartedAnimation;
-
 	private boolean isPressed;
 
-	private double currentRotate;
-
 	private int touchEventsActive;
+
+	private CollaborativeStringTextFieldBinding colBinding;
+
+	private PauseTransition showSelectedMenuTransition;
+
+	private long clickInTime;
 
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
@@ -119,16 +83,16 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void fireEditRequested(User u) {
-		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this.editable, u));
+		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this.colBinding, u));
 	}
 
 	public Bounds getBoundsInScene() {
-		return conceptPane.getLocalToSceneTransform().transform(conceptPane.getBoundsInLocal());
+		return fourUserTouchEditable.getLocalToSceneTransform().transform(fourUserTouchEditable.getBoundsInLocal());
 	}
 
 	public Point2D getCenterAsSceneCoordinates() {
-		Point2D p = new Point2D(conceptPane.getWidth() / 2, conceptPane.getHeight() / 2);
-		return conceptPane.getLocalToSceneTransform().transform(p);
+		Point2D p = new Point2D(fourUserTouchEditable.getWidth() / 2, fourUserTouchEditable.getHeight() / 2);
+		return fourUserTouchEditable.getLocalToSceneTransform().transform(p);
 	}
 
 	public Concept getConcept() {
@@ -136,36 +100,26 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	public double getHeight() {
-		return conceptPane.getHeight();
+		return fourUserTouchEditable.getHeight();
 	}
 
 	public Point2D getOrigin() {
-		double x = this.conceptPane.getLayoutX() + conceptPane.getTranslateX();
-		double y = this.conceptPane.getLayoutY() + conceptPane.getTranslateY();
+		double x = this.fourUserTouchEditable.getLayoutX() + fourUserTouchEditable.getTranslateX();
+		double y = this.fourUserTouchEditable.getLayoutY() + fourUserTouchEditable.getTranslateY();
 		return new Point2D(x, y);
 
 	}
 
 	public double getRotate() {
-		return conceptPane.getRotate();
+		return fourUserTouchEditable.getRotate();
 	}
 
 	public double getWidth() {
-		return conceptPane.getWidth();
+		return fourUserTouchEditable.getWidth();
 	}
 
 	public ReadOnlyDoubleProperty heightProperty() {
-		return this.conceptPane.heightProperty();
-	}
-
-	public void highlightEmpty() {
-		FadeTransition ft = new FadeTransition(Duration.millis(300), conceptPane);
-		ft.setFromValue(1.0);
-		ft.setToValue(0.5);
-		ft.setAutoReverse(true);
-		ft.setCycleCount(2);
-		ft.play();
-
+		return this.fourUserTouchEditable.heightProperty();
 	}
 
 	@FXML
@@ -173,49 +127,19 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		this.addConceptMovingListener(this);
 
-		this.inputToggleGroup = new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3,
-				btnToogleUser4);
-
-		RotateTransition rotateTranstion = new RotateTransition(Duration.millis(100), this.conceptPane);
-		rotateTranstion.setByAngle(10);
-		rotateTranstion.setCycleCount(4);
-		rotateTranstion.setAutoReverse(true);
-
-		ScaleTransition upscaleTransition = new ScaleTransition(Duration.millis(300), this.conceptPane);
-
-		upscaleTransition.setToX(UPSCALE_FACTOR);
-		upscaleTransition.setToY(UPSCALE_FACTOR);
-
-		movingStartedAnimation = new ParallelTransition();
-		movingStartedAnimation.getChildren().addAll(rotateTranstion, upscaleTransition);
-
-		movingStopedAnimation = new ScaleTransition(Duration.millis(300), this.conceptPane);
-		movingStopedAnimation.setToX(DOWNSCALE_FACTOR);
-		movingStopedAnimation.setToY(DOWNSCALE_FACTOR);
-
-		btnToogleUser1.widthProperty().addListener((l, o, n) -> {
-			if (btnToogleUser1.isVisible())
-				translateRelative(-n.doubleValue(), 0);
-			else
-				translateRelative(n.doubleValue(), 0);
-		});
-
-		btnToogleUser1.heightProperty().addListener((l, o, n) -> {
-
-			if (btnToogleUser1.isVisible())
-				translateRelative(-0, -n.doubleValue());
-			else
-				translateRelative(0, n.doubleValue());
+		showSelectedMenuTransition = new PauseTransition(Duration.millis(1500));
+		showSelectedMenuTransition.setOnFinished((l) -> {
+			fourUserTouchEditable.toRotateState();
 		});
 	}
 
 	public void inputClosed(User u) {
-		inputToggleGroup.setUserEnabled(participants.indexOf(u), false);
+		setUserEnabled(participants.indexOf(u), false);
 	}
 
 	public boolean intersects(ConceptViewController other) {
-		Bounds myParentBounds = this.conceptPane.getBoundsInParent();
-		Bounds otherParentBounds = other.conceptPane.getBoundsInParent();
+		Bounds myParentBounds = this.fourUserTouchEditable.getBoundsInParent();
+		Bounds otherParentBounds = other.fourUserTouchEditable.getBoundsInParent();
 
 		return myParentBounds.intersects(otherParentBounds);
 	}
@@ -223,7 +147,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private void setStartCoordinates(double x, double y) {
 		this.dragX = x;
 		this.dragY = y;
-
 	}
 
 	@FXML
@@ -234,41 +157,29 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	@FXML
 	public void onTouchPressed(TouchEvent evt) {
-		touchEventsActive++;
-		if (touchEventsActive == 1)
-			onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
+
+		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
 	}
 
 	private void onPressed(double x, double y) {
-		if (isPressed || animationIsRunning(movingStopedAnimation))
+		touchEventsActive++;
+		if (touchEventsActive != 1)
 			return;
 
-		currentRotate = conceptPane.getRotate();
-		movingStartedAnimation.setOnFinished((e) -> {
-			showTools(true);
-			setStartCoordinates(x, y);
+		if (isPressed)
+			return;
 
-		});
-		movingStartedAnimation.play();
+		showSelectedMenuTransition.play();
+
+		clickInTime = System.currentTimeMillis();
+
+		setStartCoordinates(x, y);
 		isPressed = true;
-	}
-
-	private boolean animationIsRunning(Animation a) {
-		return a.getStatus() == Animation.Status.RUNNING;
-	}
-
-	@FXML
-	public void onMouseMoved(MouseEvent evt) {
-		onMoved();
-	}
-
-	private void onMoved() {
-		this.fireConceptMoved();
 	}
 
 	@FXML
 	public void onMouseMoving(MouseEvent evt) {
-		this.onMoving(evt.getX(), evt.getY(), conceptPane.getRotate());
+		this.onMoving(evt.getX(), evt.getY(), fourUserTouchEditable.getRotate());
 	}
 
 	@FXML
@@ -276,7 +187,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		double rotation = l.getDeltaY() / 40;
 		if (l.getTouchCount() == 0)
 			onRotate(rotation);
-
 	}
 
 	@FXML
@@ -290,23 +200,18 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	@FXML
-	public void onTouchMoved(TouchEvent evt) {
-		onMoved();
-		evt.consume();
-	}
-
-	@FXML
 	public void onTouchMoving(TouchEvent evt) {
-
 		TouchPoint p = evt.getTouchPoint();
-		onMoving(p.getX(), p.getY(), conceptPane.getRotate());
+		onMoving(p.getX(), p.getY(), fourUserTouchEditable.getRotate());
 		evt.consume();
-
 	}
 
 	private void onMoving(double x, double y, double r) {
-		if (isMovingStateEnabled)
-			this.fireConceptMoving(x - dragX, y - dragY, conceptPane.getRotate(), this, null);
+		showSelectedMenuTransition.stop();
+		if (fourUserTouchEditable.getState() == State.UNSELECTED)
+			fourUserTouchEditable.toMovingState();
+		if (fourUserTouchEditable.getState() == State.MOVING)
+			this.fireConceptMoving(x - dragX, y - dragY, fourUserTouchEditable.getRotate(), this, null);
 	}
 
 	@FXML
@@ -327,74 +232,102 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		if (touchEventsActive >= 1)
 			return;
 
-		movingStartedAnimation.setOnFinished(null);
+		isPressed = false;
 
-		if (animationIsRunning(movingStartedAnimation)) {
-			movingStartedAnimation.stop();
-			conceptPane.setRotate(currentRotate);
-			isPressed = false;
-			return;
-		}
+		showSelectedMenuTransition.stop();
 
-		showTools(false);
+		long delta = System.currentTimeMillis() - clickInTime;
+
+		State state = fourUserTouchEditable.getState();
+
+		if (delta < 1000 && state != State.MOVING && state != State.SELECTED) {
+			fourUserTouchEditable.toSelectedState();
+		} else
+			fourUserTouchEditable.toUnselectedState();
+
 		this.fireConceptMoved();
-
-		movingStopedAnimation.setOnFinished((l) -> isPressed = false);
-		movingStopedAnimation.play();
 
 	}
 
 	@FXML
 	public void onRotateStarted() {
 		LOG.info("starting rotate");
-		isMovingStateEnabled = false;
 	}
 
 	@FXML
 	public void onRotateFinished() {
-		isMovingStateEnabled = true;
+
 	}
 
 	public void rotate(double d) {
-		conceptPane.setRotate(d);
+		fourUserTouchEditable.setRotate(d);
 	}
 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
-		this.editable = new Editable(concept.getName(), txtConcept);
+		this.colBinding = new CollaborativeStringTextFieldBinding(concept.getName(),
+				fourUserTouchEditable.textProperty());
 
 	}
 
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
+
+		fourUserTouchEditable.setTopToggleText(participants.get(0).getName());
+		fourUserTouchEditable.topSelectedProperty().addListener((l, o, n) -> {
+			if (n)
+				this.fireEditRequested(participants.get(0));
+		});
+
+		fourUserTouchEditable.setLeftToggleText(participants.get(1).getName());
+		fourUserTouchEditable.leftSelectedProperty().addListener((l, o, n) -> {
+			if (n)
+				this.fireEditRequested(participants.get(1));
+		});
+
+		fourUserTouchEditable.setBottomToggleText(participants.get(2).getName());
+		fourUserTouchEditable.bottomSelectedProperty().addListener((l, o, n) -> {
+			if (n)
+				this.fireEditRequested(participants.get(2));
+		});
+
+		fourUserTouchEditable.setRightToggleText(participants.get(3).getName());
+		fourUserTouchEditable.rightSelectedProperty().addListener((l, o, n) -> {
+			if (n)
+				this.fireEditRequested(participants.get(3));
+		});
 	}
 
 	public void setRotate(double rotate) {
-		this.conceptPane.setRotate(rotate);
+		this.fourUserTouchEditable.setRotate(rotate);
 	}
 
 	public void setUserEnabled(User owner, boolean b) {
-		inputToggleGroup.setUserEnabled(participants.indexOf(owner), b);
+		int index = participants.indexOf(owner);
+
+		setUserEnabled(index, b);
+
 	}
 
-	private void showTools(boolean b) {
-
-		Set<Node> lookupAll = conceptPane.lookupAll(".pBtn");
-		for (Node n : lookupAll) {
-			n.setVisible(b);
-			n.setManaged(b);
-			n.setDisable(!b);
+	private void setUserEnabled(int index, boolean b) {
+		switch (index) {
+		case 0:
+			fourUserTouchEditable.setTopSelected(b);
+			break;
+		case 1:
+			fourUserTouchEditable.setLeftSelected(b);
+			break;
+		case 2:
+			fourUserTouchEditable.setBottomSelected(b);
+			break;
+		case 3:
+			fourUserTouchEditable.setRightSelected(b);
+			break;
 		}
-
-		if (btnToogleUser1.isVisible())
-			translateRelative(-btnToogleUser1.getWidth(), -btnToogleUser1.getHeight());
-		else
-			translateRelative(btnToogleUser1.getWidth(), btnToogleUser1.getHeight());
-
 	}
 
 	public void translate(double x, double y) {
-		double rotation = Math.toRadians(conceptPane.getRotate());
+		double rotation = Math.toRadians(fourUserTouchEditable.getRotate());
 
 		// if we have a rotation we have to convert to the rotated coordinate
 		// system
@@ -403,21 +336,17 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		translateRelative(xRotated, yRotated);
 	}
 
-	public void translateAbsolute(double x, double y) {
-		conceptPane.setTranslateX(x);
-		conceptPane.setTranslateY(y);
-	}
-
 	private void translateRelative(double xRotated, double yRotated) {
-		translateAbsolute(conceptPane.getTranslateX() + xRotated, conceptPane.getTranslateY() + yRotated);
+		translateAbsolute(fourUserTouchEditable.getTranslateX() + xRotated,
+				fourUserTouchEditable.getTranslateY() + yRotated);
 	}
 
-	public void userToggleEnabled(int buttonID) {
-		this.txtConcept.setDisable(false);
-		this.fireEditRequested(participants.get(buttonID));
+	public void translateAbsolute(double x, double y) {
+		fourUserTouchEditable.setTranslateX(x);
+		fourUserTouchEditable.setTranslateY(y);
 	}
 
 	public ReadOnlyDoubleProperty widthProperty() {
-		return this.conceptPane.widthProperty();
+		return this.fourUserTouchEditable.widthProperty();
 	}
 }

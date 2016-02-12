@@ -50,7 +50,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private UserRobotHandler currentRobotHandler;
 
-	private Editable cv;
+	private CollaborativeStringTextFieldBinding cv;
 
 	@FXML
 	public void initialize() {
@@ -98,11 +98,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		closedListener = l;
 	}
 
-	public void conceptEditRequested(InputClosedListener l, Editable editable, User u) {	
+	public void conceptEditRequested(InputClosedListener l, CollaborativeStringTextFieldBinding editable, User u) {	
 		editRequested(l, editable, u);
 	}
 
-	private void editRequested(InputClosedListener l, Editable editable, User u) {
+	private void editRequested(InputClosedListener l, CollaborativeStringTextFieldBinding editable, User u) {
 		// does somebody else want to work on our current node
 		if (editable.equals(this.cv) && !u.equals(this.user))
 			releaseInput();
@@ -121,11 +121,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 	
 	@Override
-	public void linkEditRequested(InputClosedListener l, Editable cv, User u) {
+	public void linkEditRequested(InputClosedListener l, CollaborativeStringTextFieldBinding cv, User u) {
 		editRequested(l, cv, u);
 	}
 
-	private void acquireInput(Editable cv, User u) {
+	private void acquireInput(CollaborativeStringTextFieldBinding cv, User u) {
 
 		LOG.info("acquiring input for user:\t" + this.user);
 

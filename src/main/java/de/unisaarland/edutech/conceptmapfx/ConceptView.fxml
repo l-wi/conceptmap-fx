@@ -4,62 +4,18 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import java.net.*?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.paint.Color ?>
 
-<BorderPane fx:id="conceptPane"
+<?import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable?>
+
+<FourUserTouchEditable 
 	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
-	xmlns:fx="http://javafx.com/fxml/1">
-
-	<fx:define>
-		<ToggleGroup fx:id="toggleGroup" />
-	</fx:define>
-
-	<top>
-		<ToggleButton visible="false" managed="false" disable="true"
-			id="p1" BorderPane.alignment="CENTER" fx:id="btnToogleUser1"
-			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-			prefWidth="50" text="Ben" toggleGroup="$toggleGroup" />
-
-	</top>
-	<left>
-		<ToggleButton visible="false" managed="false" disable="true"
-			BorderPane.alignment="CENTER" id="p2" fx:id="btnToogleUser2"
-			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-			prefWidth="50" text="Han" toggleGroup="$toggleGroup" />
-	</left>
-	<right>
-		<ToggleButton visible="false" managed="false" disable="true"
-			BorderPane.alignment="CENTER" id="p4" fx:id="btnToogleUser4"
-			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-			prefWidth="50" text="Lea" toggleGroup="$toggleGroup" />
-
-	</right>
-
-	<center>
-		<Label styleClass="concept" BorderPane.alignment="CENTER" fx:id="txtConcept"
-			disable="true" prefHeight="50.0" onMousePressed="#onMousePressed"
-			onTouchPressed="#onTouchPressed" onTouchMoved="#onTouchMoving"
-			onMouseDragged="#onMouseMoving" onMouseReleased="#onMouseReleased"
-			onTouchReleased="#onTouchReleased" onScroll="#onMouseRotate" onRotate="#onTouchRotate" onRotationStarted="#onRotateStarted" onRotationFinished="#onRotateFinished"/>
-	</center>
-
-	<bottom>
-
-		<ToggleButton visible="false" managed="false" disable="true"
-			BorderPane.alignment="CENTER" id="p3" fx:id="btnToogleUser3"
-			styleClass="pBtn" mnemonicParsing="false" prefHeight="50.0"
-			prefWidth="50" text="Chewi" toggleGroup="$toggleGroup" />
-
-	</bottom>
+	xmlns:fx="http://javafx.com/fxml/1" fx:id="fourUserTouchEditable"
+	onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased"
+	onMouseDragged="#onMouseMoving" rotationStrokeSize="5"
+	stylesheets="@concept.css"
+>
 
 
-	<stylesheets>
-		<URL value="@editable.css" />
-	</stylesheets>
-
-</BorderPane>
+</FourUserTouchEditable>

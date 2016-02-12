@@ -1,6 +1,5 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
@@ -18,18 +16,13 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
-import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
-import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
 		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener {
@@ -91,7 +84,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		if (emptyConceptViewController.isPresent()) {
 			LOG.warn("there is  already an empty concept for user" + user);
-			emptyConceptViewController.get().highlightEmpty();
+
 			return;
 		}
 

@@ -6,10 +6,10 @@ import de.unisaarland.edutech.conceptmapping.User;
 
 public class UserRobotHandler implements IRobot {
 
-	private Editable editable;
+	private CollaborativeStringTextFieldBinding editable;
 	private User u;
 
-	public UserRobotHandler(Editable editable, User u) {
+	public UserRobotHandler(CollaborativeStringTextFieldBinding editable, User u) {
 		this.editable = editable;
 		this.u = u;
 	}

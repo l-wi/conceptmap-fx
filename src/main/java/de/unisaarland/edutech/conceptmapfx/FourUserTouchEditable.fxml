@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.chart.XYChart?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup ?>
+<?import javafx.scene.shape.Circle?>
+<?import java.net.*?>
+
+<fx:root type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml/1">
+
+	<fx:define>
+		<ToggleGroup fx:id="toggleGroup" />
+	</fx:define>
+	<top>
+		<ToggleButton id="fourUserEditable-topToggle" styleClass="fourUserEditable-toggle"
+			BorderPane.alignment="CENTER" toggleGroup="$toggleGroup" fx:id="topToggle"
+			text="t1" />
+	</top>
+
+	<left>
+		<ToggleButton id="fourUserEditable-leftToggle"
+			styleClass="fourUserEditable-toggle" toggleGroup="$toggleGroup"
+			fx:id="leftToggle" text="t2" />
+	</left>
+
+	<center>
+		<Label id="caption" fx:id="caption" />
+	</center>
+
+	<right>
+		<ToggleButton id="fourUserEditable-rightToggle"
+			styleClass="fourUserEditable-toggle" toggleGroup="$toggleGroup"
+			fx:id="rightToggle" text="t3" />
+	</right>
+
+	<bottom>
+		<ToggleButton id="fourUserEditable-bottomToggle"
+			styleClass="fourUserEditable-toggle" BorderPane.alignment="CENTER"
+			toggleGroup="$toggleGroup" fx:id="bottomToggle" text="t4" />
+	</bottom>
+
+
+</fx:root>
+

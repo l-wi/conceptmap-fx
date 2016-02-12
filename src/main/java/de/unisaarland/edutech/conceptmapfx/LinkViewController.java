@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
@@ -15,40 +16,27 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 //FIXME the edit component appends at the wrong spot
-public class LinkViewController implements ConceptMovingListener, InputClosedListener, UserToggleEnabledListener {
+public class LinkViewController implements ConceptMovingListener, InputClosedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LinkViewController.class);
 
 	private List<LinkDirectionUpdatedListener> linkDirectionListeners = new ArrayList<LinkDirectionUpdatedListener>();
 	private List<LinkEditRequestedListener> linkEditListeners = new ArrayList<LinkEditRequestedListener>();
 
-	private ToggleButton btnToogleUser1;
-	private ToggleButton btnToogleUser2;
-	private ToggleButton btnToogleUser3;
-	private ToggleButton btnToogleUser4;
-	private Label txtLink;
-	private Pane linkViewEditor;
+	private FourUserTouchEditable linkViewEditor;
 
 	private Path linkingPath;
 	private MoveTo start;
@@ -60,17 +48,19 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private List<User> participants = new ArrayList<User>();
 
-	private Editable editable;
+	private CollaborativeStringTextFieldBinding editable;
 
 	private Link link;
 
 	private Pane cmv;
 
-	private InputToggleGroup inputToggleGroup;
+	private long clickInTime;
 
-	private ToggleGroup group;
+	private boolean isPressed;
 
-	private HBox tools;
+	private int touchEventsActive;
+
+	private CollaborativeStringTextFieldBinding colBinding;
 
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
@@ -118,34 +108,43 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private void initEditorComponent() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("LinkView.fxml"));
-			Pane view = (Pane) loader.load();
-			this.linkViewEditor = view;
-			this.btnToogleUser1 = (ToggleButton) view.lookup("#p1");
-			this.btnToogleUser2 = (ToggleButton) view.lookup("#p2");
-			this.btnToogleUser3 = (ToggleButton) view.lookup("#p3");
-			this.btnToogleUser4 = (ToggleButton) view.lookup("#p4");
-			this.tools = (HBox) view.lookup("#tools");
-			this.txtLink = (Label) view.lookup("#txtLink");
-			this.editable = new Editable(link.getCaption(), txtLink);
+			this.linkViewEditor = loader.load();
 
-			// TODO move the whole thing into input toggle group
-			this.group = new ToggleGroup();
-			group.getToggles().add(btnToogleUser1);
-			group.getToggles().add(btnToogleUser2);
-			group.getToggles().add(btnToogleUser3);
-			group.getToggles().add(btnToogleUser4);
+			this.linkViewEditor.setOnMousePressed((evt) -> this.onMousePressed(evt));
+			this.linkViewEditor.setOnMouseReleased((evt) -> this.onMouseReleased(evt));
+			this.linkViewEditor.setOnTouchPressed((evt) -> this.onTouchPressed(evt));
+			this.linkViewEditor.setOnTouchReleased((evt) -> this.onTouchReleased(evt));
 
-		
+			this.editable = new CollaborativeStringTextFieldBinding(link.getCaption(), linkViewEditor.textProperty());
 
-			this.inputToggleGroup = new InputToggleGroup(this, btnToogleUser1, btnToogleUser2, btnToogleUser3,
-					btnToogleUser4);
+			//TODO the damn thing jumps depending on selected or not!
+			//TODO also this is redundant with the logic in concept view!
+			linkViewEditor.setTopToggleText(participants.get(0).getName());
+			linkViewEditor.topSelectedProperty().addListener((l, o, n) -> {
+				if (n)
+					this.fireEditRequested(participants.get(0));
+				this.layout();
+			});
 
-			txtLink.setOnMousePressed((l) -> showTools(true));
-			txtLink.setOnMouseReleased((l) -> {
-				Timeline t = new Timeline(new KeyFrame(Duration.seconds(1), (abs) -> {
-					showTools(false);
-				}));
-				t.play();
+			linkViewEditor.setLeftToggleText(participants.get(1).getName());
+			linkViewEditor.leftSelectedProperty().addListener((l, o, n) -> {
+				if (n)
+					this.fireEditRequested(participants.get(1));
+				this.layout();
+			});
+
+			linkViewEditor.setBottomToggleText(participants.get(2).getName());
+			linkViewEditor.bottomSelectedProperty().addListener((l, o, n) -> {
+				if (n)
+					this.fireEditRequested(participants.get(2));
+				this.layout();
+			});
+
+			linkViewEditor.setRightToggleText(participants.get(3).getName());
+			linkViewEditor.rightSelectedProperty().addListener((l, o, n) -> {
+				if (n)
+					this.fireEditRequested(participants.get(3));
+				this.layout();
 			});
 
 		} catch (IOException e) {
@@ -212,7 +211,31 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	public void inputClosed(User u) {
-		inputToggleGroup.setUserEnabled(participants.indexOf(u), false);
+		setUserEnabled(participants.indexOf(u), false);
+	}
+
+	public void setUserEnabled(User owner, boolean b) {
+		int index = participants.indexOf(owner);
+
+		setUserEnabled(index, b);
+
+	}
+
+	private void setUserEnabled(int index, boolean b) {
+		switch (index) {
+		case 0:
+			linkViewEditor.setTopSelected(b);
+			break;
+		case 1:
+			linkViewEditor.setLeftSelected(b);
+			break;
+		case 2:
+			linkViewEditor.setBottomSelected(b);
+			break;
+		case 3:
+			linkViewEditor.setRightSelected(b);
+			break;
+		}
 	}
 
 	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
@@ -279,8 +302,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
 
-		linkViewEditor.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - txtLink.getWidth() / 2);
-		linkViewEditor.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2 + txtLink.getHeight());
+		linkViewEditor
+				.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkViewEditor.getWidth() / 2);
+		linkViewEditor.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2 + 15);
 
 		angleX = Math.toDegrees(angleX);
 		angleY = Math.toDegrees(angleY);
@@ -303,17 +327,65 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	}
 
-	@Override
-	public void userToggleEnabled(int buttonID) {
-		this.fireEditRequested(participants.get(buttonID));
-	}
-
 	private void fireEditRequested(User u) {
 		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
 	}
 
-	private void showTools(boolean b) {
-		this.tools.setManaged(b);
-		this.tools.setVisible(b);
+	public void onMousePressed(MouseEvent evt) {
+		if (!evt.isSynthesized())
+			onPressed(evt.getX(), evt.getY());
+	}
+
+	public void onTouchPressed(TouchEvent evt) {
+
+		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
+	}
+
+	private void onPressed(double x, double y) {
+		touchEventsActive++;
+		if (touchEventsActive != 1)
+			return;
+
+		if (isPressed)
+			return;
+
+		// showSelectedMenuTransition.play();
+
+		clickInTime = System.currentTimeMillis();
+
+		isPressed = true;
+	}
+
+	@FXML
+	public void onMouseReleased(MouseEvent evt) {
+		if (!evt.isSynthesized())
+			onReleased();
+	}
+
+	@FXML
+	public void onTouchReleased(TouchEvent evt) {
+		onReleased();
+	}
+
+	private void onReleased() {
+
+		touchEventsActive--;
+
+		if (touchEventsActive >= 1)
+			return;
+
+		isPressed = false;
+
+		// showSelectedMenuTransition.stop();
+
+		long delta = System.currentTimeMillis() - clickInTime;
+
+		State state = linkViewEditor.getState();
+
+		if (delta < 1000 && state != State.MOVING && state != State.SELECTED) {
+			linkViewEditor.toSelectedState();
+		} else
+			linkViewEditor.toUnselectedState();
+
 	}
 }

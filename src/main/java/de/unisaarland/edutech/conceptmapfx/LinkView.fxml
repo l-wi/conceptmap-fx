@@ -5,46 +5,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Label?>
+<?import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<FourUserTouchEditable 
+	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
+	xmlns:fx="http://javafx.com/fxml/1" 
 
-	<fx:define>
-		<ToggleGroup fx:id="toggleGroup" />
-	</fx:define>
-
-	<children>
-		<VBox prefHeight="78.0">
-			<children>
-				<Label styleClass="link" id="txtLink" prefHeight="31.0" prefWidth="40.0" />
-
-				<HBox id="tools" visible="false" managed="false"  >
-					<children>
-
-						<ToggleButton id="p1" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Ben"
-							toggleGroup="$toggleGroup" />
+	stylesheets="@link.css"
+>
 
 
-						<ToggleButton id="p2" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Han"
-							toggleGroup="$toggleGroup" />
 
-						<ToggleButton id="p3" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Chewi"
-							toggleGroup="$toggleGroup" />
-
-						<ToggleButton id="p4" mnemonicParsing="false"
-							prefHeight="50.0" prefWidth="50.0" styleClass="pBtn" text="Lea"
-							toggleGroup="$toggleGroup" />
-
-					</children>
-				</HBox>
-
-
-			</children>
-		</VBox>
-	</children>
-	<stylesheets>
-		<URL value="@editable.css" />
-	</stylesheets>
-</AnchorPane>
+</FourUserTouchEditable>
