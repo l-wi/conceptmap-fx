@@ -1,6 +1,8 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,12 +13,15 @@ import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
+import de.unisaarland.edutech.conceptmapping.CollaborativeString;
+import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -27,6 +32,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 	private static final String FIRST_CONCEPT = "Dog";
 	private ConceptMapViewController controller;
 	private Pane conceptMapView;
+	private ConceptMap map;
 
 	private static Scene scene = null;
 
@@ -50,10 +56,12 @@ public class ConceptMapViewTests extends ApplicationTest {
 		experiment.addParticipant(u3);
 		experiment.addParticipant(u4);
 
-		ConceptMap map = new ConceptMap(experiment);
+		map = new ConceptMap(experiment);
 
 		ConceptMapViewBuilder builder = new ConceptMapViewBuilder();
 		scene = builder.withConceptMap(map).build();
+
+		controller = builder.getController();
 
 		conceptMapView = (AnchorPane) scene.getRoot();
 		stage.setScene(scene);
@@ -98,30 +106,68 @@ public class ConceptMapViewTests extends ApplicationTest {
 		Set<Node> newButtons = conceptMapView.lookupAll(".newBtn");
 		Node firstNewButton = newButtons.iterator().next();
 		Node rightKeyboard = conceptMapView.lookup("#" + Position.RIGHT).lookup("#keyboard");
-		Node leftKeyboard = conceptMapView.lookup("#" + Position.LEFT).lookup("#keyboard");;
-		Node topKeyboard = conceptMapView.lookup("#" + Position.TOP).lookup("#keyboard");;
-		Node bottomKeyboard = conceptMapView.lookup("#" + Position.BOTTOM).lookup("#keyboard");;
-		
+		Node leftKeyboard = conceptMapView.lookup("#" + Position.LEFT).lookup("#keyboard");
+		;
+		Node topKeyboard = conceptMapView.lookup("#" + Position.TOP).lookup("#keyboard");
+		;
+		Node bottomKeyboard = conceptMapView.lookup("#" + Position.BOTTOM).lookup("#keyboard");
+		;
+
 		assertTrue(rightKeyboard.isDisabled());
 		assertTrue(leftKeyboard.isDisabled());
 		assertTrue(topKeyboard.isDisabled());
 		assertTrue(bottomKeyboard.isDisabled());
-		
+
 		// when
 		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
-		
+
 		Node concept = conceptMapView.lookup(".concept");
 		moveTo(concept).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
-		
+
 		Node rightToggle = concept.lookup("#fourUserEditable-rightToggle");
 		moveTo(rightToggle).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
-		
-		
-		//then
+
+		// then
 		assertFalse(rightKeyboard.isDisabled());
 		assertTrue(leftKeyboard.isDisabled());
 		assertTrue(topKeyboard.isDisabled());
 		assertTrue(bottomKeyboard.isDisabled());
+	}
+
+	@Test
+	public void testLayoutWithConceptAdded() {
+		int conceptCount = map.getConceptCount();
+
+		Concept c = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(0), FIRST_CONCEPT));
+		double x = 0.4;
+		double y = 0.4;
+		c.setX(x);
+		c.setY(y);
+		map.addConcept(c);
+
+		// when
+		super.interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+
+		//then
+		
+		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+
+		assertEquals(conceptCount + 1, concepts.size());
+		assertEquals(conceptCount + 1, map.getConceptCount());
+		Node addedConcept = concepts.iterator().next();
+
+		double xScaled = addedConcept.getLayoutX() + addedConcept.getTranslateX();
+		double yScaled = addedConcept.getLayoutY() + addedConcept.getTranslateY();
+
+		assertEquals(x * scene.getWidth(), xScaled, 0.5);
+		assertEquals(y * scene.getHeight(), yScaled, 0.5);
+
+		Label caption = (Label) addedConcept.lookup("#caption");
+		assertEquals(FIRST_CONCEPT, caption.getText());
+
 	}
 
 }

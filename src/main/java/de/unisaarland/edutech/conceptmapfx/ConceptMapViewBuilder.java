@@ -34,6 +34,10 @@ public class ConceptMapViewBuilder {
 
 	}
 
+	public ConceptMapViewController getController() {
+		return controller;
+	}
+	
 	public Scene build() {
 		return scene;
 	}
