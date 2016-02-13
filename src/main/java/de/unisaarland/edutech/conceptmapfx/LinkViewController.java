@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
@@ -16,11 +15,8 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -54,13 +50,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private Pane cmv;
 
-	private long clickInTime;
-
-	private boolean isPressed;
-
-	private int touchEventsActive;
-
-	private CollaborativeStringTextFieldBinding colBinding;
+	private LowLevelInteractionListener lowLevelInteractionListener;
 
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
@@ -86,17 +76,18 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void initialize() {
 		initEditorComponent();
-
 		cmv.getChildren().add(aStart);
 		cmv.getChildren().add(aEnd);
 
 		cmv.getChildren().add(linkingPath);
 		cmv.getChildren().add(linkViewEditor);
 
-		cv1.widthProperty().addListener((c, o, n) -> this.layout());
-		cv1.heightProperty().addListener((c, o, n) -> this.layout());
-		cv2.widthProperty().addListener((c, o, n) -> this.layout());
-		cv2.heightProperty().addListener((c, o, n) -> this.layout());
+		FourUserTouchEditable view = cv1.getView();
+
+		view.widthProperty().addListener((c, o, n) -> this.layout());
+		view.heightProperty().addListener((c, o, n) -> this.layout());
+		view.widthProperty().addListener((c, o, n) -> this.layout());
+		view.heightProperty().addListener((c, o, n) -> this.layout());
 
 		layout();
 	}
@@ -108,17 +99,13 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private void initEditorComponent() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("LinkView.fxml"));
-			this.linkViewEditor = loader.load();
 
-			this.linkViewEditor.setOnMousePressed((evt) -> this.onMousePressed(evt));
-			this.linkViewEditor.setOnMouseReleased((evt) -> this.onMouseReleased(evt));
-			this.linkViewEditor.setOnTouchPressed((evt) -> this.onTouchPressed(evt));
-			this.linkViewEditor.setOnTouchReleased((evt) -> this.onTouchReleased(evt));
+			this.linkViewEditor = loader.load();
 
 			this.editable = new CollaborativeStringTextFieldBinding(link.getCaption(), linkViewEditor.textProperty());
 
-			//TODO the damn thing jumps depending on selected or not!
-			//TODO also this is redundant with the logic in concept view!
+			// TODO the damn thing jumps depending on selected or not!
+			// TODO also this is redundant with the logic in concept view!
 			linkViewEditor.setTopToggleText(participants.get(0).getName());
 			linkViewEditor.topSelectedProperty().addListener((l, o, n) -> {
 				if (n)
@@ -248,7 +235,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		Point2D xAxis = new Point2D(1, 0);
 		Point2D yAxis = new Point2D(0, 1);
 
-		double rotation = Math.toRadians(controller.getRotate());
+		FourUserTouchEditable view = controller.getView();
+		double rotation = Math.toRadians(view.getRotate());
 
 		xAxis = rotatePoint2D(xAxis, rotation);
 		yAxis = rotatePoint2D(yAxis, rotation);
@@ -260,10 +248,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double directionY = (angleY >= 0) ? -1 : 1;
 
 		if (Math.abs(angleX) > Math.abs(angleY))
-			return xAxis.normalize().multiply(directionX * controller.getWidth() / 2);
+			return xAxis.normalize().multiply(directionX * view.getWidth() / 2);
 
 		else
-			return yAxis.normalize().multiply(directionY * controller.getHeight() / 2);
+			return yAxis.normalize().multiply(directionY * view.getHeight() / 2);
 	}
 
 	private void fireLinkDirectionUpdate(LinkDirectionUpdatedListener.Direction d) {
@@ -280,8 +268,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void layout() {
 
-		Point2D centerStart = cv1.getCenterAsSceneCoordinates();
-		Point2D centerEnd = cv2.getCenterAsSceneCoordinates();
+		FourUserTouchEditable view1 = cv1.getView();
+		FourUserTouchEditable view2 = cv2.getView();
+
+		Point2D centerStart = view1.getCenterAsSceneCoordinates();
+		Point2D centerEnd = view2.getCenterAsSceneCoordinates();
 
 		Point2D betweenCenters = centerEnd.subtract(centerStart);
 
@@ -329,63 +320,5 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private void fireEditRequested(User u) {
 		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
-	}
-
-	public void onMousePressed(MouseEvent evt) {
-		if (!evt.isSynthesized())
-			onPressed(evt.getX(), evt.getY());
-	}
-
-	public void onTouchPressed(TouchEvent evt) {
-
-		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
-	}
-
-	private void onPressed(double x, double y) {
-		touchEventsActive++;
-		if (touchEventsActive != 1)
-			return;
-
-		if (isPressed)
-			return;
-
-		// showSelectedMenuTransition.play();
-
-		clickInTime = System.currentTimeMillis();
-
-		isPressed = true;
-	}
-
-	@FXML
-	public void onMouseReleased(MouseEvent evt) {
-		if (!evt.isSynthesized())
-			onReleased();
-	}
-
-	@FXML
-	public void onTouchReleased(TouchEvent evt) {
-		onReleased();
-	}
-
-	private void onReleased() {
-
-		touchEventsActive--;
-
-		if (touchEventsActive >= 1)
-			return;
-
-		isPressed = false;
-
-		// showSelectedMenuTransition.stop();
-
-		long delta = System.currentTimeMillis() - clickInTime;
-
-		State state = linkViewEditor.getState();
-
-		if (delta < 1000 && state != State.MOVING && state != State.SELECTED) {
-			linkViewEditor.toSelectedState();
-		} else
-			linkViewEditor.toUnselectedState();
-
 	}
 }

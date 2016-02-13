@@ -6,24 +6,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.animation.PauseTransition;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.RotateEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.input.TouchEvent;
-import javafx.scene.input.TouchPoint;
-import javafx.util.Duration;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
 
@@ -40,19 +30,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	private List<User> participants;
 
-	private double dragX;
-
-	private double dragY;
-
-	private boolean isPressed;
-
-	private int touchEventsActive;
-
 	private CollaborativeStringTextFieldBinding colBinding;
-
-	private PauseTransition showSelectedMenuTransition;
-
-	private long clickInTime;
 
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
@@ -67,8 +45,9 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
-		cv.rotate(rotate);
+		fourUserTouchEditable.setRotate(rotate);
 		cv.translate(x, y);
+
 	}
 
 	private void fireConceptMoved() {
@@ -86,40 +65,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptEditListeners.forEach(l -> l.conceptEditRequested(this, this.colBinding, u));
 	}
 
-	public Bounds getBoundsInScene() {
-		return fourUserTouchEditable.getLocalToSceneTransform().transform(fourUserTouchEditable.getBoundsInLocal());
-	}
-
-	public Point2D getCenterAsSceneCoordinates() {
-		Point2D p = new Point2D(fourUserTouchEditable.getWidth() / 2, fourUserTouchEditable.getHeight() / 2);
-		return fourUserTouchEditable.getLocalToSceneTransform().transform(p);
-	}
-
 	public Concept getConcept() {
 		return concept;
-	}
-
-	public double getHeight() {
-		return fourUserTouchEditable.getHeight();
-	}
-
-	public Point2D getOrigin() {
-		double x = this.fourUserTouchEditable.getLayoutX() + fourUserTouchEditable.getTranslateX();
-		double y = this.fourUserTouchEditable.getLayoutY() + fourUserTouchEditable.getTranslateY();
-		return new Point2D(x, y);
-
-	}
-
-	public double getRotate() {
-		return fourUserTouchEditable.getRotate();
-	}
-
-	public double getWidth() {
-		return fourUserTouchEditable.getWidth();
-	}
-
-	public ReadOnlyDoubleProperty heightProperty() {
-		return this.fourUserTouchEditable.heightProperty();
 	}
 
 	@FXML
@@ -127,10 +74,11 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		this.addConceptMovingListener(this);
 
-		showSelectedMenuTransition = new PauseTransition(Duration.millis(1500));
-		showSelectedMenuTransition.setOnFinished((l) -> {
-			fourUserTouchEditable.toRotateState();
+		fourUserTouchEditable.setOnMoving((x, y, r) -> {
+			this.fireConceptMoving(x, y, r, this, null);
 		});
+
+		fourUserTouchEditable.setOnMoved(() -> this.fireConceptMoved());
 	}
 
 	public void inputClosed(User u) {
@@ -142,125 +90,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		Bounds otherParentBounds = other.fourUserTouchEditable.getBoundsInParent();
 
 		return myParentBounds.intersects(otherParentBounds);
-	}
-
-	private void setStartCoordinates(double x, double y) {
-		this.dragX = x;
-		this.dragY = y;
-	}
-
-	@FXML
-	public void onMousePressed(MouseEvent evt) {
-		if (!evt.isSynthesized())
-			onPressed(evt.getX(), evt.getY());
-	}
-
-	@FXML
-	public void onTouchPressed(TouchEvent evt) {
-
-		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
-	}
-
-	private void onPressed(double x, double y) {
-		touchEventsActive++;
-		if (touchEventsActive != 1)
-			return;
-
-		if (isPressed)
-			return;
-
-		showSelectedMenuTransition.play();
-
-		clickInTime = System.currentTimeMillis();
-
-		setStartCoordinates(x, y);
-		isPressed = true;
-	}
-
-	@FXML
-	public void onMouseMoving(MouseEvent evt) {
-		this.onMoving(evt.getX(), evt.getY(), fourUserTouchEditable.getRotate());
-	}
-
-	@FXML
-	public void onMouseRotate(ScrollEvent l) {
-		double rotation = l.getDeltaY() / 40;
-		if (l.getTouchCount() == 0)
-			onRotate(rotation);
-	}
-
-	@FXML
-	public void onTouchRotate(RotateEvent e) {
-		onRotate(e.getAngle());
-	}
-
-	private void onRotate(double rotation) {
-		this.rotate(this.getRotate() + rotation);
-		fireConceptMoving(0, 0, this.getRotate() + rotation, this, null);
-	}
-
-	@FXML
-	public void onTouchMoving(TouchEvent evt) {
-		TouchPoint p = evt.getTouchPoint();
-		onMoving(p.getX(), p.getY(), fourUserTouchEditable.getRotate());
-		evt.consume();
-	}
-
-	private void onMoving(double x, double y, double r) {
-		showSelectedMenuTransition.stop();
-		if (fourUserTouchEditable.getState() == State.UNSELECTED)
-			fourUserTouchEditable.toMovingState();
-		if (fourUserTouchEditable.getState() == State.MOVING)
-			this.fireConceptMoving(x - dragX, y - dragY, fourUserTouchEditable.getRotate(), this, null);
-	}
-
-	@FXML
-	public void onMouseReleased(MouseEvent evt) {
-		if (!evt.isSynthesized())
-			onReleased();
-	}
-
-	@FXML
-	public void onTouchReleased(TouchEvent evt) {
-		onReleased();
-	}
-
-	private void onReleased() {
-
-		touchEventsActive--;
-
-		if (touchEventsActive >= 1)
-			return;
-
-		isPressed = false;
-
-		showSelectedMenuTransition.stop();
-
-		long delta = System.currentTimeMillis() - clickInTime;
-
-		State state = fourUserTouchEditable.getState();
-
-		if (delta < 1000 && state != State.MOVING && state != State.SELECTED) {
-			fourUserTouchEditable.toSelectedState();
-		} else
-			fourUserTouchEditable.toUnselectedState();
-
-		this.fireConceptMoved();
-
-	}
-
-	@FXML
-	public void onRotateStarted() {
-		LOG.info("starting rotate");
-	}
-
-	@FXML
-	public void onRotateFinished() {
-
-	}
-
-	public void rotate(double d) {
-		fourUserTouchEditable.setRotate(d);
 	}
 
 	public void setConcept(Concept concept) {
@@ -296,10 +125,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 			if (n)
 				this.fireEditRequested(participants.get(3));
 		});
-	}
-
-	public void setRotate(double rotate) {
-		this.fourUserTouchEditable.setRotate(rotate);
 	}
 
 	public void setUserEnabled(User owner, boolean b) {
@@ -346,7 +171,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		fourUserTouchEditable.setTranslateY(y);
 	}
 
-	public ReadOnlyDoubleProperty widthProperty() {
-		return this.fourUserTouchEditable.widthProperty();
+	public FourUserTouchEditable getView() {
+		return this.fourUserTouchEditable;
 	}
 }

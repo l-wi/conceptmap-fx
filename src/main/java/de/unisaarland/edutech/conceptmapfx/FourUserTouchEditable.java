@@ -1,10 +1,13 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovedInterface;
+import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovingInterface;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
@@ -14,6 +17,8 @@ import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -48,10 +53,11 @@ public class FourUserTouchEditable extends BorderPane {
 	private Color rotationColor;
 
 	private double rotationStrokeSize;
-	
+
 	private Circle rotateIndicator;
-	
+
 	private SimpleObjectProperty<State> state = new SimpleObjectProperty<>();
+	private LowLevelInteractionListener lowLevelInteractionListener;
 
 	public FourUserTouchEditable() {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("FourUserTouchEditable.fxml"));
@@ -70,6 +76,13 @@ public class FourUserTouchEditable extends BorderPane {
 
 		toUnselectedState();
 
+		this.lowLevelInteractionListener = new LowLevelInteractionListener(this);
+
+		// TODO other event binding
+		this.setOnMousePressed((evt) -> lowLevelInteractionListener.onMousePressed(evt));
+		this.setOnMouseReleased((evt) -> lowLevelInteractionListener.onMouseReleased(evt));
+		this.setOnMouseDragged((evt) -> lowLevelInteractionListener.onMouseMoving(evt));
+
 		caption.textProperty().addListener((l, o, n) -> {
 			changeIfEmpty(n);
 		});
@@ -79,9 +92,9 @@ public class FourUserTouchEditable extends BorderPane {
 	}
 
 	private void changeIfEmpty(String n) {
-	
+
 		if (n.length() == 0) {
-			
+
 			caption.getStyleClass().add("empty");
 			caption.setMinWidth(70);
 		} else
@@ -114,13 +127,13 @@ public class FourUserTouchEditable extends BorderPane {
 	}
 
 	private void fixPositionOnStateChange(State oldState, State newState) {
-		
+
 		this.applyCss();
 		this.layout();
-		
+
 		double width = topToggle.getWidth();
 		double height = topToggle.getHeight();
-		
+
 		if (newState == State.SELECTED) {
 			translateRelative(-width, -height);
 		} else if (oldState == State.SELECTED) {
@@ -354,7 +367,7 @@ public class FourUserTouchEditable extends BorderPane {
 
 	public void setRotationColor(Color rotationColor) {
 		this.rotationColor = rotationColor;
-//		this.rotateIndicator.setStroke(rotationColor);
+		// this.rotateIndicator.setStroke(rotationColor);
 	}
 
 	public double getRotationStrokeSize() {
@@ -365,4 +378,29 @@ public class FourUserTouchEditable extends BorderPane {
 		this.rotationStrokeSize = rotationStrokeSize;
 		rotateIndicator.setStrokeWidth(rotationStrokeSize);
 	}
+
+	public Bounds getBoundsInScene() {
+		return this.getLocalToSceneTransform().transform(this.getBoundsInLocal());
+	}
+
+	public Point2D getCenterAsSceneCoordinates() {
+		Point2D p = new Point2D(this.getWidth() / 2, this.getHeight() / 2);
+		return this.getLocalToSceneTransform().transform(p);
+	}
+
+	public Point2D getOrigin() {
+		double x = getLayoutX() + getTranslateX();
+		double y = getLayoutY() + getTranslateY();
+		return new Point2D(x, y);
+
+	}
+
+	public void setOnMoved(OnMovedInterface moved) {
+		this.lowLevelInteractionListener.setOnMoved(moved);
+	}
+
+	public void setOnMoving(OnMovingInterface<Double, Double, Double> movingFunction) {
+		this.lowLevelInteractionListener.setOnMoving(movingFunction);
+	}
+
 }

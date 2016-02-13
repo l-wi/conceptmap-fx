@@ -177,11 +177,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 				double y = c.getY() * this.sceneHeight.doubleValue();
 				LOG.info("moving after rescale: x / y " + x + "/" + y);
 				cv.translateAbsolute(x, y);
-				cv.setRotate(c.getRotate());
+				cv.getView().setRotate(c.getRotate());
 			}
 		}
-		
-		for(LinkViewController lvc : linkControllers){
+
+		for (LinkViewController lvc : linkControllers) {
 			lvc.layout();
 		}
 	}
@@ -208,9 +208,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void conceptMoved(ConceptViewController cv) {
 		List<ConceptViewController> intersections = findIntersections(cv);
 
-		cv.getConcept().setX(cv.getOrigin().getX() / sceneWidth.doubleValue());
-		cv.getConcept().setY(cv.getOrigin().getY() / sceneHeight.doubleValue());
-		cv.getConcept().setRotate(cv.getRotate());
+		FourUserTouchEditable view = cv.getView();
+
+		cv.getConcept().setX(view.getOrigin().getX() / sceneWidth.doubleValue());
+		cv.getConcept().setY(view.getOrigin().getY() / sceneHeight.doubleValue());
+		cv.getConcept().setRotate(view.getRotate());
 
 		for (ConceptViewController intersected : intersections) {
 			fireNewLinkListener(cv, intersected);

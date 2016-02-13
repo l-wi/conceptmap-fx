@@ -7,12 +7,8 @@
 <?import javafx.scene.control.Label?>
 <?import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable?>
 
-<FourUserTouchEditable 
-	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
-	xmlns:fx="http://javafx.com/fxml/1" 
-
-	stylesheets="@link.css"
->
+<FourUserTouchEditable xmlns:fx="http://javafx.com/fxml/1"
+	stylesheets="@link.css">
 
 
 
