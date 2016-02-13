@@ -36,7 +36,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private List<NewConceptListener> conceptListners = new ArrayList<NewConceptListener>();
 
 	public enum Position {
-		NORTH, SOUTH, EAST, WEST
+		TOP, BOTTOM, RIGHT, LEFT
 	}
 
 	@FXML

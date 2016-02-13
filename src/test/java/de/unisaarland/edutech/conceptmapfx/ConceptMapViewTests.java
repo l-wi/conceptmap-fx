@@ -10,6 +10,7 @@ import java.util.Set;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
+import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
@@ -89,6 +90,38 @@ public class ConceptMapViewTests extends ApplicationTest {
 		// then
 		concepts = conceptMapView.lookupAll(".concept");
 		assertEquals(1, concepts.size());
+	}
+
+	@Test
+	public void testNewAndSelectKeyboard() {
+		// given
+		Set<Node> newButtons = conceptMapView.lookupAll(".newBtn");
+		Node firstNewButton = newButtons.iterator().next();
+		Node rightKeyboard = conceptMapView.lookup("#" + Position.RIGHT).lookup("#keyboard");
+		Node leftKeyboard = conceptMapView.lookup("#" + Position.LEFT).lookup("#keyboard");;
+		Node topKeyboard = conceptMapView.lookup("#" + Position.TOP).lookup("#keyboard");;
+		Node bottomKeyboard = conceptMapView.lookup("#" + Position.BOTTOM).lookup("#keyboard");;
+		
+		assertTrue(rightKeyboard.isDisabled());
+		assertTrue(leftKeyboard.isDisabled());
+		assertTrue(topKeyboard.isDisabled());
+		assertTrue(bottomKeyboard.isDisabled());
+		
+		// when
+		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+		
+		Node concept = conceptMapView.lookup(".concept");
+		moveTo(concept).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+		
+		Node rightToggle = concept.lookup("#fourUserEditable-rightToggle");
+		moveTo(rightToggle).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+		
+		
+		//then
+		assertFalse(rightKeyboard.isDisabled());
+		assertTrue(leftKeyboard.isDisabled());
+		assertTrue(topKeyboard.isDisabled());
+		assertTrue(bottomKeyboard.isDisabled());
 	}
 
 }

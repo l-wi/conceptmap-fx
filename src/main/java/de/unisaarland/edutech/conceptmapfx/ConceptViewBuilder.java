@@ -97,15 +97,15 @@ public class ConceptViewBuilder {
 		double x = pScene.getX();
 		double y = pScene.getY();
 
-		if (inputViewController.getPosition() == Position.NORTH) {
+		if (inputViewController.getPosition() == Position.TOP) {
 			x = x - n.getWidth();
-		} else if (inputViewController.getPosition() == Position.WEST) {
+		} else if (inputViewController.getPosition() == Position.LEFT) {
 			x = x - n.getWidth() / 2 + n.getHeight() / 2;
 			y = y + n.getWidth() / 2 - n.getHeight() / 2;
-		} else if (inputViewController.getPosition() == Position.EAST) {
+		} else if (inputViewController.getPosition() == Position.RIGHT) {
 			x = x - n.getWidth() / 2 - n.getHeight() / 2;
 			y = y - n.getWidth() / 2 - n.getHeight() / 2;
-		} else if (inputViewController.getPosition() == Position.SOUTH) {
+		} else if (inputViewController.getPosition() == Position.BOTTOM) {
 			y = y - n.getHeight();
 		}
 

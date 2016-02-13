@@ -58,14 +58,14 @@ public class ConceptMapViewBuilder {
 
 	private void setInputPositions(User u1, User u2, User u3, User u4) throws IOException {
 		// north
-		final Pane v1 = addInputComponent(Position.NORTH, u1);
+		final Pane v1 = addInputComponent(Position.TOP, u1);
 		v1.setRotate(180);
 		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
 			v1.setLayoutX(newVal.doubleValue() * 0.6 - v1.getWidth() / 2);
 		});
 
 		// west
-		final Pane v2 = addInputComponent(Position.WEST, u2);
+		final Pane v2 = addInputComponent(Position.LEFT, u2);
 		v2.setRotate(90);
 
 		// as we rotate around center, we need to readjust on screen
@@ -78,7 +78,7 @@ public class ConceptMapViewBuilder {
 		});
 
 		// south
-		final Pane v3 = addInputComponent(Position.SOUTH, u3);
+		final Pane v3 = addInputComponent(Position.BOTTOM, u3);
 		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
 			v3.setLayoutX(newVal.doubleValue() * 0.5 - (v3.getWidth() / 2));
 		});
@@ -88,7 +88,7 @@ public class ConceptMapViewBuilder {
 		});
 
 		// east
-		final Pane v4 = addInputComponent(Position.EAST, u4);
+		final Pane v4 = addInputComponent(Position.RIGHT, u4);
 		v4.setRotate(270);
 		// as we rotate around center, we need to readjust on screen
 		scene.heightProperty().addListener(c -> {
@@ -108,6 +108,7 @@ public class ConceptMapViewBuilder {
 	private Pane addInputComponent(InputViewController.Position p, User u) throws IOException {
 		FXMLLoader inputLoader = new FXMLLoader(Main.class.getResource("InputView.fxml"));
 		Pane inputView = inputLoader.load();
+		inputView.setId(p.toString());
 		InputViewController inputController = inputLoader.getController();
 		inputController.setUser(u);
 		inputController.setPosition(p);

@@ -23,7 +23,7 @@
 				</HBox>
 				<HBox>
 					<children>
-						<KeyboardPane  fx:id="keyboard" />
+						<KeyboardPane id="keyboard" fx:id="keyboard" />
 						<ToggleButton id="voice" fx:id="btnSpeak" mnemonicParsing="false" prefHeight="200.0" prefWidth="100.0" />
 					</children>
 				</HBox>
