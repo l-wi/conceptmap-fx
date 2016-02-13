@@ -97,7 +97,6 @@ public class LowLevelInteractionListener {
 	}
 
 	public void onMouseMoving(MouseEvent evt) {
-	
 
 		this.onMoving(evt.getX(), evt.getY(), 0);
 	}
@@ -114,7 +113,7 @@ public class LowLevelInteractionListener {
 	}
 
 	private void onRotate(double rotation) {
-		if(fourUserTouchEditable.getState() == State.ROTATING)
+		if (fourUserTouchEditable.getState() == State.ROTATING)
 			moving(0, 0, rotation);
 	}
 
@@ -137,7 +136,8 @@ public class LowLevelInteractionListener {
 	}
 
 	private void moving(double d, double e, double rotate) {
-		movingFunction.apply(d, e, rotate);
+		if (movedFunction != null)
+			movingFunction.apply(d, e, rotate);
 	}
 
 	public void onMouseReleased(MouseEvent evt) {
@@ -185,7 +185,5 @@ public class LowLevelInteractionListener {
 	public void onRotateFinished() {
 
 	}
-
-
 
 }
