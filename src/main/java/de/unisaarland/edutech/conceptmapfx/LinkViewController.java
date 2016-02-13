@@ -107,31 +107,13 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			// TODO the damn thing jumps depending on selected or not!
 			// TODO also this is redundant with the logic in concept view!
 			linkCaption.setTopToggleText(participants.get(0).getName());
-			linkCaption.topSelectedProperty().addListener((l, o, n) -> {
-				if (n)
-					this.fireEditRequested(participants.get(0));
-				this.layout();
-			});
-
 			linkCaption.setLeftToggleText(participants.get(1).getName());
-			linkCaption.leftSelectedProperty().addListener((l, o, n) -> {
-				if (n)
-					this.fireEditRequested(participants.get(1));
-				this.layout();
-			});
-
 			linkCaption.setBottomToggleText(participants.get(2).getName());
-			linkCaption.bottomSelectedProperty().addListener((l, o, n) -> {
-				if (n)
-					this.fireEditRequested(participants.get(2));
-				this.layout();
-			});
-
 			linkCaption.setRightToggleText(participants.get(3).getName());
-			linkCaption.rightSelectedProperty().addListener((l, o, n) -> {
-				if (n)
-					this.fireEditRequested(participants.get(3));
-				this.layout();
+
+			linkCaption.selectionChangedProperty().addListener((l, o, n) -> {
+				if (n.isSelected)
+					this.fireEditRequested(participants.get(n.index));
 			});
 
 		} catch (IOException e) {
@@ -209,20 +191,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	private void setUserEnabled(int index, boolean b) {
-		switch (index) {
-		case 0:
-			linkCaption.setTopSelected(b);
-			break;
-		case 1:
-			linkCaption.setLeftSelected(b);
-			break;
-		case 2:
-			linkCaption.setBottomSelected(b);
-			break;
-		case 3:
-			linkCaption.setRightSelected(b);
-			break;
-		}
+		linkCaption.setSelected(index, b);
 	}
 
 	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
@@ -293,8 +262,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
 
-		linkCaption
-				.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkCaption.getWidth() / 2);
+		linkCaption.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkCaption.getWidth() / 2);
 		linkCaption.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2 + 15);
 
 		angleX = Math.toDegrees(angleX);

@@ -11,7 +11,7 @@
 
 <FourUserTouchEditable 
 	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
-	xmlns:fx="http://javafx.com/fxml/1" fx:id="fourUserTouchEditable"
+	xmlns:fx="http://javafx.com/fxml/1" fx:id="conceptCaption"
 	rotationStrokeSize="5" 	stylesheets="@concept.css"
 >
 

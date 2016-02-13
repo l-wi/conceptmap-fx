@@ -94,8 +94,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
-		this.colBinding = new CollaborativeStringTextFieldBinding(concept.getName(),
-				conceptCaption.textProperty());
+		this.colBinding = new CollaborativeStringTextFieldBinding(concept.getName(), conceptCaption.textProperty());
 
 	}
 
@@ -103,28 +102,15 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.participants = participants;
 
 		conceptCaption.setTopToggleText(participants.get(0).getName());
-		conceptCaption.topSelectedProperty().addListener((l, o, n) -> {
-			if (n)
-				this.fireEditRequested(participants.get(0));
-		});
-
 		conceptCaption.setLeftToggleText(participants.get(1).getName());
-		conceptCaption.leftSelectedProperty().addListener((l, o, n) -> {
-			if (n)
-				this.fireEditRequested(participants.get(1));
-		});
-
 		conceptCaption.setBottomToggleText(participants.get(2).getName());
-		conceptCaption.bottomSelectedProperty().addListener((l, o, n) -> {
-			if (n)
-				this.fireEditRequested(participants.get(2));
+		conceptCaption.setRightToggleText(participants.get(3).getName());
+		
+		conceptCaption.selectionChangedProperty().addListener((l, o, n) -> {
+			if (n.isSelected)
+				this.fireEditRequested(participants.get(n.index));
 		});
 
-		conceptCaption.setRightToggleText(participants.get(3).getName());
-		conceptCaption.rightSelectedProperty().addListener((l, o, n) -> {
-			if (n)
-				this.fireEditRequested(participants.get(3));
-		});
 	}
 
 	public void setUserEnabled(User owner, boolean b) {
@@ -135,20 +121,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void setUserEnabled(int index, boolean b) {
-		switch (index) {
-		case 0:
-			conceptCaption.setTopSelected(b);
-			break;
-		case 1:
-			conceptCaption.setLeftSelected(b);
-			break;
-		case 2:
-			conceptCaption.setBottomSelected(b);
-			break;
-		case 3:
-			conceptCaption.setRightSelected(b);
-			break;
-		}
+		conceptCaption.setSelected(index, b);
 	}
 
 	public void translate(double x, double y) {
@@ -162,8 +135,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void translateRelative(double xRotated, double yRotated) {
-		translateAbsolute(conceptCaption.getTranslateX() + xRotated,
-				conceptCaption.getTranslateY() + yRotated);
+		translateAbsolute(conceptCaption.getTranslateX() + xRotated, conceptCaption.getTranslateY() + yRotated);
 	}
 
 	public void translateAbsolute(double x, double y) {

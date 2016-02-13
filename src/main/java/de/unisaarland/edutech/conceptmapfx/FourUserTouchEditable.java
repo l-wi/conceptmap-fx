@@ -1,7 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +10,7 @@ import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovingI
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -31,7 +31,22 @@ import javafx.scene.text.Text;
 
 public class FourUserTouchEditable extends BorderPane {
 
+	private static final int RIGHT_TOGGLE_INDEX = 3;
+	private static final int BOTTOM_TOGGLE_INDEX = 2;
+	private static final int LEFT_TOGGLE_INDEX = 1;
+	private static final int TOP_TOGGLE_INDEX = 0;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(FourUserTouchEditable.class);
+
+	public class SelectionChanged {
+		public final int index;
+		public final boolean isSelected;
+
+		public SelectionChanged(int index, boolean value) {
+			this.index = index;
+			this.isSelected = value;
+		}
+	}
 
 	public enum State {
 		UNSELECTED, SELECTED, MOVING, ROTATING
@@ -58,6 +73,7 @@ public class FourUserTouchEditable extends BorderPane {
 
 	private SimpleObjectProperty<State> state = new SimpleObjectProperty<>();
 	private LowLevelInteractionListener lowLevelInteractionListener;
+	private SimpleObjectProperty<SelectionChanged> selectionChangedProperty;
 
 	public FourUserTouchEditable() {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("FourUserTouchEditable.fxml"));
@@ -74,21 +90,44 @@ public class FourUserTouchEditable extends BorderPane {
 		keepAtLeastOneSelected();
 		fixPositionsOnStateChange();
 
+		initSelectionChangeProperty();
+
+		initInteraction();
+
+		initChangeIfEmpty();
+
 		toUnselectedState();
 
+	}
+
+	private void initInteraction() {
 		this.lowLevelInteractionListener = new LowLevelInteractionListener(this);
 
 		// TODO other event binding
 		this.setOnMousePressed((evt) -> lowLevelInteractionListener.onMousePressed(evt));
 		this.setOnMouseReleased((evt) -> lowLevelInteractionListener.onMouseReleased(evt));
 		this.setOnMouseDragged((evt) -> lowLevelInteractionListener.onMouseMoving(evt));
+	}
 
+	private void initChangeIfEmpty() {
 		caption.textProperty().addListener((l, o, n) -> {
 			changeIfEmpty(n);
 		});
 
 		changeIfEmpty(caption.getText());
+	}
 
+	private void initSelectionChangeProperty() {
+		selectionChangedProperty = new SimpleObjectProperty<SelectionChanged>(new SelectionChanged(0, false));
+
+		topToggle.selectedProperty()
+				.addListener((l, o, n) -> selectionChangedProperty.set(new SelectionChanged(TOP_TOGGLE_INDEX, n)));
+		leftToggle.selectedProperty()
+				.addListener((l, o, n) -> selectionChangedProperty.set(new SelectionChanged(LEFT_TOGGLE_INDEX, n)));
+		rightToggle.selectedProperty()
+				.addListener((l, o, n) -> selectionChangedProperty.set(new SelectionChanged(RIGHT_TOGGLE_INDEX, n)));
+		bottomToggle.selectedProperty()
+				.addListener((l, o, n) -> selectionChangedProperty.set(new SelectionChanged(BOTTOM_TOGGLE_INDEX, n)));
 	}
 
 	private void changeIfEmpty(String n) {
@@ -277,6 +316,23 @@ public class FourUserTouchEditable extends BorderPane {
 		return caption.textProperty();
 	}
 
+	public void setSelected(int index, boolean b) {
+		switch (index) {
+		case TOP_TOGGLE_INDEX:
+			this.setTopSelected(b);
+			break;
+		case LEFT_TOGGLE_INDEX:
+			this.setLeftSelected(b);
+			break;
+		case BOTTOM_TOGGLE_INDEX:
+			this.setBottomSelected(b);
+			break;
+		case RIGHT_TOGGLE_INDEX:
+			this.setRightSelected(b);
+			break;
+		}
+	}
+
 	public void setTopToggleText(String txt) {
 		topToggle.setText(txt);
 	}
@@ -401,6 +457,10 @@ public class FourUserTouchEditable extends BorderPane {
 
 	public void setOnMoving(OnMovingInterface<Double, Double, Double> movingFunction) {
 		this.lowLevelInteractionListener.setOnMoving(movingFunction);
+	}
+
+	public ObjectProperty<SelectionChanged> selectionChangedProperty() {
+		return selectionChangedProperty;
 	}
 
 }
