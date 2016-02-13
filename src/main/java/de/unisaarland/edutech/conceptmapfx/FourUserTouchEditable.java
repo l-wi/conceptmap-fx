@@ -107,6 +107,7 @@ public class FourUserTouchEditable extends BorderPane {
 		this.setOnMousePressed((evt) -> lowLevelInteractionListener.onMousePressed(evt));
 		this.setOnMouseReleased((evt) -> lowLevelInteractionListener.onMouseReleased(evt));
 		this.setOnMouseDragged((evt) -> lowLevelInteractionListener.onMouseMoving(evt));
+		this.setOnScroll((evt) -> lowLevelInteractionListener.onScroll(evt));;
 	}
 
 	private void initChangeIfEmpty() {

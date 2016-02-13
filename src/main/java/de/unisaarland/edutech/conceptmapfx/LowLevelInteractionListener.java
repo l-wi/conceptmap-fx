@@ -1,5 +1,8 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
@@ -11,6 +14,8 @@ import javafx.scene.input.TouchPoint;
 import javafx.util.Duration;
 
 public class LowLevelInteractionListener {
+
+	private static final Logger LOG = LoggerFactory.getLogger(LowLevelInteractionListener.class);
 
 	private double dragX;
 
@@ -59,6 +64,7 @@ public class LowLevelInteractionListener {
 
 	@FXML
 	public void onMousePressed(MouseEvent evt) {
+
 		if (!evt.isSynthesized())
 			onPressed(evt.getX(), evt.getY());
 	}
@@ -91,7 +97,9 @@ public class LowLevelInteractionListener {
 	}
 
 	public void onMouseMoving(MouseEvent evt) {
-		this.onMoving(evt.getX(), evt.getY(), fourUserTouchEditable.getRotate());
+	
+
+		this.onMoving(evt.getX(), evt.getY(), 0);
 	}
 
 	public void onMouseRotate(ScrollEvent l) {
@@ -106,14 +114,13 @@ public class LowLevelInteractionListener {
 	}
 
 	private void onRotate(double rotation) {
-		fourUserTouchEditable.setRotate(fourUserTouchEditable.getRotate() + rotation);
-		moving(0, 0, fourUserTouchEditable.getRotate() + rotation);
+		moving(0, 0, rotation);
 	}
 
 	@FXML
 	public void onTouchMoving(TouchEvent evt) {
 		TouchPoint p = evt.getTouchPoint();
-		onMoving(p.getX(), p.getY(), fourUserTouchEditable.getRotate());
+		onMoving(p.getX(), p.getY(), 0);
 		evt.consume();
 	}
 
@@ -125,7 +132,7 @@ public class LowLevelInteractionListener {
 		if (fourUserTouchEditable.getState() == State.UNSELECTED)
 			fourUserTouchEditable.toMovingState();
 		if (fourUserTouchEditable.getState() == State.MOVING)
-			this.moving(x - dragX, y - dragY, fourUserTouchEditable.getRotate());
+			this.moving(x - dragX, y - dragY, r);
 	}
 
 	private void moving(double d, double e, double rotate) {
@@ -176,6 +183,11 @@ public class LowLevelInteractionListener {
 
 	public void onRotateFinished() {
 
+	}
+
+	public void onScroll(ScrollEvent evt) {
+		if (evt.getTouchCount() == 0)
+			moving(0, 0, evt.getDeltaY() / 40d);
 	}
 
 }

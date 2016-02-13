@@ -45,8 +45,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
-		conceptCaption.setRotate(rotate);
 		cv.translate(x, y);
+		conceptCaption.setRotate(conceptCaption.getRotate() + rotate);
 
 	}
 
@@ -105,7 +105,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.setLeftToggleText(participants.get(1).getName());
 		conceptCaption.setBottomToggleText(participants.get(2).getName());
 		conceptCaption.setRightToggleText(participants.get(3).getName());
-		
+
 		conceptCaption.selectionChangedProperty().addListener((l, o, n) -> {
 			if (n.isSelected)
 				this.fireEditRequested(participants.get(n.index));
