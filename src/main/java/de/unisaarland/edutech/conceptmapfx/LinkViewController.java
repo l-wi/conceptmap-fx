@@ -32,7 +32,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private List<LinkDirectionUpdatedListener> linkDirectionListeners = new ArrayList<LinkDirectionUpdatedListener>();
 	private List<LinkEditRequestedListener> linkEditListeners = new ArrayList<LinkEditRequestedListener>();
 
-	private FourUserTouchEditable linkViewEditor;
+	private FourUserTouchEditable linkCaption;
 
 	private Path linkingPath;
 	private MoveTo start;
@@ -80,7 +80,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		cmv.getChildren().add(aEnd);
 
 		cmv.getChildren().add(linkingPath);
-		cmv.getChildren().add(linkViewEditor);
+		cmv.getChildren().add(linkCaption);
 
 		FourUserTouchEditable view = cv1.getView();
 
@@ -100,35 +100,35 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("LinkView.fxml"));
 
-			this.linkViewEditor = loader.load();
+			this.linkCaption = loader.load();
 
-			this.editable = new CollaborativeStringTextFieldBinding(link.getCaption(), linkViewEditor.textProperty());
+			this.editable = new CollaborativeStringTextFieldBinding(link.getCaption(), linkCaption.textProperty());
 
 			// TODO the damn thing jumps depending on selected or not!
 			// TODO also this is redundant with the logic in concept view!
-			linkViewEditor.setTopToggleText(participants.get(0).getName());
-			linkViewEditor.topSelectedProperty().addListener((l, o, n) -> {
+			linkCaption.setTopToggleText(participants.get(0).getName());
+			linkCaption.topSelectedProperty().addListener((l, o, n) -> {
 				if (n)
 					this.fireEditRequested(participants.get(0));
 				this.layout();
 			});
 
-			linkViewEditor.setLeftToggleText(participants.get(1).getName());
-			linkViewEditor.leftSelectedProperty().addListener((l, o, n) -> {
+			linkCaption.setLeftToggleText(participants.get(1).getName());
+			linkCaption.leftSelectedProperty().addListener((l, o, n) -> {
 				if (n)
 					this.fireEditRequested(participants.get(1));
 				this.layout();
 			});
 
-			linkViewEditor.setBottomToggleText(participants.get(2).getName());
-			linkViewEditor.bottomSelectedProperty().addListener((l, o, n) -> {
+			linkCaption.setBottomToggleText(participants.get(2).getName());
+			linkCaption.bottomSelectedProperty().addListener((l, o, n) -> {
 				if (n)
 					this.fireEditRequested(participants.get(2));
 				this.layout();
 			});
 
-			linkViewEditor.setRightToggleText(participants.get(3).getName());
-			linkViewEditor.rightSelectedProperty().addListener((l, o, n) -> {
+			linkCaption.setRightToggleText(participants.get(3).getName());
+			linkCaption.rightSelectedProperty().addListener((l, o, n) -> {
 				if (n)
 					this.fireEditRequested(participants.get(3));
 				this.layout();
@@ -211,16 +211,16 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private void setUserEnabled(int index, boolean b) {
 		switch (index) {
 		case 0:
-			linkViewEditor.setTopSelected(b);
+			linkCaption.setTopSelected(b);
 			break;
 		case 1:
-			linkViewEditor.setLeftSelected(b);
+			linkCaption.setLeftSelected(b);
 			break;
 		case 2:
-			linkViewEditor.setBottomSelected(b);
+			linkCaption.setBottomSelected(b);
 			break;
 		case 3:
-			linkViewEditor.setRightSelected(b);
+			linkCaption.setRightSelected(b);
 			break;
 		}
 	}
@@ -293,9 +293,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
 
-		linkViewEditor
-				.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkViewEditor.getWidth() / 2);
-		linkViewEditor.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2 + 15);
+		linkCaption
+				.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkCaption.getWidth() / 2);
+		linkCaption.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2 + 15);
 
 		angleX = Math.toDegrees(angleX);
 		angleY = Math.toDegrees(angleY);
@@ -309,11 +309,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
 			aEnd.setRotate(angleX + 180);
-			linkViewEditor.setRotate(angleX);
+			linkCaption.setRotate(angleX);
 		} else {
 			aStart.setRotate(-angleX);
 			aEnd.setRotate(-angleX + 180);
-			linkViewEditor.setRotate(-angleX);
+			linkCaption.setRotate(-angleX);
 		}
 
 	}
