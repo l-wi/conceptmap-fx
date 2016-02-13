@@ -24,7 +24,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
 
 	@FXML
-	private FourUserTouchEditable fourUserTouchEditable;
+	private FourUserTouchEditable conceptCaption;
 
 	private Concept concept;
 
@@ -45,7 +45,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
-		fourUserTouchEditable.setRotate(rotate);
+		conceptCaption.setRotate(rotate);
 		cv.translate(x, y);
 
 	}
@@ -74,11 +74,11 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		this.addConceptMovingListener(this);
 
-		fourUserTouchEditable.setOnMoving((x, y, r) -> {
+		conceptCaption.setOnMoving((x, y, r) -> {
 			this.fireConceptMoving(x, y, r, this, null);
 		});
 
-		fourUserTouchEditable.setOnMoved(() -> this.fireConceptMoved());
+		conceptCaption.setOnMoved(() -> this.fireConceptMoved());
 	}
 
 	public void inputClosed(User u) {
@@ -86,8 +86,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	public boolean intersects(ConceptViewController other) {
-		Bounds myParentBounds = this.fourUserTouchEditable.getBoundsInParent();
-		Bounds otherParentBounds = other.fourUserTouchEditable.getBoundsInParent();
+		Bounds myParentBounds = this.conceptCaption.getBoundsInParent();
+		Bounds otherParentBounds = other.conceptCaption.getBoundsInParent();
 
 		return myParentBounds.intersects(otherParentBounds);
 	}
@@ -95,33 +95,33 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 		this.colBinding = new CollaborativeStringTextFieldBinding(concept.getName(),
-				fourUserTouchEditable.textProperty());
+				conceptCaption.textProperty());
 
 	}
 
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
 
-		fourUserTouchEditable.setTopToggleText(participants.get(0).getName());
-		fourUserTouchEditable.topSelectedProperty().addListener((l, o, n) -> {
+		conceptCaption.setTopToggleText(participants.get(0).getName());
+		conceptCaption.topSelectedProperty().addListener((l, o, n) -> {
 			if (n)
 				this.fireEditRequested(participants.get(0));
 		});
 
-		fourUserTouchEditable.setLeftToggleText(participants.get(1).getName());
-		fourUserTouchEditable.leftSelectedProperty().addListener((l, o, n) -> {
+		conceptCaption.setLeftToggleText(participants.get(1).getName());
+		conceptCaption.leftSelectedProperty().addListener((l, o, n) -> {
 			if (n)
 				this.fireEditRequested(participants.get(1));
 		});
 
-		fourUserTouchEditable.setBottomToggleText(participants.get(2).getName());
-		fourUserTouchEditable.bottomSelectedProperty().addListener((l, o, n) -> {
+		conceptCaption.setBottomToggleText(participants.get(2).getName());
+		conceptCaption.bottomSelectedProperty().addListener((l, o, n) -> {
 			if (n)
 				this.fireEditRequested(participants.get(2));
 		});
 
-		fourUserTouchEditable.setRightToggleText(participants.get(3).getName());
-		fourUserTouchEditable.rightSelectedProperty().addListener((l, o, n) -> {
+		conceptCaption.setRightToggleText(participants.get(3).getName());
+		conceptCaption.rightSelectedProperty().addListener((l, o, n) -> {
 			if (n)
 				this.fireEditRequested(participants.get(3));
 		});
@@ -137,22 +137,22 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private void setUserEnabled(int index, boolean b) {
 		switch (index) {
 		case 0:
-			fourUserTouchEditable.setTopSelected(b);
+			conceptCaption.setTopSelected(b);
 			break;
 		case 1:
-			fourUserTouchEditable.setLeftSelected(b);
+			conceptCaption.setLeftSelected(b);
 			break;
 		case 2:
-			fourUserTouchEditable.setBottomSelected(b);
+			conceptCaption.setBottomSelected(b);
 			break;
 		case 3:
-			fourUserTouchEditable.setRightSelected(b);
+			conceptCaption.setRightSelected(b);
 			break;
 		}
 	}
 
 	public void translate(double x, double y) {
-		double rotation = Math.toRadians(fourUserTouchEditable.getRotate());
+		double rotation = Math.toRadians(conceptCaption.getRotate());
 
 		// if we have a rotation we have to convert to the rotated coordinate
 		// system
@@ -162,16 +162,16 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void translateRelative(double xRotated, double yRotated) {
-		translateAbsolute(fourUserTouchEditable.getTranslateX() + xRotated,
-				fourUserTouchEditable.getTranslateY() + yRotated);
+		translateAbsolute(conceptCaption.getTranslateX() + xRotated,
+				conceptCaption.getTranslateY() + yRotated);
 	}
 
 	public void translateAbsolute(double x, double y) {
-		fourUserTouchEditable.setTranslateX(x);
-		fourUserTouchEditable.setTranslateY(y);
+		conceptCaption.setTranslateX(x);
+		conceptCaption.setTranslateY(y);
 	}
 
 	public FourUserTouchEditable getView() {
-		return this.fourUserTouchEditable;
+		return this.conceptCaption;
 	}
 }
