@@ -35,7 +35,7 @@ public class FourUserTouchEditable extends BorderPane {
 	private static final int BOTTOM_TOGGLE_INDEX = 2;
 	private static final int LEFT_TOGGLE_INDEX = 1;
 	private static final int TOP_TOGGLE_INDEX = 0;
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(FourUserTouchEditable.class);
 
 	public class SelectionChanged {
@@ -107,7 +107,8 @@ public class FourUserTouchEditable extends BorderPane {
 		this.setOnMousePressed((evt) -> lowLevelInteractionListener.onMousePressed(evt));
 		this.setOnMouseReleased((evt) -> lowLevelInteractionListener.onMouseReleased(evt));
 		this.setOnMouseDragged((evt) -> lowLevelInteractionListener.onMouseMoving(evt));
-		this.setOnScroll((evt) -> lowLevelInteractionListener.onScroll(evt));;
+		this.setOnScroll((evt) -> lowLevelInteractionListener.onMouseRotate(evt));
+		;
 	}
 
 	private void initChangeIfEmpty() {
@@ -188,6 +189,8 @@ public class FourUserTouchEditable extends BorderPane {
 		stopUnselecting(rightToggle);
 		stopUnselecting(bottomToggle);
 	}
+
+
 
 	private void stopUnselecting(ToggleButton b) {
 		b.setOnTouchReleased((l) -> {

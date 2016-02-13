@@ -162,4 +162,16 @@ public class ConceptViewTests extends ApplicationTest {
 		assertEquals(y, view.getLayoutY() + view.getTranslateY(), 0);
 	}
 
+	@Test
+	public void testRotateWithoutRotationMode(){
+		//given 
+		int scrollAmount = 25;
+		double rotate = conceptView1.getRotate();
+		
+		//when
+		moveTo(conceptView1).scroll(scrollAmount);
+		
+		//then
+		assertEquals(rotate, conceptView1.getRotate(),0);
+	}
 }

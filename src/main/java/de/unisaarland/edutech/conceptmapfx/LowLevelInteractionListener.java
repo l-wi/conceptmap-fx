@@ -114,7 +114,8 @@ public class LowLevelInteractionListener {
 	}
 
 	private void onRotate(double rotation) {
-		moving(0, 0, rotation);
+		if(fourUserTouchEditable.getState() == State.ROTATING)
+			moving(0, 0, rotation);
 	}
 
 	@FXML
@@ -185,9 +186,6 @@ public class LowLevelInteractionListener {
 
 	}
 
-	public void onScroll(ScrollEvent evt) {
-		if (evt.getTouchCount() == 0)
-			moving(0, 0, evt.getDeltaY() / 40d);
-	}
+
 
 }
