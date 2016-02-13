@@ -22,7 +22,7 @@ public class ConceptMapViewBuilder {
 
 			conceptMapView = conceptMapLoader.load();
 			controller = conceptMapLoader.getController();
-			scene = new Scene(conceptMapView);
+			scene = new Scene(conceptMapView,800,600);
 			controller.addNewLinkListener(controller);
 
 			controller.sceneWidthProperty().bind(scene.widthProperty());

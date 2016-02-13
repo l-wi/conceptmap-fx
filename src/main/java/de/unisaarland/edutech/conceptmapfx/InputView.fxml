@@ -31,7 +31,7 @@
 		</VBox>
          <BorderPane>
             <bottom>
-      			<Button fx:id="btnNewConcept"  text="New" onAction="#onNewAction" BorderPane.alignment="CENTER" />
+      			<Button fx:id="btnNewConcept" styleClass="newBtn" text="New" onAction="#onNewAction" BorderPane.alignment="CENTER" />
             </bottom>
          </BorderPane>
 		</HBox>
