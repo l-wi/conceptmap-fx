@@ -50,8 +50,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private Pane cmv;
 
-	private LowLevelInteractionListener lowLevelInteractionListener;
-
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
 		this.cmv = cmv;
