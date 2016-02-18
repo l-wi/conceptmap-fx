@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import javafx.stage.Stage;
 public class ConceptMapViewTests extends ApplicationTest {
 
 	private static final String FIRST_CONCEPT = "Dog";
+	private static final String SECOND_CONCEPT = "Cat";
 	private ConceptMapViewController controller;
 	private Pane conceptMapView;
 	private ConceptMap map;
@@ -151,8 +153,8 @@ public class ConceptMapViewTests extends ApplicationTest {
 			controller.layout();
 		});
 
-		//then
-		
+		// then
+
 		Set<Node> concepts = conceptMapView.lookupAll(".concept");
 
 		assertEquals(conceptCount + 1, concepts.size());
@@ -169,5 +171,89 @@ public class ConceptMapViewTests extends ApplicationTest {
 		assertEquals(FIRST_CONCEPT, caption.getText());
 
 	}
+
+	@Test
+	public void testLink() {
+		// given
+		map.clear();
+
+		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		c1.setX(0.5);
+		c1.setX(0.5);
+
+		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
+		c2.setX(0.3);
+		c2.setY(0.3);
+		c2.setRotate(30);
+
+		map.addConcept(c1);
+		map.addConcept(c2);
+
+		super.interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+
+		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+
+		Iterator<Node> iterator = concepts.iterator();
+
+		Node firstConceptView = iterator.next();
+		Node secondConceptView = iterator.next();
+
+		// when
+		moveTo(firstConceptView).press(MouseButton.PRIMARY).moveTo(secondConceptView).release(MouseButton.PRIMARY);
+
+		// then
+		assertTrue(map.isAnyLinkExisting(c1, c2));
+		assertFalse(firstConceptView.getBoundsInParent().intersects(secondConceptView.getBoundsInParent()));
+
+	}
+
+	@Test
+	public void testRotateLinkCaption() {
+		map.clear();
+
+		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		c1.setX(0.5);
+		c1.setX(0.5);
+
+		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
+		c2.setX(0.3);
+		c2.setY(0.3);
+		c2.setRotate(30);
+
+		map.addConcept(c1);
+		map.addConcept(c2);
+
+		super.interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+
+		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+
+		Iterator<Node> iterator = concepts.iterator();
+
+		Node firstConceptView = iterator.next();
+		Node secondConceptView = iterator.next();
+
+		int scrollAmount = 1;
+
+		// when
+		moveTo(firstConceptView).press(MouseButton.PRIMARY).moveTo(secondConceptView).release(MouseButton.PRIMARY);
+		Node linkCaption = conceptMapView.lookup(".link");
+		double rotate = linkCaption.getRotate();
+		moveTo(linkCaption).press(MouseButton.PRIMARY).sleep(3000).scroll(scrollAmount).release(MouseButton.PRIMARY);
+
+		// then
+		assertEquals(rotate + 180, linkCaption.getRotate(), 0.0);
+
+	}
+	// TODO:
+	/*
+	 * - Test changing link direction, and making links selection possible.
+	 * - Implement delete
+	 */
 
 }

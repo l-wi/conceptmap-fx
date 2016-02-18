@@ -22,6 +22,8 @@ import de.unisaarland.edutech.conceptmapping.User;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
@@ -104,6 +106,9 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			return;
 		}
 
+		//TODO would be cool if we also try first the direction the link comes from
+		moveToFreeSpot(cv1);
+		
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
 
@@ -112,6 +117,52 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		inputControllers.forEach((l) -> builder.withEditListener(l));
 		LinkViewController lvc = builder.buildUndirectedAndAdd();
 		linkControllers.add(lvc);
+
+		
+		
+
+	}
+
+	private void moveToFreeSpot(ConceptViewController cv2) {
+		FourUserTouchEditable view = cv2.getView();
+
+		double width = view.getWidth();
+
+		double translateX = view.getTranslateX();
+		double translateY = view.getTranslateY();
+
+		for (double r = width * 2.5 ; r < 10 * width; r += width / 2) {
+	
+
+			for (double i = 2 * Math.PI; i >= 0; i -= 0.1) {
+
+				double x = r * Math.cos(i);
+				double y = r * Math.sin(i);
+
+				view.setTranslateX(translateX + x);
+				view.setTranslateY(translateY + y);
+
+				if (!hasIntersections(view))
+					return;
+			}
+		}
+
+		LOG.warn("found no non-overlaping spot for node!");
+	}
+
+	private boolean hasIntersections(Node conceptView) {
+
+		Bounds bounds = conceptView.getBoundsInParent();
+		
+		for (Node n : this.conceptMapPane.getChildren()) {
+
+			if (conceptView != n && bounds.intersects(n.getBoundsInParent())) {
+				return true;
+			}
+
+		}
+		
+		return false;
 
 	}
 

@@ -15,6 +15,7 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
@@ -49,6 +50,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private Link link;
 
 	private Pane cmv;
+	
+	
 
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
@@ -82,12 +85,19 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		FourUserTouchEditable view = cv1.getView();
 
+		
 		view.widthProperty().addListener((c, o, n) -> this.layout());
 		view.heightProperty().addListener((c, o, n) -> this.layout());
 		view.widthProperty().addListener((c, o, n) -> this.layout());
 		view.heightProperty().addListener((c, o, n) -> this.layout());
 
 		layout();
+	}
+
+	private void onRotate(Double rotate) {
+		double r = (this.linkCaption.getRotate() + 180) %  360;
+		this.linkCaption.setRotate(r);
+		LOG.info("rotating");
 	}
 
 	public void setLink(Link link) {
@@ -113,6 +123,12 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 				if (n.isSelected)
 					this.fireEditRequested(participants.get(n.index));
 			});
+			
+			linkCaption.setOnMoving((x, y, r) -> {
+				this.onRotate(r);
+			});
+			
+//			view.setOnMoved(moved);
 
 		} catch (IOException e) {
 			// should never happen (FXML broken)
@@ -192,7 +208,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		linkCaption.setSelected(index, b);
 	}
 
-	private Point2D computeCenterAnchorTranslation(ConceptViewController controller, Point2D betweenVector) {
+	private Point2D computeCenterAnchorTranslation(FourUserTouchEditable conceptView, Point2D betweenVector) {
 		// FIXME when nodes are close together lines go through the nodes not
 		// taking best anchor point
 		// FIXME when we have multiple nodes connected they all use the same
@@ -202,23 +218,27 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		Point2D xAxis = new Point2D(1, 0);
 		Point2D yAxis = new Point2D(0, 1);
 
-		FourUserTouchEditable view = controller.getView();
-		double rotation = Math.toRadians(view.getRotate());
+		double rotation = Math.toRadians(conceptView.getRotate());
 
 		xAxis = rotatePoint2D(xAxis, rotation);
 		yAxis = rotatePoint2D(yAxis, rotation);
 
 		double angleX = xAxis.angle(betweenVector) - 90;
 		double angleY = yAxis.angle(betweenVector) - 90;
-
+		
 		double directionX = (angleX >= 0) ? -1 : 1;
 		double directionY = (angleY >= 0) ? -1 : 1;
 
-		if (Math.abs(angleX) > Math.abs(angleY))
-			return xAxis.normalize().multiply(directionX * view.getWidth() / 2);
+		double width = conceptView.getWidth();
+		double height = conceptView.getHeight();
+				
+		if (Math.abs(angleX) > Math.abs(angleY)) {
+		
+			return xAxis.normalize().multiply(directionX * width / 2);
+		} else {
 
-		else
-			return yAxis.normalize().multiply(directionY * view.getHeight() / 2);
+			return yAxis.normalize().multiply(directionY * height / 2);
+		}
 	}
 
 	private void fireLinkDirectionUpdate(LinkDirectionUpdatedListener.Direction d) {
@@ -243,9 +263,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		Point2D betweenCenters = centerEnd.subtract(centerStart);
 
-		Point2D pTranslateCV1 = computeCenterAnchorTranslation(cv1, betweenCenters);
-		Point2D pTranslateCV2 = computeCenterAnchorTranslation(cv2, betweenCenters);
-
+		Point2D pTranslateCV1 = computeCenterAnchorTranslation(cv1.getView(), betweenCenters);
+		Point2D pTranslateCV2 = computeCenterAnchorTranslation(cv2.getView(), betweenCenters);
+		
 		Point2D startAnchorPoint = centerStart.add(pTranslateCV1);
 		Point2D endAnchorPoint = centerEnd.subtract(pTranslateCV2);
 
@@ -265,12 +285,20 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		angleX = Math.toDegrees(angleX);
 		angleY = Math.toDegrees(angleY);
+		 
+		DoubleBinding aStartXTranslate = start.xProperty().subtract(aStart.widthProperty().divide(2));
+		DoubleBinding aStartYTranslate = start.yProperty().subtract(aStart.heightProperty().divide(2));
+		
+		aStart.translateXProperty().bind(aStartXTranslate);
+		aStart.translateYProperty().bind(aStartYTranslate);
 
-		aStart.setTranslateX(start.getX() - aStart.getWidth() / 2);
-		aStart.setTranslateY(start.getY() - aStart.getHeight() / 2);
 
-		aEnd.setTranslateX(end.getX() - aEnd.getWidth() / 2);
-		aEnd.setTranslateY(end.getY() - aEnd.getHeight() / 2);
+		DoubleBinding aEndXTranslate = end.xProperty().subtract(aEnd.widthProperty().divide(2));
+		DoubleBinding aEndYTranslate = end.yProperty().subtract(aEnd.heightProperty().divide(2));
+		
+		aEnd.translateXProperty().bind(aEndXTranslate);
+		aEnd.translateYProperty().bind(aEndYTranslate);
+		
 
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
@@ -287,4 +315,5 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private void fireEditRequested(User u) {
 		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
 	}
+
 }
