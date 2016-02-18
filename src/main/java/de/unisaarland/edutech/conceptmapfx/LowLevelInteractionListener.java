@@ -136,8 +136,9 @@ public class LowLevelInteractionListener {
 	}
 
 	private void moving(double d, double e, double rotate) {
-		if (movedFunction != null)
+		if (movingFunction != null)
 			movingFunction.apply(d, e, rotate);
+
 	}
 
 	public void onMouseReleased(MouseEvent evt) {
