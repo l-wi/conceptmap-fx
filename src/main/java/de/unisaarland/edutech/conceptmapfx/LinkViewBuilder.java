@@ -57,7 +57,7 @@ public class LinkViewBuilder {
 
 	}
 
-	public LinkViewController buildDirectedAndAdd(LinkDirectionUpdatedListener.Direction d) {
+	public LinkViewController buildWithDirectionAndAdd(LinkDirectionUpdatedListener.Direction d) {
 		controller.initialize();
 		controller.setDirected(d);
 		return controller;
