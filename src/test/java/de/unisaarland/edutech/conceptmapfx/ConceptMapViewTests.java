@@ -319,8 +319,8 @@ public class ConceptMapViewTests extends ApplicationTest {
 	}
 
 	// TODO:
-	/*
-	 * - Test changing link direction, and making links selection possible. -
-	 * Implement delete
+	/* - Test concept delete
+	 * - finish link delete
+	 * - Test changing link direction, and make link selection possible. -
 	 */
 }

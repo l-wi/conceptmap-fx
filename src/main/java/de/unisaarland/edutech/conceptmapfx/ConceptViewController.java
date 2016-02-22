@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
@@ -15,7 +16,6 @@ import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.transform.Transform;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
@@ -25,6 +25,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<ConceptEditRequestedListener> conceptEditListeners = new ArrayList<ConceptEditRequestedListener>();
 	private List<ConceptMovingListener> conceptMovingListeners = new ArrayList<ConceptMovingListener>();
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
+	private List<ConceptDeletedListener> conceptDeletedListeners = new ArrayList<ConceptDeletedListener>();
 
 	@FXML
 	private FourUserTouchEditable conceptCaption;
@@ -82,6 +83,22 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		});
 
 		conceptCaption.setOnMoved(() -> this.fireConceptMoved());
+
+		conceptCaption.setOnMouseClicked((evt) -> {
+			// TODO does that work for touch?
+			if (evt.getClickCount() == 2) {
+				// TODO do we get the user here from somewhere?
+				fireConceptDeleted(null);
+			}
+		});
+	}
+
+	private void fireConceptDeleted(User u) {
+		this.conceptDeletedListeners.forEach((l) -> l.conceptDeleted(this, u));
+	}
+
+	public void addConceptDeletedListener(ConceptDeletedListener l) {
+		this.conceptDeletedListeners.add(l);
 	}
 
 	public void inputClosed(User u) {

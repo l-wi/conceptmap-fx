@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
+import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener.Direction;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
@@ -32,6 +33,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private List<LinkDirectionUpdatedListener> linkDirectionListeners = new ArrayList<LinkDirectionUpdatedListener>();
 	private List<LinkEditRequestedListener> linkEditListeners = new ArrayList<LinkEditRequestedListener>();
+	private List<LinkDeletedListener> linkDeletedListeners = new ArrayList<LinkDeletedListener>();
 
 	private FourUserTouchEditable linkCaption;
 
@@ -50,8 +52,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private Link link;
 
 	private Pane cmv;
-	
-	
 
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
@@ -85,7 +85,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		FourUserTouchEditable view = cv1.getView();
 
-		
 		view.widthProperty().addListener((c, o, n) -> this.layout());
 		view.heightProperty().addListener((c, o, n) -> this.layout());
 		view.widthProperty().addListener((c, o, n) -> this.layout());
@@ -95,7 +94,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	private void onRotate(Double rotate) {
-		double r = (this.linkCaption.getRotate() + 180) %  360;
+		double r = (this.linkCaption.getRotate() + 180) % 360;
 		this.linkCaption.setRotate(r);
 		LOG.info("rotating");
 	}
@@ -123,12 +122,12 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 				if (n.isSelected)
 					this.fireEditRequested(participants.get(n.index));
 			});
-			
+
 			linkCaption.setOnMoving((x, y, r) -> {
 				this.onRotate(r);
 			});
-			
-//			view.setOnMoved(moved);
+
+			// view.setOnMoved(moved);
 
 		} catch (IOException e) {
 			// should never happen (FXML broken)
@@ -142,6 +141,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void addLinkEditRequestedListener(LinkEditRequestedListener l) {
 		linkEditListeners.add(l);
+	}
+
+	public void addLinkDeletionListener(LinkDeletedListener l) {
+		linkDeletedListeners.add(l);
 	}
 
 	public void anchorAltered(AnchorView a) {
@@ -225,15 +228,15 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		double angleX = xAxis.angle(betweenVector) - 90;
 		double angleY = yAxis.angle(betweenVector) - 90;
-		
+
 		double directionX = (angleX >= 0) ? -1 : 1;
 		double directionY = (angleY >= 0) ? -1 : 1;
 
 		double width = conceptView.getWidth();
 		double height = conceptView.getHeight();
-				
+
 		if (Math.abs(angleX) > Math.abs(angleY)) {
-		
+
 			return xAxis.normalize().multiply(directionX * width / 2);
 		} else {
 
@@ -244,6 +247,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private void fireLinkDirectionUpdate(LinkDirectionUpdatedListener.Direction d) {
 		LOG.info("firing LinkDirectionUodated events");
 		linkDirectionListeners.forEach((l) -> l.linkDirectionUpdated(this, d, null));
+	}
+
+	private void fireLinkDeletion(User u) {
+		linkDeletedListeners.forEach((l) -> l.linkDeleted(this, u));
 	}
 
 	private Point2D rotatePoint2D(Point2D xAxis, double rotation) {
@@ -265,7 +272,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		Point2D pTranslateCV1 = computeCenterAnchorTranslation(cv1.getView(), betweenCenters);
 		Point2D pTranslateCV2 = computeCenterAnchorTranslation(cv2.getView(), betweenCenters);
-		
+
 		Point2D startAnchorPoint = centerStart.add(pTranslateCV1);
 		Point2D endAnchorPoint = centerEnd.subtract(pTranslateCV2);
 
@@ -285,20 +292,18 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		angleX = Math.toDegrees(angleX);
 		angleY = Math.toDegrees(angleY);
-		 
+
 		DoubleBinding aStartXTranslate = start.xProperty().subtract(aStart.widthProperty().divide(2));
 		DoubleBinding aStartYTranslate = start.yProperty().subtract(aStart.heightProperty().divide(2));
-		
+
 		aStart.translateXProperty().bind(aStartXTranslate);
 		aStart.translateYProperty().bind(aStartYTranslate);
 
-
 		DoubleBinding aEndXTranslate = end.xProperty().subtract(aEnd.widthProperty().divide(2));
 		DoubleBinding aEndYTranslate = end.yProperty().subtract(aEnd.heightProperty().divide(2));
-		
+
 		aEnd.translateXProperty().bind(aEndXTranslate);
 		aEnd.translateYProperty().bind(aEndYTranslate);
-		
 
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
@@ -316,12 +321,17 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
 	}
 
+	public void remove() {
+		removeFromView();
+		//TODO do we get a user here?
+		fireLinkDeletion(null);
+	}
+
 	public void removeFromView() {
 		cmv.getChildren().remove(aStart);
 		cmv.getChildren().remove(aEnd);
 		cmv.getChildren().remove(linkingPath);
 		cmv.getChildren().remove(linkCaption);
 	}
-	
-	
+
 }

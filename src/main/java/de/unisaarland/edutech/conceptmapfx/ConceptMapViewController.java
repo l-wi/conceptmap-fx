@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,13 +72,34 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	public void conceptDeleted(ConceptViewController cv, User u) {
-		// TODO implement concept deleted
+		Concept concept = cv.getConcept();
 
+		ListIterator<LinkViewController> listIterator = linkControllers.listIterator();
+
+		while (listIterator.hasNext()) {
+			LinkViewController l = listIterator.next();
+
+			if (l.getStart().equals(concept) || l.getEnd().equals(concept)) {
+				l.removeFromView();
+				removeLinkFromMap(l);
+				listIterator.remove();
+			}
+		}
+
+		deleteConcept(cv);
 	}
 
 	public void linkDeleted(LinkViewController lv, User u) {
-		// TODO implement link deleted
+		removeLinkFromMap(lv);
+		linkControllers.remove(lv);
+	}
 
+	public void removeLinkFromMap(LinkViewController lv) {
+		Concept start = lv.getStart();
+		Concept end = lv.getEnd();
+
+		// TODO does this also remove directed links?
+		conceptMap.removeUndirectedLink(start, end);
 	}
 
 	@FXML
@@ -98,7 +120,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		}
 
 		ConceptViewBuilder builder = new ConceptViewBuilder(this.conceptMap);
-		builder = builder.withNewConcept(user).withMovedListener(this).withMovingListener(this);
+		builder = builder.withNewConcept(user).withMovedListener(this).withDeletedListener(this)
+				.withMovingListener(this);
 
 		for (ConceptEditRequestedListener l : inputControllers)
 			builder.withEditRequestedListener(l);
@@ -121,7 +144,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 				+ cv2.getConcept().getName().getContent());
 
 		LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, cv1, cv2);
-		builder.withDirectionListener(this).forNewLink();
+		builder.withDirectionListener(this).forNewLink().withDeletedListener(this);
 		inputControllers.forEach((l) -> builder.withEditListener(l));
 		LinkViewController lvc = builder.buildUndirectedAndAdd();
 		linkControllers.add(lvc);
@@ -193,15 +216,20 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void clearConcepts() {
 
 		userToConceptViewControllers.values().forEach((list) -> {
-			list.forEach((cv) -> conceptMapPane.getChildren().remove(cv.getView()));
+			list.forEach((cv) -> deleteConcept(cv));
 		});
 
 		linkControllers.forEach((lv) -> {
-			lv.removeFromView();
+			lv.remove();
 		});
 
 		linkControllers.clear();
 		userToConceptViewControllers.clear();
+	}
+
+	private void deleteConcept(ConceptViewController cv) {
+		conceptMapPane.getChildren().remove(cv.getView());
+		conceptMap.removeConcept(cv.getConcept());
 	}
 
 	private void loadMap() {
@@ -222,7 +250,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 				LinkViewController lvc = null;
 				LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, tempList.get(i),
 						tempList.get(j));
-				builder.withDirectionListener(this);
+				builder.withDirectionListener(this).withDeletedListener(this);
+
 				inputControllers.forEach((l) -> builder.withEditListener(l));
 
 				if (conceptMap.isLinkedDirectedStartToEnd(i, j)) {
@@ -263,7 +292,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	private ConceptViewController buildForExistingConcept(Concept c) {
 		ConceptViewBuilder builder = new ConceptViewBuilder(conceptMap);
-		builder.forConcept(c).withMovedListener(this).withMovingListener(this);
+		builder.forConcept(c).withMovedListener(this).withMovingListener(this).withDeletedListener(this);
 		;
 
 		for (ConceptEditRequestedListener l : inputControllers)

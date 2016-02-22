@@ -3,6 +3,7 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.io.IOException;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
@@ -122,4 +123,8 @@ public class ConceptViewBuilder {
 		return this;
 	}
 
+	public ConceptViewBuilder withDeletedListener(ConceptDeletedListener l){
+		controller.addConceptDeletedListener(l);
+		return this;
+	}
 }

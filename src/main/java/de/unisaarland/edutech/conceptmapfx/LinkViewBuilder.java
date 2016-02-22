@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
@@ -41,6 +42,11 @@ public class LinkViewBuilder {
 		return this;
 	}
 
+	public LinkViewBuilder withDeletedListener(LinkDeletedListener l){
+		controller.addLinkDeletionListener(l);
+		return this;
+	}
+	
 	public LinkViewBuilder withEditListener(LinkEditRequestedListener l) {
 		controller.addLinkEditRequestedListener(l);
 		return this;
