@@ -14,6 +14,9 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.transform.Transform;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
 
@@ -86,10 +89,71 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	public boolean intersects(ConceptViewController other) {
-		Bounds myParentBounds = this.conceptCaption.getBoundsInParent();
-		Bounds otherParentBounds = other.conceptCaption.getBoundsInParent();
+		// check by using separating axis theorem
+		FourUserTouchEditable viewA = getView();
+		FourUserTouchEditable viewB = other.getView();
+		Transform tA = viewA.getLocalToParentTransform();
+		Transform tB = viewB.getLocalToParentTransform();
 
-		return myParentBounds.intersects(otherParentBounds);
+		Bounds boundsA = viewA.getOverlayBounds();
+		Bounds boundsB = viewB.getOverlayBounds();
+
+		Point2D[] pointsA = getPolygon(tA, boundsA);
+
+		Point2D[] pointsB = getPolygon(tB, boundsB);
+
+		return checkIfAllAxisOverlap(pointsA, pointsB) && checkIfAllAxisOverlap(pointsB, pointsA);
+	}
+
+	private boolean checkIfAllAxisOverlap(Point2D[] pointsA, Point2D[] pointsB) {
+
+		for (int i = 0; i < pointsA.length; i++) {
+			int j = (i + 1) % pointsA.length;
+			Point2D edge = pointsA[i].subtract(pointsA[j]);
+			Point2D axis = new Point2D(-edge.getY(), edge.getX()).normalize();
+
+			Point2D minMaxA = project(axis, pointsA);
+			Point2D minMaxB = project(axis, pointsB);
+
+			if (!overlapProjection(minMaxA, minMaxB))
+				return false;
+		}
+		return true;
+	}
+
+	private Point2D project(Point2D axis, Point2D[] points) {
+
+		double min = axis.dotProduct(points[0]);
+		double max = min;
+
+		for (int i = 1; i < points.length; i++) {
+			double tmp = axis.dotProduct(points[i]);
+
+			if (tmp < min)
+				min = tmp;
+			else if (tmp > max)
+				max = tmp;
+		}
+
+		return new Point2D(min, max);
+	}
+
+	private Point2D[] getPolygon(Transform t, Bounds bounds) {
+
+		Point2D p1 = t.transform(new Point2D(0, 0));
+		Point2D p2 = t.transform(new Point2D(bounds.getWidth(), 0));
+		Point2D p3 = t.transform(new Point2D(bounds.getWidth(), bounds.getHeight()));
+		Point2D p4 = t.transform(new Point2D(0, bounds.getHeight()));
+
+		Point2D[] points = { p1, p2, p3, p4 };
+		return points;
+	}
+
+	private boolean overlapProjection(Point2D minMaxA, Point2D minMaxB) {
+		if (minMaxA.getX() < minMaxB.getX())
+			return minMaxB.getX() - minMaxA.getY() < 0;
+		else
+			return minMaxA.getX() - minMaxB.getY() < 0;
 	}
 
 	public void setConcept(Concept concept) {

@@ -301,6 +301,11 @@ public class FourUserTouchEditable extends BorderPane {
 		t.setVisible(!b);
 		t.setManaged(!b);
 		t.setDisable(b);
+		
+	}
+	
+	public Bounds getOverlayBounds(){
+		return this.caption.getLayoutBounds();
 	}
 
 	public void translateRelative(double x, double y) {
