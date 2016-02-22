@@ -22,6 +22,7 @@ import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
@@ -115,7 +116,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		if (emptyConceptViewController.isPresent()) {
 			LOG.warn("there is  already an empty concept for user" + user);
-
 			return;
 		}
 
@@ -131,6 +131,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	public void newLink(ConceptViewController cv1, ConceptViewController cv2) {
+		moveToFreeSpot(cv1);
+		
 		if (conceptMap.isAnyLinkExisting(cv1.getConcept(), cv2.getConcept())) {
 			LOG.warn("there is already a link between:" + cv1.getConcept() + " and " + cv2.getConcept());
 			return;
@@ -138,7 +140,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		// TODO would be cool if we also try first the direction the link comes
 		// from
-		moveToFreeSpot(cv1);
+		
 
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
@@ -148,6 +150,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		inputControllers.forEach((l) -> builder.withEditListener(l));
 		LinkViewController lvc = builder.buildUndirectedAndAdd();
 		linkControllers.add(lvc);
+
 
 	}
 
@@ -169,8 +172,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 				view.setTranslateX(translateX + x);
 				view.setTranslateY(translateY + y);
 
-				if (!hasIntersections(view))
+				if (!hasIntersections(view)) {
+					linkControllers.forEach((l) -> l.layout());
+
 					return;
+				}
 			}
 		}
 

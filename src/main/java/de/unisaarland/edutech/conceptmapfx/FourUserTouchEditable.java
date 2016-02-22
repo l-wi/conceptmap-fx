@@ -450,7 +450,7 @@ public class FourUserTouchEditable extends BorderPane {
 
 	public Point2D getCenterAsSceneCoordinates() {
 		Point2D p = new Point2D(this.getWidth() / 2, this.getHeight() / 2);
-		return this.getLocalToSceneTransform().transform(p);
+		return this.getLocalToParentTransform().transform(p);
 	}
 
 	public Point2D getOrigin() {

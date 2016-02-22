@@ -317,6 +317,51 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		release(MouseButton.PRIMARY);
 	}
+	
+	@Test
+	public void testConceptDelete(){
+		// given
+		map.clear();
+
+		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		c1.setX(0.5);
+		c1.setY(0.5);
+
+		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
+		c2.setX(0.7);
+		c2.setY(0.7);
+		c2.setRotate(30);
+
+		map.addConcept(c1);
+		map.addConcept(c2);
+		map.addUndirectedLink(c1, c2);
+		
+		super.interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+
+		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+
+		Iterator<Node> iterator = concepts.iterator();
+
+		Node firstConceptView = iterator.next();
+		
+		//when
+		moveTo(firstConceptView).doubleClickOn(MouseButton.PRIMARY);
+		
+		
+		//then
+		concepts = conceptMapView.lookupAll(".concept");
+
+		iterator = concepts.iterator();
+
+
+		assertEquals(map.getConceptCount(),1);
+		assertEquals(c2,map.getConcept(0));
+		assertEquals(concepts.size(),1);
+		
+	}
 
 	// TODO:
 	/* - Test concept delete
