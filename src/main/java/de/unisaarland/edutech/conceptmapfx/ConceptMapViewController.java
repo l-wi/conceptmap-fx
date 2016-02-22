@@ -28,6 +28,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
+//TODO Refactor: extract some listeners into separate classes
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
 		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener, ConceptMovingListener {
 
@@ -293,7 +294,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			fireNewLinkListener(cv, intersected);
 		}
 
-		conceptToIntersectedConcepts.get(cv).forEach((e) -> e.getView().getStyleClass().remove(DROP_TARGET_STYLE));
+		conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList())
+				.forEach((e) -> e.getView().getStyleClass().remove(DROP_TARGET_STYLE));
 		conceptToIntersectedConcepts.remove(cv);
 	}
 
@@ -336,7 +338,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	private void removeHighlightingForLinking(ConceptViewController cv, List<ConceptViewController> intersectedCVs) {
 
-		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList());
+		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv,
+				Collections.emptyList());
 
 		ArrayList<ConceptViewController> difference = new ArrayList<>(formerIntersected);
 		difference.removeAll(intersectedCVs);
@@ -348,7 +351,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	private void addHighlightingForLinking(ConceptViewController cv, List<ConceptViewController> intersectedCVs) {
-		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList());
+		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv,
+				Collections.emptyList());
 
 		ArrayList<ConceptViewController> difference = new ArrayList<>(intersectedCVs);
 		difference.removeAll(formerIntersected);

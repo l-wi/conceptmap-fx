@@ -315,6 +315,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 		// then
 		assertTrue(secondConceptView.getStyleClass().contains("dropTarget"));
 
+		release(MouseButton.PRIMARY);
 	}
 
 	// TODO:
