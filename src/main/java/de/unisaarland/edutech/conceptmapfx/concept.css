@@ -13,6 +13,9 @@
 
 }
 
+.dropTarget{
+	-fx-background-color:#EEDD24;		
+}
 .empty{
 	-fx-background-color:#FF0000;
 }

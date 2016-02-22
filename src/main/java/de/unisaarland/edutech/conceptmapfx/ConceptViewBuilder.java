@@ -5,6 +5,7 @@ import java.io.IOException;
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
@@ -114,6 +115,11 @@ public class ConceptViewBuilder {
 
 		conceptViewPane.setRotate(inputViewController.getRotate());
 
+	}
+
+	public ConceptViewBuilder withMovingListener(ConceptMovingListener l) {
+		controller.addConceptMovingListener(l);
+		return this;
 	}
 
 }

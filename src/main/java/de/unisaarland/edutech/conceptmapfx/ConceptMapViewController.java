@@ -1,6 +1,7 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
@@ -27,7 +29,9 @@ import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
-		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener {
+		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener, ConceptMovingListener {
+
+	private static final String DROP_TARGET_STYLE = "dropTarget";
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
@@ -46,6 +50,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	private DoubleProperty sceneWidth = new SimpleDoubleProperty(0);
 
 	private DoubleProperty sceneHeight = new SimpleDoubleProperty(0);
+
+	private Map<ConceptViewController, List<ConceptViewController>> conceptToIntersectedConcepts = new HashMap<>();
 
 	public void addConceptDeletedListener(ConceptDeletedListener l) {
 		conceptDeletedListners.add(l);
@@ -91,7 +97,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		}
 
 		ConceptViewBuilder builder = new ConceptViewBuilder(this.conceptMap);
-		builder = builder.withNewConcept(user).withMovedListener(this);
+		builder = builder.withNewConcept(user).withMovedListener(this).withMovingListener(this);
 
 		for (ConceptEditRequestedListener l : inputControllers)
 			builder.withEditRequestedListener(l);
@@ -181,7 +187,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		loadMap();
 
-
 	}
 
 	public void clearConcepts() {
@@ -203,11 +208,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		boolean first = true;
 		ArrayList<ConceptViewController> tempList = new ArrayList<ConceptViewController>();
 
-		
-
-		
 		for (int i = 0; i < conceptMap.getConceptCount(); i++) {
-			
 
 			for (int j = 0; j < conceptMap.getConceptCount(); j++) {
 				if (first) {
@@ -230,8 +231,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 					lvc = builder.withLink(conceptMap.getLink(i, j)).buildWithDirectionAndAdd(Direction.NOT_DIRECTED);
 				}
 
-				
-				if (lvc != null){
+				if (lvc != null) {
 					linkControllers.add(lvc);
 				}
 
@@ -243,7 +243,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	public void layout() {
-
 
 		for (List<ConceptViewController> list : userToConceptViewControllers.values()) {
 			for (ConceptViewController cv : list) {
@@ -263,7 +262,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	private ConceptViewController buildForExistingConcept(Concept c) {
 		ConceptViewBuilder builder = new ConceptViewBuilder(conceptMap);
-		builder.forConcept(c).withMovedListener(this);
+		builder.forConcept(c).withMovedListener(this).withMovingListener(this);
+		;
 
 		for (ConceptEditRequestedListener l : inputControllers)
 			builder.withEditRequestedListener(l);
@@ -293,6 +293,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			fireNewLinkListener(cv, intersected);
 		}
 
+		conceptToIntersectedConcepts.get(cv).forEach((e) -> e.getView().getStyleClass().remove(DROP_TARGET_STYLE));
+		conceptToIntersectedConcepts.remove(cv);
 	}
 
 	private void fireNewLinkListener(ConceptViewController cv, ConceptViewController intersected) {
@@ -320,6 +322,40 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			conceptMap.removeDirectedLink(lv.getStart(), lv.getEnd());
 		else
 			conceptMap.setDirectedRelationToUndirected(lv.getStart(), lv.getEnd());
+	}
+
+	@Override
+	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
+		List<ConceptViewController> intersectedCVs = findIntersections(cv);
+
+		removeHighlightingForLinking(cv, intersectedCVs);
+
+		addHighlightingForLinking(cv, intersectedCVs);
+
+	}
+
+	private void removeHighlightingForLinking(ConceptViewController cv, List<ConceptViewController> intersectedCVs) {
+
+		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList());
+
+		ArrayList<ConceptViewController> difference = new ArrayList<>(formerIntersected);
+		difference.removeAll(intersectedCVs);
+
+		difference.forEach((e) -> {
+			e.getView().getStyleClass().remove(DROP_TARGET_STYLE);
+		});
+
+	}
+
+	private void addHighlightingForLinking(ConceptViewController cv, List<ConceptViewController> intersectedCVs) {
+		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList());
+
+		ArrayList<ConceptViewController> difference = new ArrayList<>(intersectedCVs);
+		difference.removeAll(formerIntersected);
+
+		difference.forEach((e) -> e.getView().getStyleClass().add(DROP_TARGET_STYLE));
+
+		conceptToIntersectedConcepts.put(cv, intersectedCVs);
 	}
 
 }
