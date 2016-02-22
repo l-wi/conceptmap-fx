@@ -316,4 +316,12 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		linkEditListeners.forEach(l -> l.linkEditRequested(this, this.editable, u));
 	}
 
+	public void removeFromView() {
+		cmv.getChildren().remove(aStart);
+		cmv.getChildren().remove(aEnd);
+		cmv.getChildren().remove(linkingPath);
+		cmv.getChildren().remove(linkCaption);
+	}
+	
+	
 }

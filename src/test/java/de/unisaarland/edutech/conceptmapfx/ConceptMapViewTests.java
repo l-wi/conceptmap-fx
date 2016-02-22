@@ -212,48 +212,115 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 	@Test
 	public void testRotateLinkCaption() {
-		map.clear();
+		this.map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setX(0.5);
-		c1.setX(0.5);
+		c1.setX(0.2);
+		c1.setY(0.5);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setX(0.3);
-		c2.setY(0.3);
+		c2.setX(0.4);
+		c2.setY(0.4);
 		c2.setRotate(30);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
 
-		super.interact(() -> {
+		map.addUndirectedLink(c1, c2);
+
+
+		
+		interact(() -> {
 			controller.setConceptMap(map);
 			controller.layout();
 		});
 
-		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+		Node linkCaption = conceptMapView.lookup(".link");
 
-		Iterator<Node> iterator = concepts.iterator();
-
-		Node firstConceptView = iterator.next();
-		Node secondConceptView = iterator.next();
-
+		double rotate = linkCaption.getRotate();
 		int scrollAmount = 1;
 
 		// when
-		moveTo(firstConceptView).press(MouseButton.PRIMARY).moveTo(secondConceptView).release(MouseButton.PRIMARY);
-		Node linkCaption = conceptMapView.lookup(".link");
-		double rotate = linkCaption.getRotate();
-		moveTo(linkCaption).press(MouseButton.PRIMARY).sleep(3000).scroll(scrollAmount).release(MouseButton.PRIMARY);
+		moveTo(linkCaption).sleep(1000).press(MouseButton.PRIMARY).sleep(5000).scroll(scrollAmount).release(MouseButton.PRIMARY);
 
 		// then
 		assertEquals(rotate + 180, linkCaption.getRotate(), 0.0);
 
 	}
+
+	@Test
+	public void testNoDuplicateLinkOnLayoutUndirected() {
+		this.map.clear();
+
+		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		c1.setX(0.3);
+		c1.setY(0.3);
+
+		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
+		c2.setX(0.6);
+		c2.setY(0.6);
+		c2.setRotate(30);
+
+		map.addConcept(c1);
+		map.addConcept(c2);
+
+		map.addUndirectedLink(c1, c2);
+
+
+		// when
+
+		interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+
+		Set<Node> linkCaptions = conceptMapView.lookupAll(".link");
+
+		assertEquals(1,linkCaptions.size());
+
+	}
+	
+//	@Test
+//	public void testHighlightDragOver() {
+//		// given
+//		// given
+//		map.clear();
+//
+//		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+//		c1.setX(0.5);
+//		c1.setY(0.5);
+//
+//		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
+//		c2.setX(0.7);
+//		c2.setY(0.7);
+//		c2.setRotate(30);
+//
+//		map.addConcept(c1);
+//		map.addConcept(c2);
+//
+//		super.interact(() -> {
+//			controller.setConceptMap(map);
+//			controller.layout();
+//		});
+//
+//		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+//
+//		Iterator<Node> iterator = concepts.iterator();
+//
+//		Node firstConceptView = iterator.next();
+//		Node secondConceptView = iterator.next();
+//
+//		// when
+//		moveTo(firstConceptView).press(MouseButton.PRIMARY).moveTo(secondConceptView);
+//
+//		// then
+//		assertTrue(firstConceptView.getStyleClass().contains("dropTarget"));
+//		assertTrue(firstConceptView.getStyleClass().contains("dropSource"));
+//	}
+
 	// TODO:
 	/*
-	 * - Test changing link direction, and making links selection possible.
-	 * - Implement delete
+	 * - Test changing link direction, and making links selection possible. -
+	 * Implement delete
 	 */
-
 }
