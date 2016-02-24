@@ -213,7 +213,8 @@ public class ConceptMapViewTests extends ApplicationTest {
 	public void testRotateLinkCaption() {
 		this.map.clear();
 
-		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		User user = map.getExperiment().getParticipants().get(2);
+		Concept c1 = new Concept(new CollaborativeString(user, FIRST_CONCEPT));
 		c1.setX(0.2);
 		c1.setY(0.5);
 
@@ -225,8 +226,9 @@ public class ConceptMapViewTests extends ApplicationTest {
 		map.addConcept(c1);
 		map.addConcept(c2);
 
-		map.addUndirectedLink(c1, c2);
+		map.addUndirectedLink(c1, c2).getCaption().append(user, "hunts");
 
+		
 		interact(() -> {
 			controller.setConceptMap(map);
 			controller.layout();
@@ -243,6 +245,23 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		// then
 		assertEquals(rotate + 180, linkCaption.getRotate(), 0.0);
+
+	}
+
+	@Test
+	public void testRotateLinkLabelMoveConceptRotationPersists() {
+		// given
+		testRotateLinkCaption();
+
+		Node linkCaption = conceptMapView.lookup(".link");
+		Node concept = conceptMapView.lookup(".concept");
+		double rotate = linkCaption.getRotate();
+
+		// when
+		moveTo(concept).press(MouseButton.PRIMARY).moveBy(2, 0).release(MouseButton.PRIMARY);
+
+		// then
+		assertEquals(rotate, linkCaption.getRotate(), 10.0);
 
 	}
 
@@ -407,12 +426,4 @@ public class ConceptMapViewTests extends ApplicationTest {
 		assertNull(map.getLink(c1, c3));
 
 	}
-
-	// Tests TODO:
-	/*
-	 * - Disable keyboard on concept delete 
-	 * - Disable keyboard on link delete
-	 * - untoggle toggles on keyboard close
-	 * 
-	 */
 }

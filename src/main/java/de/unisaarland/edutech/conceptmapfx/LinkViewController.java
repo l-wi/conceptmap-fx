@@ -29,7 +29,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
-//FIXME the edit component appends at the wrong spot
 public class LinkViewController implements ConceptMovingListener, InputClosedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LinkViewController.class);
@@ -58,6 +57,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private boolean isSelected = false;
 
+	private double userRotationFactor = 0;
+	
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
 		this.cmv = cmv;
@@ -110,12 +111,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private void toggleState() {
 		isSelected = !isSelected;
-		
-		if (isSelected){
+
+		if (isSelected) {
 			linkingPath.setStroke(Color.RED);
 			bringAnchorsToFront();
-		}
-		else
+		} else
 			linkingPath.setStroke(Color.WHITE);
 
 		aStart.setActive(isSelected);
@@ -124,19 +124,21 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private void bringAnchorsToFront() {
 		ObservableList<Node> workingCollection = FXCollections.observableArrayList(cmv.getChildren());
-		  
+
 		int aStartIndex = workingCollection.indexOf(aStart);
-		int aEndIndex =workingCollection.indexOf(aEnd);
-		int end =workingCollection.size()-1;
-		Collections.rotate(workingCollection.subList(aStartIndex,end),-1);
-		Collections.rotate(workingCollection.subList(aEndIndex,end),-1);
+		int aEndIndex = workingCollection.indexOf(aEnd);
+		int end = workingCollection.size() - 1;
+		Collections.rotate(workingCollection.subList(aStartIndex, end), -1);
+		Collections.rotate(workingCollection.subList(aEndIndex, end), -1);
 		cmv.getChildren().setAll(workingCollection);
 	}
 
 	private void onRotate(Double rotate) {
+		userRotationFactor = (userRotationFactor + 180) % 360;
+		
 		double r = (this.linkCaption.getRotate() + 180) % 360;
 		this.linkCaption.setRotate(r);
-		LOG.info("rotating");
+
 	}
 
 	public void setLink(Link link) {
@@ -346,14 +348,18 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		aEnd.translateXProperty().bind(aEndXTranslate);
 		aEnd.translateYProperty().bind(aEndYTranslate);
 
+		double angleDiff = angleX - linkCaption.getRotate();
+
+		LOG.info("angle Difference: " + angleDiff);
+
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
 			aEnd.setRotate(angleX + 180);
-			linkCaption.setRotate(angleX);
+			linkCaption.setRotate(+angleX + userRotationFactor);
 		} else {
 			aStart.setRotate(-angleX);
 			aEnd.setRotate(-angleX + 180);
-			linkCaption.setRotate(-angleX);
+			linkCaption.setRotate(-angleX + userRotationFactor );
 		}
 
 	}
