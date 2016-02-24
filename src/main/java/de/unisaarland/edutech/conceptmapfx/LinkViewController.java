@@ -154,8 +154,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			this.editable = new CollaborativeStringTextFieldBinding(this.link.getCaption(),
 					this.linkCaption.textProperty());
 
-			// TODO the damn thing jumps depending on selected or not!
-			// TODO also this is redundant with the logic in concept view!
 			linkCaption.setTopToggleText(participants.get(0).getName());
 			linkCaption.setLeftToggleText(participants.get(1).getName());
 			linkCaption.setBottomToggleText(participants.get(2).getName());
@@ -170,7 +168,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 				this.onRotate(r);
 			});
 
-			// view.setOnMoved(moved);
 
 		} catch (IOException e) {
 			// should never happen (FXML broken)
@@ -255,12 +252,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	private Point2D computeCenterAnchorTranslation(FourUserTouchEditable conceptView, Point2D betweenVector) {
-		// FIXME when nodes are close together lines go through the nodes not
-		// taking best anchor point
-		// FIXME when we have multiple nodes connected they all use the same
-		// anchor point, hence we cannot change direction
-		// FIXME when caption of link is upside down, it is to far away from
-		// line
 		Point2D xAxis = new Point2D(1, 0);
 		Point2D yAxis = new Point2D(0, 1);
 
