@@ -84,6 +84,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		conceptCaption.setOnMouseClicked((evt) -> {
 			// TODO does that work for touch?
+			//TODO do not show the selection view first when deleting!
 			if (evt.getClickCount() == 2) {
 				fireConceptDeleted(getActiveUser());
 			}

@@ -1,11 +1,13 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.comtel2000.keyboard.control.KeyboardPane;
+import org.comtel2000.keyboard.control.KeyboardType;
 import org.comtel2000.keyboard.robot.IRobot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +57,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	public void initialize() {
 		try {
-			// TODO set right keymap
 			keyboard.setKeyBoardStyle(getClass().getResource("input.css").toString());
+			keyboard.setSpaceKeyMove(false);
+			keyboard.setLayerPath(new File("/home/tim/Dokumente/programmierung/maven/conceptmap-fx/keyboardLayout").toPath());
 			keyboard.load();
 
 			// remove the default handler
@@ -154,14 +157,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	public void conceptDeleted(ConceptViewController cv, User u) {
-		if (!u.equals(this.user))
+		if (u == null || !u.equals(this.user))
 			return;
 
 		releaseInput();
 	}
 
 	public void linkDeleted(LinkViewController lv, User u) {
-		if (!u.equals(this.user))
+		if (u == null || !u.equals(this.user))
 			return;
 
 		releaseInput();
