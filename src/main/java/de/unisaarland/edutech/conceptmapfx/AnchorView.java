@@ -17,14 +17,17 @@ public class AnchorView extends Pane {
 	private Shape currentlyActive;
 	private LinkViewController controller;
 
+	private boolean isActive = false;
+
 	private EventHandler<? super MouseEvent> onClickToggle = (l) -> {
-		controller.anchorAltered(this);
+		if (isActive)
+			controller.anchorAltered(this);
 	};
 
 	AnchorView(LinkViewController controller, Color color, double width, double height) {
 		this.controller = controller;
 		createCircle(color, width, height);
-		createArrow(color, width, 1.5*height);
+		createArrow(color, width, 1.5 * height);
 
 		this.getChildren().add(circle);
 		circle.setOnMouseClicked(onClickToggle);
@@ -75,5 +78,16 @@ public class AnchorView extends Pane {
 
 	public boolean isDirected() {
 		return currentlyActive instanceof Polygon;
+	}
+
+	public void setActive(boolean isSelected) {
+		this.isActive = isSelected;
+		if (isActive) {
+			this.arrowPolygon.setStroke(Color.RED);
+			this.circle.setStroke(Color.RED);
+		} else {
+			this.arrowPolygon.setStroke(Color.WHITE);
+			this.circle.setStroke(Color.WHITE);
+		}
 	}
 }

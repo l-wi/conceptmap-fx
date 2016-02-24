@@ -54,6 +54,20 @@ public class Main extends Application {
 		loss.setRotate(0);
 		conceptMap.addConcept(loss);
 
+		Concept sith = new Concept(new CollaborativeString(u1, "Sith"));
+		sith.setX(0.4);
+		sith.setY(0.664);
+		sith.setRotate(84);
+		conceptMap.addConcept(sith);
+		
+		
+		Link link = conceptMap.addUndirectedLink(lightsaber, loss);
+		link.getCaption().append(u4, "causes");
+		
+		Link link2 = conceptMap.addDirectedLink(lightsaber, sith);
+		link2.getCaption().append(u2, "uses");
+		
+		
 		// Begin UI code
 		primaryStage.setMaximized(true);
 		primaryStage.setTitle("Concept Mapping");

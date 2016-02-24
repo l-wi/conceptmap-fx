@@ -1,8 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -228,8 +226,6 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		map.addUndirectedLink(c1, c2);
 
-
-		
 		interact(() -> {
 			controller.setConceptMap(map);
 			controller.layout();
@@ -241,7 +237,8 @@ public class ConceptMapViewTests extends ApplicationTest {
 		int scrollAmount = 1;
 
 		// when
-		moveTo(linkCaption).sleep(1000).press(MouseButton.PRIMARY).sleep(5000).scroll(scrollAmount).release(MouseButton.PRIMARY);
+		moveTo(linkCaption).sleep(1000).press(MouseButton.PRIMARY).sleep(5000).scroll(scrollAmount)
+				.release(MouseButton.PRIMARY);
 
 		// then
 		assertEquals(rotate + 180, linkCaption.getRotate(), 0.0);
@@ -266,7 +263,6 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		map.addUndirectedLink(c1, c2);
 
-
 		// when
 
 		interact(() -> {
@@ -276,10 +272,10 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		Set<Node> linkCaptions = conceptMapView.lookupAll(".link");
 
-		assertEquals(1,linkCaptions.size());
+		assertEquals(1, linkCaptions.size());
 
 	}
-	
+
 	@Test
 	public void testHighlightDragOver() {
 		// given
@@ -317,9 +313,9 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		release(MouseButton.PRIMARY);
 	}
-	
+
 	@Test
-	public void testConceptDelete(){
+	public void testConceptDelete() {
 		// given
 		map.clear();
 
@@ -335,7 +331,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 		map.addConcept(c1);
 		map.addConcept(c2);
 		map.addUndirectedLink(c1, c2);
-		
+
 		super.interact(() -> {
 			controller.setConceptMap(map);
 			controller.layout();
@@ -346,26 +342,58 @@ public class ConceptMapViewTests extends ApplicationTest {
 		Iterator<Node> iterator = concepts.iterator();
 
 		Node firstConceptView = iterator.next();
-		
-		//when
+
+		// when
 		moveTo(firstConceptView).doubleClickOn(MouseButton.PRIMARY);
-		
-		
-		//then
+
+		// then
 		concepts = conceptMapView.lookupAll(".concept");
 
 		iterator = concepts.iterator();
 
+		assertEquals(map.getConceptCount(), 1);
+		assertEquals(c2, map.getConcept(0));
+		assertEquals(concepts.size(), 1);
 
-		assertEquals(map.getConceptCount(),1);
-		assertEquals(c2,map.getConcept(0));
-		assertEquals(concepts.size(),1);
-		
 	}
 
-	// TODO:
-	/* - Test concept delete
-	 * - finish link delete
-	 * - Test changing link direction, and make link selection possible. -
-	 */
+	@Test
+	public void testLinkDelete() {
+		// given
+		map.clear();
+
+		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		c1.setX(0.5);
+		c1.setY(0.5);
+
+		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
+		c2.setX(0.7);
+		c2.setY(0.7);
+		c2.setRotate(30);
+
+		map.addConcept(c1);
+		map.addConcept(c2);
+		map.addUndirectedLink(c1, c2);
+
+		super.interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+
+		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+		Node link = conceptMapView.lookup(".linkPath");
+
+		// when
+		moveTo(link).doubleClickOn(MouseButton.PRIMARY);
+
+		// then
+		concepts = conceptMapView.lookupAll(".concept");
+
+		assertEquals(2, map.getConceptCount());
+		assertEquals(2, concepts.size());
+		assertNull(conceptMapView.lookup(".link"));
+		assertNull(map.getLink(c1, c2));
+
+	}
+
 }

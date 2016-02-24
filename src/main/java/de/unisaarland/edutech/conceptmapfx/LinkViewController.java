@@ -2,6 +2,7 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,11 +18,13 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.beans.binding.DoubleBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -53,6 +56,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private Pane cmv;
 
+	private boolean isSelected = false;
+
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
 		this.cmv = cmv;
@@ -63,7 +68,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		this.linkingPath = new Path();
 		linkingPath.setStrokeWidth(5);
-		linkingPath.setStroke(Paint.valueOf("White"));
+		linkingPath.setStroke(Color.WHITE);
 
 		aStart = new AnchorView(this, Color.WHITE, 25, 25);
 		aEnd = new AnchorView(this, Color.WHITE, 25, 25);
@@ -71,6 +76,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.linkingPath.getElements().add(start);
 		this.linkingPath.getElements().add(end);
 
+		this.linkingPath.getStyleClass().add("linkPath");
 		this.participants = participants;
 
 	}
@@ -90,7 +96,41 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		view.widthProperty().addListener((c, o, n) -> this.layout());
 		view.heightProperty().addListener((c, o, n) -> this.layout());
 
+		linkingPath.setOnMouseClicked((e) -> {
+			// TODO check if that works on touch device
+			if (e.getClickCount() == 2) {
+				this.remove();
+			} else if (e.getClickCount() == 1) {
+				toggleState();
+			}
+		});
+
 		layout();
+	}
+
+	private void toggleState() {
+		isSelected = !isSelected;
+		
+		if (isSelected){
+			linkingPath.setStroke(Color.RED);
+			bringAnchorsToFront();
+		}
+		else
+			linkingPath.setStroke(Color.WHITE);
+
+		aStart.setActive(isSelected);
+		aEnd.setActive(isSelected);
+	}
+
+	private void bringAnchorsToFront() {
+		ObservableList<Node> workingCollection = FXCollections.observableArrayList(cmv.getChildren());
+		  
+		int aStartIndex = workingCollection.indexOf(aStart);
+		int aEndIndex =workingCollection.indexOf(aEnd);
+		Collections.swap(workingCollection, workingCollection.size()-1, aStartIndex);
+		Collections.swap(workingCollection, workingCollection.size()-2, aEndIndex);
+		
+		cmv.getChildren().setAll(workingCollection);
 	}
 
 	private void onRotate(Double rotate) {
@@ -109,7 +149,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 			this.linkCaption = loader.load();
 
-			this.editable = new CollaborativeStringTextFieldBinding(link.getCaption(), linkCaption.textProperty());
+			this.editable = new CollaborativeStringTextFieldBinding(this.link.getCaption(),
+					this.linkCaption.textProperty());
 
 			// TODO the damn thing jumps depending on selected or not!
 			// TODO also this is redundant with the logic in concept view!
@@ -323,7 +364,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void remove() {
 		removeFromView();
-		//TODO do we get a user here?
+		// TODO do we get a user here?
 		fireLinkDeletion(null);
 	}
 
