@@ -275,7 +275,7 @@ public class FourUserTouchEditable extends BorderPane {
 			return;
 
 		setDisableAndHiddenToAll(true);
-		// TODO do we need to adapt for something when we are moving?
+
 		state.set(State.MOVING);
 	}
 
