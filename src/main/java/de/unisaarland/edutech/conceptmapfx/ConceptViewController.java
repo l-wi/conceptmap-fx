@@ -59,9 +59,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	}
 
 	private void fireConceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
-
-		// TODO when to overlap here we should somehow indicate on UI that they
-		// will be linked when dropped
 		conceptMovingListeners.forEach(l -> l.conceptMoving(x, y, rotate, cv, u));
 	}
 
