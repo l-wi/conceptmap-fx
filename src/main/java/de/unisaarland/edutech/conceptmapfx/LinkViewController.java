@@ -361,7 +361,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void remove() {
 		removeFromView();
-		// TODO do we get a user here?
 		fireLinkDeletion(getActiveUser());
 	}
 
