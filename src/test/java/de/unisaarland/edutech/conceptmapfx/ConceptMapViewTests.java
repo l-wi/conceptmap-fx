@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 
 public class ConceptMapViewTests extends ApplicationTest {
 
+	private static final String THIRD_CONCEPT = "hamster";
 	private static final String FIRST_CONCEPT = "Dog";
 	private static final String SECOND_CONCEPT = "Cat";
 	private ConceptMapViewController controller;
@@ -371,9 +372,17 @@ public class ConceptMapViewTests extends ApplicationTest {
 		c2.setY(0.7);
 		c2.setRotate(30);
 
+		Concept c3 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(3), THIRD_CONCEPT));
+		c3.setX(0.7);
+		c3.setY(0.2);
+		c3.setRotate(0);
+
 		map.addConcept(c1);
 		map.addConcept(c2);
+		map.addConcept(c3);
+
 		map.addUndirectedLink(c1, c2);
+		map.addDirectedLink(c1, c3);
 
 		super.interact(() -> {
 			controller.setConceptMap(map);
@@ -381,18 +390,21 @@ public class ConceptMapViewTests extends ApplicationTest {
 		});
 
 		Set<Node> concepts = conceptMapView.lookupAll(".concept");
-		Node link = conceptMapView.lookup(".linkPath");
+		Set<Node> links = conceptMapView.lookupAll(".linkPath");
 
 		// when
-		moveTo(link).doubleClickOn(MouseButton.PRIMARY);
+		for (Node link : links)
+			moveTo(link).doubleClickOn(MouseButton.PRIMARY);
 
 		// then
 		concepts = conceptMapView.lookupAll(".concept");
 
-		assertEquals(2, map.getConceptCount());
-		assertEquals(2, concepts.size());
+		assertEquals(3, map.getConceptCount());
+		assertEquals(3, concepts.size());
 		assertNull(conceptMapView.lookup(".link"));
 		assertNull(map.getLink(c1, c2));
+		assertNull(map.getLink(c2, c1));
+		assertNull(map.getLink(c1, c3));
 
 	}
 

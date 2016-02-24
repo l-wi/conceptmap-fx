@@ -98,8 +98,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void removeLinkFromMap(LinkViewController lv) {
 		Concept start = lv.getStart();
 		Concept end = lv.getEnd();
-
-		// TODO does this also remove directed links?
+		//works also for directed
 		conceptMap.removeUndirectedLink(start, end);
 	}
 
