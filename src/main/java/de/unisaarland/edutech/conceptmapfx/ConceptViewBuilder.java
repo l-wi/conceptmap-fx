@@ -89,7 +89,6 @@ public class ConceptViewBuilder {
 	}
 
 	private void moveConceptToRightPosition(InputViewController inputViewController, Pane conceptViewPane) {
-		// TODO what if current space is occupied
 
 		Point2D p = new Point2D(0, -50);
 		Point2D pScene = inputViewController.transformLocalToScene(p);
