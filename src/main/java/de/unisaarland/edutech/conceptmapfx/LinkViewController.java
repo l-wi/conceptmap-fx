@@ -127,9 +127,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		  
 		int aStartIndex = workingCollection.indexOf(aStart);
 		int aEndIndex =workingCollection.indexOf(aEnd);
-		Collections.swap(workingCollection, workingCollection.size()-1, aStartIndex);
-		Collections.swap(workingCollection, workingCollection.size()-2, aEndIndex);
-		
+		int end =workingCollection.size()-1;
+		Collections.rotate(workingCollection.subList(aStartIndex,end),-1);
+		Collections.rotate(workingCollection.subList(aEndIndex,end),-1);
 		cmv.getChildren().setAll(workingCollection);
 	}
 
@@ -365,7 +365,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	public void remove() {
 		removeFromView();
 		// TODO do we get a user here?
-		fireLinkDeletion(null);
+		fireLinkDeletion(getActiveUser());
 	}
 
 	public void removeFromView() {
@@ -375,4 +375,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		cmv.getChildren().remove(linkCaption);
 	}
 
+	public User getActiveUser() {
+		int index = linkCaption.getSelected();
+		if (index == -1)
+			return null;
+		else
+			return participants.get(index);
+	}
 }

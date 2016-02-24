@@ -98,7 +98,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void removeLinkFromMap(LinkViewController lv) {
 		Concept start = lv.getStart();
 		Concept end = lv.getEnd();
-		//works also for directed
+		// works also for directed
 		conceptMap.removeUndirectedLink(start, end);
 	}
 
@@ -122,8 +122,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		builder = builder.withNewConcept(user).withMovedListener(this).withDeletedListener(this)
 				.withMovingListener(this);
 
-		for (ConceptEditRequestedListener l : inputControllers)
+		for (InputViewController l : inputControllers) {
 			builder.withEditRequestedListener(l);
+			builder.withDeletedListener(l);
+		}
 
 		ConceptViewController controller = builder.buildControllerAndAddView(inputViewController, this.conceptMapPane);
 		this.userToConceptViewControllers.get(user).add(controller);
@@ -131,7 +133,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	public void newLink(ConceptViewController cv1, ConceptViewController cv2) {
 		moveToFreeSpot(cv1);
-		
+
 		if (conceptMap.isAnyLinkExisting(cv1.getConcept(), cv2.getConcept())) {
 			LOG.warn("there is already a link between:" + cv1.getConcept() + " and " + cv2.getConcept());
 			return;
@@ -139,17 +141,18 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		// TODO would be cool if we also try first the direction the link comes
 		// from
-		
 
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
 
 		LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, cv1, cv2);
 		builder.withDirectionListener(this).forNewLink().withDeletedListener(this);
-		inputControllers.forEach((l) -> builder.withEditListener(l));
+		inputControllers.forEach((l) -> {
+			builder.withEditListener(l);
+			builder.withDeletedListener(l);
+		});
 		LinkViewController lvc = builder.buildUndirectedAndAdd();
 		linkControllers.add(lvc);
-
 
 	}
 
@@ -257,7 +260,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 						tempList.get(j));
 				builder.withDirectionListener(this).withDeletedListener(this);
 
-				inputControllers.forEach((l) -> builder.withEditListener(l));
+				inputControllers.forEach((l) -> {
+					builder.withEditListener(l);
+					builder.withDeletedListener(l);
+				});
 
 				if (conceptMap.isLinkedDirectedStartToEnd(i, j)) {
 					lvc = builder.withLink(conceptMap.getLink(i, j)).buildWithDirectionAndAdd(Direction.START_TO_END);
@@ -300,8 +306,10 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		builder.forConcept(c).withMovedListener(this).withMovingListener(this).withDeletedListener(this);
 		;
 
-		for (ConceptEditRequestedListener l : inputControllers)
+		for (InputViewController l : inputControllers) {
 			builder.withEditRequestedListener(l);
+			builder.withDeletedListener(l);
+		}
 
 		return builder.buildControllerAndAddView(this.conceptMapPane);
 	}

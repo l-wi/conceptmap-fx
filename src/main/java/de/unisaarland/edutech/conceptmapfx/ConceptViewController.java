@@ -2,6 +2,7 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,14 +85,21 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.setOnMouseClicked((evt) -> {
 			// TODO does that work for touch?
 			if (evt.getClickCount() == 2) {
-				// TODO do we get the user here from somewhere?
-				fireConceptDeleted(null);
+				fireConceptDeleted(getActiveUser());
 			}
 		});
 	}
 
 	private void fireConceptDeleted(User u) {
 		this.conceptDeletedListeners.forEach((l) -> l.conceptDeleted(this, u));
+	}
+
+	User getActiveUser() {
+		int index = getView().getSelected();
+		if (index == -1)
+			return null;
+		else
+			return participants.get(index);
 	}
 
 	public void addConceptDeletedListener(ConceptDeletedListener l) {

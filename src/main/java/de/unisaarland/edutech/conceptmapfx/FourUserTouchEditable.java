@@ -108,7 +108,7 @@ public class FourUserTouchEditable extends BorderPane {
 		this.setOnMouseReleased((evt) -> lowLevelInteractionListener.onMouseReleased(evt));
 		this.setOnMouseDragged((evt) -> lowLevelInteractionListener.onMouseMoving(evt));
 		this.setOnScroll((evt) -> lowLevelInteractionListener.onMouseRotate(evt));
-		
+
 	}
 
 	private void initChangeIfEmpty() {
@@ -189,8 +189,6 @@ public class FourUserTouchEditable extends BorderPane {
 		stopUnselecting(rightToggle);
 		stopUnselecting(bottomToggle);
 	}
-
-
 
 	private void stopUnselecting(ToggleButton b) {
 		b.setOnTouchReleased((l) -> {
@@ -301,10 +299,10 @@ public class FourUserTouchEditable extends BorderPane {
 		t.setVisible(!b);
 		t.setManaged(!b);
 		t.setDisable(b);
-		
+
 	}
-	
-	public Bounds getOverlayBounds(){
+
+	public Bounds getOverlayBounds() {
 		return this.caption.getLayoutBounds();
 	}
 
@@ -323,6 +321,21 @@ public class FourUserTouchEditable extends BorderPane {
 
 	public StringProperty textProperty() {
 		return caption.textProperty();
+	}
+
+	public int getSelected() {
+		final int NO_SELECTION = -1;
+
+		if (isBottomSelected())
+			return BOTTOM_TOGGLE_INDEX;
+		else if (isTopSelected())
+			return TOP_TOGGLE_INDEX;
+		else if (isLeftSelected())
+			return LEFT_TOGGLE_INDEX;
+		else if (isRightSelected())
+			return RIGHT_TOGGLE_INDEX;
+
+		return NO_SELECTION;
 	}
 
 	public void setSelected(int index, boolean b) {

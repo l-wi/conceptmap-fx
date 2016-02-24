@@ -50,19 +50,19 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private UserRobotHandler currentRobotHandler;
 
-	private CollaborativeStringTextFieldBinding cv;
+	private CollaborativeStringTextFieldBinding collaborativeStringBinding;
 
 	@FXML
 	public void initialize() {
 		try {
-			//TODO set right keymap
+			// TODO set right keymap
 			keyboard.setKeyBoardStyle(getClass().getResource("input.css").toString());
 			keyboard.load();
-			
+
 			// remove the default handler
 			IRobot defaultHandler = keyboard.getRobotHandler().get(0);
 			keyboard.removeRobotHandler(defaultHandler);
-			
+
 			keyboard.setDisable(true);
 
 		} catch (IOException | URISyntaxException e) {
@@ -98,13 +98,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		closedListener = l;
 	}
 
-	public void conceptEditRequested(InputClosedListener l, CollaborativeStringTextFieldBinding editable, User u) {	
+	public void conceptEditRequested(InputClosedListener l, CollaborativeStringTextFieldBinding editable, User u) {
 		editRequested(l, editable, u);
 	}
 
 	private void editRequested(InputClosedListener l, CollaborativeStringTextFieldBinding editable, User u) {
 		// does somebody else want to work on our current node
-		if (editable.equals(this.cv) && !u.equals(this.user))
+		if (editable.equals(this.collaborativeStringBinding) && !u.equals(this.user))
 			releaseInput();
 
 		// it is not an edit request for us.
@@ -117,9 +117,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		setInputClosedListener(l);
 		acquireInput(editable, u);
 		keyboard.setDisable(false);
-		
+
 	}
-	
+
 	@Override
 	public void linkEditRequested(InputClosedListener l, CollaborativeStringTextFieldBinding cv, User u) {
 		editRequested(l, cv, u);
@@ -131,7 +131,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 		currentRobotHandler = new UserRobotHandler(cv, u);
 		this.keyboard.addRobotHandler(currentRobotHandler);
-		this.cv = cv;
+		this.collaborativeStringBinding = cv;
 
 		FadeTransition ft = new FadeTransition(Duration.millis(300), inputControls);
 		ft.setFromValue(0.0);
@@ -154,13 +154,17 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	public void conceptDeleted(ConceptViewController cv, User u) {
-		// TODO implement concept deleted
+		if (!u.equals(this.user))
+			return;
 
+		releaseInput();
 	}
 
 	public void linkDeleted(LinkViewController lv, User u) {
-		// TODO implement link deleted
+		if (!u.equals(this.user))
+			return;
 
+		releaseInput();
 	}
 
 	public void setUser(User u) {
@@ -192,4 +196,3 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 }
-
