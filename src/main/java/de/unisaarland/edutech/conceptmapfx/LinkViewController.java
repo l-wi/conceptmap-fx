@@ -340,9 +340,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		aEnd.translateYProperty().bind(aEndYTranslate);
 
 		double angleDiff = angleX - linkCaption.getRotate();
-
-		LOG.info("angle Difference: " + angleDiff);
-
+		
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
 			aEnd.setRotate(angleX + 180);
