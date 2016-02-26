@@ -104,6 +104,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		view.widthProperty().addListener((c, o, n) -> this.layout());
 		view.heightProperty().addListener((c, o, n) -> this.layout());
 
+		
 		linkingPath.setOnMouseClicked((e) -> {
 			// TODO check if that works on touch device
 			if (e.getClickCount() == 2) {
@@ -113,6 +114,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			}
 		});
 
+		linkingPath.setCache(true);
+		
 		layout();
 	}
 
@@ -353,8 +356,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		aEnd.translateXProperty().bind(aEndXTranslate);
 		aEnd.translateYProperty().bind(aEndYTranslate);
-
-		double angleDiff = angleX - linkCaption.getRotate();
 		
 		if (angleY < 90) {
 			aStart.setRotate(angleX);

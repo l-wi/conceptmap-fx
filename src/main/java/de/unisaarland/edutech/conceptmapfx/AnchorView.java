@@ -43,12 +43,14 @@ public class AnchorView extends Pane {
 		circle.setStroke(color);
 		circle.setStrokeWidth(2);
 		circle.setStrokeType(StrokeType.OUTSIDE);
+		circle.setCache(true);
 	}
 
 	private void createArrow(Color color, double width, double height) {
 		double[] arrowShape = new double[] { width / 2, height / 2, width, height, width, 0 };
 		arrowPolygon = new Polygon(arrowShape);
 		arrowPolygon.setFill(color);
+		arrowPolygon.setCache(true);
 	}
 
 	public void toggle() {
