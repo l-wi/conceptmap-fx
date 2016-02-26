@@ -81,9 +81,9 @@ public class FourUserTouchEditable extends BorderPane {
 		loader.setRoot(this);
 		loader.setController(this);
 
-		this.setCache(true);
-		this.setCacheHint(CacheHint.SPEED);
-		this.setCacheShape(true);
+//		this.setCache(true);
+//		this.setCacheHint(CacheHint.SPEED);
+//		this.setCacheShape(true);
 		
 		rotationColor = Color.AQUA;
 

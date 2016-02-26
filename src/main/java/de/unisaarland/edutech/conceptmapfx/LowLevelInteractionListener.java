@@ -7,6 +7,8 @@ import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.CacheHint;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
@@ -85,7 +87,8 @@ public class LowLevelInteractionListener {
 
 		if (isPressed)
 			return;
-
+		//
+		
 		showSelectedMenuTransition.play();
 
 		clickInTime = System.currentTimeMillis();
@@ -126,10 +129,10 @@ public class LowLevelInteractionListener {
 		TouchPoint p = evt.getTouchPoint();
 
 		double d = new Point2D(p.getX(), p.getY()).distance(new Point2D(this.dragX, this.dragY));
-		
+
 		if (d < JITTER_THRESHOLD)
 			return;
-		
+
 		onMoving(p.getX(), p.getY(), 0);
 		evt.consume();
 	}
@@ -171,6 +174,8 @@ public class LowLevelInteractionListener {
 		if (touchEventsActive >= 1)
 			return;
 
+
+		
 		isPressed = false;
 
 		showSelectedMenuTransition.stop();
