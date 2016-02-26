@@ -59,6 +59,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private double userRotationFactor = 0;
 	
+	private double rotateTreshold = 0;
+	
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
 		this.cmv = cmv;
@@ -134,6 +136,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	private void onRotate(Double rotate) {
+		rotateTreshold += rotate;
+		if(Math.abs(rotateTreshold) < 70)
+			return;
+		rotateTreshold = 0;
+		
 		userRotationFactor = (userRotationFactor + 180) % 360;
 		
 		double r = (this.linkCaption.getRotate() + 180) % 360;
@@ -168,6 +175,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 				this.onRotate(r);
 			});
 
+			linkCaption.setOnMoved(() -> {
+				rotateTreshold = 0;
+			});
 
 		} catch (IOException e) {
 			// should never happen (FXML broken)

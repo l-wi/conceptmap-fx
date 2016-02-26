@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
@@ -14,6 +15,8 @@ import javafx.scene.input.TouchPoint;
 import javafx.util.Duration;
 
 public class LowLevelInteractionListener {
+
+	private static final int JITTER_THRESHOLD = 5;
 
 	private static final Logger LOG = LoggerFactory.getLogger(LowLevelInteractionListener.class);
 
@@ -97,7 +100,8 @@ public class LowLevelInteractionListener {
 	}
 
 	public void onMouseMoving(MouseEvent evt) {
-
+		if (evt.isSynthesized())
+			return;
 		this.onMoving(evt.getX(), evt.getY(), 0);
 	}
 
@@ -120,11 +124,20 @@ public class LowLevelInteractionListener {
 	@FXML
 	public void onTouchMoving(TouchEvent evt) {
 		TouchPoint p = evt.getTouchPoint();
+
+		double d = new Point2D(p.getX(), p.getY()).distance(new Point2D(this.dragX, this.dragY));
+		
+		if (d < JITTER_THRESHOLD)
+			return;
+		
 		onMoving(p.getX(), p.getY(), 0);
 		evt.consume();
 	}
 
 	private void onMoving(double x, double y, double r) {
+		if (!isPressed)
+			return;
+
 		if (movedFunction == null)
 			return;
 
@@ -148,6 +161,7 @@ public class LowLevelInteractionListener {
 
 	public void onTouchReleased(TouchEvent evt) {
 		onReleased();
+		evt.consume();
 	}
 
 	private void onReleased() {

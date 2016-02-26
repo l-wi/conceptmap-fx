@@ -103,12 +103,17 @@ public class FourUserTouchEditable extends BorderPane {
 	private void initInteraction() {
 		this.lowLevelInteractionListener = new LowLevelInteractionListener(this);
 
-		// TODO check if this works for touch as well
 		this.setOnMousePressed((evt) -> lowLevelInteractionListener.onMousePressed(evt));
-		this.setOnMouseReleased((evt) -> lowLevelInteractionListener.onMouseReleased(evt));
-		this.setOnMouseDragged((evt) -> lowLevelInteractionListener.onMouseMoving(evt));
-		this.setOnScroll((evt) -> lowLevelInteractionListener.onMouseRotate(evt));
+		this.setOnTouchPressed((evt) -> lowLevelInteractionListener.onTouchPressed(evt));
 
+		this.setOnMouseReleased((evt) -> lowLevelInteractionListener.onMouseReleased(evt));
+		this.setOnTouchReleased(evt -> lowLevelInteractionListener.onTouchReleased(evt));
+
+		this.setOnMouseDragged((evt) -> lowLevelInteractionListener.onMouseMoving(evt));
+		this.setOnTouchMoved((evt) -> lowLevelInteractionListener.onTouchMoving(evt));
+
+		this.setOnScroll((evt) -> lowLevelInteractionListener.onMouseRotate(evt));
+		this.setOnRotate((evt) -> lowLevelInteractionListener.onTouchRotate(evt));
 	}
 
 	private void initChangeIfEmpty() {
