@@ -59,7 +59,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		try {
 			keyboard.setKeyBoardStyle(getClass().getResource("input.css").toString());
 			keyboard.setSpaceKeyMove(false);
-			keyboard.setLayerPath(new File("/home/tim/Dokumente/programmierung/maven/conceptmap-fx/keyboardLayout").toPath());
+			keyboard.setLayerPath(new File("./keyboardLayout").toPath());
 			keyboard.load();
 
 			// remove the default handler
