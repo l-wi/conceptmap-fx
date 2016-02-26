@@ -426,4 +426,5 @@ public class ConceptMapViewTests extends ApplicationTest {
 		assertNull(map.getLink(c1, c3));
 
 	}
+	//TODO test for bug that new button left and right do not add the node at right spot
 }
