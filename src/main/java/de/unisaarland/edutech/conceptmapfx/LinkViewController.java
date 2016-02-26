@@ -106,7 +106,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		
 		linkingPath.setOnMouseClicked((e) -> {
-			// TODO check if that works on touch device
 			if (e.getClickCount() == 2) {
 				this.remove();
 			} else if (e.getClickCount() == 1) {
