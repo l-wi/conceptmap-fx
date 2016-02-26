@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.CacheHint;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -80,6 +81,10 @@ public class FourUserTouchEditable extends BorderPane {
 		loader.setRoot(this);
 		loader.setController(this);
 
+		this.setCache(true);
+		this.setCacheHint(CacheHint.SPEED);
+		this.setCacheShape(true);
+		
 		rotationColor = Color.AQUA;
 
 		tryLoadingFXMLOrThrow(loader);

@@ -22,6 +22,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -70,7 +71,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.end = new LineTo();
 
 		this.linkingPath = new Path();
-		linkingPath.setStrokeWidth(5);
+		linkingPath.setStrokeWidth(10);
 		linkingPath.setStroke(Color.WHITE);
 
 		aStart = new AnchorView(this, Color.WHITE, 25, 25);
@@ -80,6 +81,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.linkingPath.getElements().add(end);
 
 		this.linkingPath.getStyleClass().add("linkPath");
+		
+		this.linkingPath.setCache(true);
+		this.linkingPath.setCacheHint(CacheHint.SPEED);
+		
 		this.participants = participants;
 
 	}
