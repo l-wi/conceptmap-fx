@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.comtel2000.keyboard.control.KeyboardPane;
-import org.comtel2000.keyboard.control.KeyboardType;
 import org.comtel2000.keyboard.robot.IRobot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +23,7 @@ import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -76,10 +77,15 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@FXML
 	public void onCloseAction() {
-		FadeTransition ft = new FadeTransition(Duration.millis(300), inputControls);
-		ft.setFromValue(1.0);
-		ft.setToValue(0.0);
-		ft.play();
+
+		Set<Node> toHide = inputControls.lookupAll(".hideable");
+
+		for (Node n : toHide) {
+			FadeTransition ft = new FadeTransition(Duration.millis(300), n);
+			ft.setFromValue(1.0);
+			ft.setToValue(0.0);
+			ft.play();
+		}
 
 		releaseInput();
 	}
@@ -136,10 +142,16 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		this.keyboard.addRobotHandler(currentRobotHandler);
 		this.collaborativeStringBinding = cv;
 
-		FadeTransition ft = new FadeTransition(Duration.millis(300), inputControls);
-		ft.setFromValue(0.0);
-		ft.setToValue(1.0);
-		ft.play();
+		Set<Node> hiddenNodes = inputControls.lookupAll(".hideable");
+
+		for (Node n : hiddenNodes) {
+			if (n.getOpacity() == 0) {
+				FadeTransition ft = new FadeTransition(Duration.millis(300), n);
+				ft.setFromValue(0.0);
+				ft.setToValue(1.0);
+				ft.play();
+			}
+		}
 
 	}
 
