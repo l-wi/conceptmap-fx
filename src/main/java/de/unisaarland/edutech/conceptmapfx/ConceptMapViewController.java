@@ -28,6 +28,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
@@ -134,7 +135,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	public void newLink(ConceptViewController cv1, ConceptViewController cv2) {
-		moveToFreeSpot(cv1);
+		moveToFreeSpot(cv1, cv2);
 
 		if (conceptMap.isAnyLinkExisting(cv1.getConcept(), cv2.getConcept())) {
 			LOG.warn("there is already a link between:" + cv1.getConcept() + " and " + cv2.getConcept());
@@ -158,29 +159,47 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	}
 
-	private void moveToFreeSpot(ConceptViewController cv2) {
-		FourUserTouchEditable view = cv2.getView();
+	private void moveToFreeSpot(ConceptViewController cvToMove, ConceptViewController cvResting) {
+		FourUserTouchEditable viewToMove = cvToMove.getView();
+		double widthToMove = viewToMove.getWidth();
+		double heightToMove = viewToMove.getHeight();
+		double xToMove = viewToMove.getLayoutX() + viewToMove.getTranslateX() + widthToMove / 2;
+		double yToMove = viewToMove.getLayoutY() + viewToMove.getTranslateY() + heightToMove / 2;
+		Point2D pMove = new Point2D(xToMove, yToMove);
 
-		double width = view.getWidth();
+		FourUserTouchEditable viewResting = cvResting.getView();
+		double widthResting = viewResting.getWidth();
+		double heightResting = viewResting.getHeight();
+		double xResting = viewResting.getLayoutX() + viewResting.getTranslateX() + widthResting / 2;
+		double yResting = viewResting.getLayoutY() + viewResting.getTranslateY() + heightResting / 2;
 
-		double translateX = view.getTranslateX();
-		double translateY = view.getTranslateY();
+		Point2D pResting = new Point2D(xResting, yResting);
 
-		for (double r = width * 2.5; r < 10 * width; r += width / 2) {
+		Point2D pDelta = pMove.subtract(pResting).normalize();
 
-			for (double i = 2 * Math.PI; i >= 0; i -= 0.1) {
+		double translateX = viewToMove.getTranslateX();
+		double translateY = viewToMove.getTranslateY();
 
-				double x = r * Math.cos(i);
-				double y = r * Math.sin(i);
+		for (double r = heightResting; r < 20 * heightResting; r++) {
+			for (double i = 0; i < 300; i++) {
 
-				view.setTranslateX(translateX + x);
-				view.setTranslateY(translateY + y);
+				double angle = 2 * Math.PI * i / 300;
 
-				if (!hasIntersections(view)) {
+				double x = pDelta.getX() * Math.cos(angle) - pDelta.getY() * Math.sin(angle);
+				double y = pDelta.getX() * Math.sin(angle) + pDelta.getY() * Math.cos(angle);
+
+				x = x * r;
+				y = y * r;
+
+				viewToMove.setTranslateX(translateX + x);
+				viewToMove.setTranslateY(translateY + y);
+
+				if (!hasIntersections(viewToMove)) {
 					linkControllers.forEach((l) -> l.layout());
-
+					LOG.info("a" + Math.toDegrees(angle));
 					return;
 				}
+
 			}
 		}
 
