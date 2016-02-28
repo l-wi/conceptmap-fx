@@ -237,7 +237,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 		Node linkCaption = conceptMapView.lookup(".link");
 
 		double rotate = linkCaption.getRotate();
-		int scrollAmount = 1;
+		int scrollAmount = 100;
 
 		// when
 		moveTo(linkCaption).sleep(1000).press(MouseButton.PRIMARY).sleep(5000).scroll(scrollAmount)
@@ -296,43 +296,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 	}
 
-	@Test
-	public void testHighlightDragOver() {
-		// given
-		map.clear();
-
-		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setX(0.5);
-		c1.setY(0.5);
-
-		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setX(0.7);
-		c2.setY(0.7);
-		c2.setRotate(30);
-
-		map.addConcept(c1);
-		map.addConcept(c2);
-
-		super.interact(() -> {
-			controller.setConceptMap(map);
-			controller.layout();
-		});
-
-		Set<Node> concepts = conceptMapView.lookupAll(".concept");
-
-		Iterator<Node> iterator = concepts.iterator();
-
-		Node firstConceptView = iterator.next();
-		Node secondConceptView = iterator.next();
-
-		// when
-		moveTo(firstConceptView).press(MouseButton.PRIMARY).moveTo(secondConceptView);
-
-		// then
-		assertTrue(secondConceptView.getStyleClass().contains("dropTarget"));
-
-		release(MouseButton.PRIMARY);
-	}
+	
 
 	@Test
 	public void testConceptDelete() {

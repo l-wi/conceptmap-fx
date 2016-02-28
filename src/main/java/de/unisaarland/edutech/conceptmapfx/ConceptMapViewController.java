@@ -22,6 +22,7 @@ import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -29,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 
 //TODO Refactor: extract some listeners into separate classes
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
@@ -336,8 +338,13 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			fireNewLinkListener(cv, intersected);
 		}
 
-		conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList())
-				.forEach((e) -> e.getView().getStyleClass().remove(DROP_TARGET_STYLE));
+		conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList()).forEach((e) -> {
+			// e.getView().getStyleClass().remove(DROP_TARGET_STYLE);
+			scaleDown(e);
+		});
+
+		scaleDown(cv);
+
 		conceptToIntersectedConcepts.remove(cv);
 	}
 
@@ -387,8 +394,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		difference.removeAll(intersectedCVs);
 
 		difference.forEach((e) -> {
-			e.getView().getStyleClass().remove(DROP_TARGET_STYLE);
+			scaleDown(e);
 		});
+
+		if (intersectedCVs.size() == 0)
+			scaleDown(cv);
 
 	}
 
@@ -399,9 +409,28 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		ArrayList<ConceptViewController> difference = new ArrayList<>(intersectedCVs);
 		difference.removeAll(formerIntersected);
 
-		difference.forEach((e) -> e.getView().getStyleClass().add(DROP_TARGET_STYLE));
+		difference.forEach((e) -> {
+			scaleUp(e);
+		});
+
+		if (intersectedCVs.size() > 0)
+			scaleUp(cv);
 
 		conceptToIntersectedConcepts.put(cv, intersectedCVs);
+	}
+
+	private void scaleUp(ConceptViewController e) {
+		ScaleTransition st = new ScaleTransition(Duration.millis(300), e.getView());
+		st.setToX(1.2);
+		st.setToY(1.2);
+		st.play();
+	}
+
+	private void scaleDown(ConceptViewController e) {
+		ScaleTransition st = new ScaleTransition(Duration.millis(300), e.getView());
+		st.setToX(1);
+		st.setToY(1);
+		st.play();
 	}
 
 }
