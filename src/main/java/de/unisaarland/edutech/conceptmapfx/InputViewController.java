@@ -148,6 +148,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 		Set<Node> hiddenNodes = inputControls.lookupAll(".hideable");
 
+		unhideInputControl(hiddenNodes);
+
+	}
+
+	private void unhideInputControl(Set<Node> hiddenNodes) {
 		for (Node n : hiddenNodes) {
 			if (n.getOpacity() == 0) {
 				FadeTransition ft = new FadeTransition(Duration.millis(300), n);
@@ -156,7 +161,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 				ft.play();
 			}
 		}
-
 	}
 
 	private void releaseInput() {
