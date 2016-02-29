@@ -5,6 +5,7 @@ import java.io.IOException;
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
@@ -50,7 +51,7 @@ public class ConceptViewBuilder {
 	}
 
 	public ConceptViewController buildControllerAndAddView(Pane conceptMapPane) {
-		
+
 		conceptMapPane.getChildren().add(conceptViewPane);
 
 		requestInput(controller);
@@ -122,8 +123,14 @@ public class ConceptViewBuilder {
 		return this;
 	}
 
-	public ConceptViewBuilder withDeletedListener(ConceptDeletedListener l){
+	public ConceptViewBuilder withDeletedListener(ConceptDeletedListener l) {
 		controller.addConceptDeletedListener(l);
 		return this;
+	}
+
+	public ConceptViewBuilder withConceptEmptyListener(ConceptContentChangeListener usersController) {
+		controller.addConceptEmptyListener(usersController);
+		return this;
+
 	}
 }

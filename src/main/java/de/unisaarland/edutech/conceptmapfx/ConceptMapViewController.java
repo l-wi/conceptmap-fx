@@ -114,21 +114,21 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void newConcept(InputViewController inputViewController) {
 
 		User user = inputViewController.getUser();
-		Optional<ConceptViewController> emptyConceptViewController = nextEmptyConcept(user);
-
-		if (emptyConceptViewController.isPresent()) {
-			LOG.warn("there is  already an empty concept for user" + user);
-			return;
-		}
 
 		ConceptViewBuilder builder = new ConceptViewBuilder(this.conceptMap);
 		builder = builder.withNewConcept(user).withMovedListener(this).withDeletedListener(this)
 				.withMovingListener(this);
 
+		InputViewController usersController = null;
+
 		for (InputViewController l : inputControllers) {
 			builder.withEditRequestedListener(l);
 			builder.withDeletedListener(l);
+			if (l.getUser().equals(user))
+				usersController = l;
 		}
+
+		builder.withConceptEmptyListener(usersController);
 
 		ConceptViewController controller = builder.buildControllerAndAddView(inputViewController, this.conceptMapPane);
 		this.userToConceptViewControllers.get(user).add(controller);
@@ -259,7 +259,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	private void deleteConcept(ConceptViewController cv) {
 		conceptMapPane.getChildren().remove(cv.getView());
 		conceptMap.removeConcept(cv.getConcept());
-		
+
 		userToConceptViewControllers.get(cv.getConcept().getOwner()).remove(cv);
 	}
 
@@ -327,22 +327,19 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	private ConceptViewController buildForExistingConcept(Concept c) {
 		ConceptViewBuilder builder = new ConceptViewBuilder(conceptMap);
 		builder.forConcept(c).withMovedListener(this).withMovingListener(this).withDeletedListener(this);
-		;
+
+		InputViewController usersController = null;
 
 		for (InputViewController l : inputControllers) {
 			builder.withEditRequestedListener(l);
 			builder.withDeletedListener(l);
+			if (l.getUser().equals(c.getOwner()))
+				usersController = l;
 		}
 
+		builder.withConceptEmptyListener(usersController);
+
 		return builder.buildControllerAndAddView(this.conceptMapPane);
-	}
-
-	private Optional<ConceptViewController> nextEmptyConcept(User user) {
-
-		for (ConceptViewController controller : userToConceptViewControllers.get(user))
-			if (controller.getConcept().getName().getContent().equals(""))
-				return Optional.of(controller);
-		return Optional.ofNullable(null);
 	}
 
 	@Override

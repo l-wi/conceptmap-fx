@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
@@ -26,6 +27,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<ConceptMovingListener> conceptMovingListeners = new ArrayList<ConceptMovingListener>();
 	private List<ConceptMovedListener> conceptMovedListeners = new ArrayList<ConceptMovedListener>();
 	private List<ConceptDeletedListener> conceptDeletedListeners = new ArrayList<ConceptDeletedListener>();
+	private List<ConceptContentChangeListener> conceptContentChangedListeners = new ArrayList<ConceptContentChangeListener>();
 
 	@FXML
 	private FourUserTouchEditable conceptCaption;
@@ -35,7 +37,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<User> participants;
 
 	private CollaborativeStringTextFieldBinding colBinding;
-
 
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
@@ -88,6 +89,14 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 				fireConceptDeleted(getActiveUser());
 			}
 		});
+
+		conceptCaption.textProperty().addListener((c, o, n) -> {
+			fireConceptContentChanged(o, n);
+		});
+	}
+
+	private void fireConceptContentChanged(String oldContent, String newContent) {
+		this.conceptContentChangedListeners.forEach((l) -> l.conceptContentChanged(this, oldContent, newContent));
 	}
 
 	private void fireConceptDeleted(User u) {
@@ -217,9 +226,9 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.setRightToggleText(participants.get(3).getName());
 
 		conceptCaption.selectionChangedProperty().addListener((l, o, n) -> {
-			if (n.isSelected){
+			if (n.isSelected) {
 				this.fireEditRequested(participants.get(n.index));
-				
+
 			}
 		});
 
@@ -235,7 +244,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private void setUserEnabled(int index, boolean b) {
 		conceptCaption.setSelected(index, b);
 	}
-
 
 	public void translate(double x, double y) {
 		double rotation = Math.toRadians(conceptCaption.getRotate());
@@ -258,5 +266,9 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public FourUserTouchEditable getView() {
 		return this.conceptCaption;
+	}
+
+	public void addConceptEmptyListener(ConceptContentChangeListener usersController) {
+		this.conceptContentChangedListeners.add(usersController);
 	}
 }
