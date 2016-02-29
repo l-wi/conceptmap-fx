@@ -390,4 +390,6 @@ public class ConceptMapViewTests extends ApplicationTest {
 	// TODO too many touch points reported exception kills whole multitouch
 	// process, find out if this is a javafx bug and how to fix i
 	// TODO test for bug, create new, delete, try add new (bug already gefixt)
+	// TODO add the blinking on edit logic to links
+	
 }

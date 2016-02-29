@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import java.net.*?>
 
-<fx:root type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root id="conceptNode"  type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml/1">
 
 	<fx:define>
 		<ToggleGroup fx:id="toggleGroup" />
@@ -26,7 +26,7 @@
 	</left>
 
 	<center>
-		<Label id="caption" fx:id="caption" />
+		<Label  id="caption" fx:id="caption" />
 	</center>
 
 	<right>

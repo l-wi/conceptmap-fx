@@ -2,7 +2,6 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +13,16 @@ import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.transform.Transform;
+import javafx.util.Duration;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
 
@@ -36,6 +41,10 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<User> participants;
 
 	private CollaborativeStringTextFieldBinding colBinding;
+
+	private boolean underlineOnEditToggle = true;
+
+	private Timeline underlineAnimation;
 
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
@@ -183,6 +192,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.colBinding = new CollaborativeStringTextFieldBinding(concept.getName(), conceptCaption.textProperty());
 
 		int index = participants.indexOf(concept.getOwner());
+		String result = getCSSClassForIndex(index);
+
+		this.getView().getStyleClass().add(result);
+	}
+
+	private String getCSSClassForIndex(int index) {
 		String result = "belongsTo";
 
 		switch (index) {
@@ -199,8 +214,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 			result += "Right";
 			break;
 		}
-
-		this.getView().getStyleClass().add(result);
+		return result;
 	}
 
 	public void setParticipants(List<User> participants) {
@@ -212,8 +226,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.setRightToggleText(participants.get(3).getName());
 
 		conceptCaption.selectionChangedProperty().addListener((l, o, n) -> {
-			if (n.isSelected)
+			if (n.isSelected){
 				this.fireEditRequested(participants.get(n.index));
+				
+			}
+			this.highlightInput(n.index, n.isSelected);
+
 		});
 
 	}
@@ -227,6 +245,43 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	private void setUserEnabled(int index, boolean b) {
 		conceptCaption.setSelected(index, b);
+	}
+
+	private void highlightInput(int index, boolean inputEnabled) {
+		final String cssClass = getCSSClassForIndex(index) + "Underline";
+
+		Node caption = getView().lookup("#caption");
+		
+		if (inputEnabled) {
+			underlineOnEditToggle = true;
+			removeUnderlineTimeline(cssClass, caption);
+			underlineAnimation = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					if (underlineOnEditToggle) {
+						caption.getStyleClass().add(cssClass);
+					} else {
+						caption.getStyleClass().remove(cssClass);
+					}
+					underlineOnEditToggle = !underlineOnEditToggle;
+				}
+			}));
+			underlineAnimation.setCycleCount(Timeline.INDEFINITE);
+			underlineAnimation.play();
+		}
+
+		else {
+			removeUnderlineTimeline(cssClass, caption);
+
+		}
+	}
+
+	private void removeUnderlineTimeline(final String cssClass, Node caption) {
+		if(underlineAnimation == null)
+			return;
+		underlineAnimation.stop();
+		caption.getStyleClass().remove(cssClass);
 	}
 
 	public void translate(double x, double y) {

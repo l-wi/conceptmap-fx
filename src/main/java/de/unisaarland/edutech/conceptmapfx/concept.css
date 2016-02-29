@@ -8,14 +8,40 @@
 	userLeftSelected: #554000;	
 	userRightSelected:#1B1A59;
 	userBottomSelected: #0C4700;	
+	
+	userTopTransparent: rgba( 	246, 164, 172, .7);
+}
+
+#conceptNode
+{
+	-fx-padding:20.0;
+	-fx-background-color:#FFFFFF;	
+	 
 }
 
 #caption{
 	-fx-text-fill: black;
-	-fx-padding:20.0;
-	-fx-border-color:black;
- 	-fx-border-radius:20.0;
-	 -fx-background-radius: 20.0;
+
+}
+
+.belongsToTopUnderline{
+	-fx-border-color: userTop;
+	-fx-border-width : 0 0 3 0 ;	
+}
+
+.belongsToBottomUnderline{
+	-fx-border-color: userBottom;
+	-fx-border-width : 0 0 3 0 ;	
+}
+
+.belongsToLeftUnderline{
+	-fx-border-color: userLeft;
+	-fx-border-width : 0 0 3 0 ;	
+}
+
+.belongsToRightUnderline{
+	-fx-border-color: userRight;
+	-fx-border-width : 0 0 3 0 ;	
 }
 
 .belongsToTop, .belongsToBottom, .belongsToLeft, .belongsToRight{
@@ -26,10 +52,12 @@
 }
 .belongsToTop{
 	-fx-border-color:userTop;
+
 }
 
 .belongsToBottom{
 	-fx-border-color:userBottom;
+	
 }
 
 .belongsToLeft{

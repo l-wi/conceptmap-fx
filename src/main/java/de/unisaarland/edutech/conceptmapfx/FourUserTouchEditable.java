@@ -312,7 +312,7 @@ public class FourUserTouchEditable extends BorderPane {
 	}
 
 	public Bounds getOverlayBounds() {
-		return this.caption.getLayoutBounds();
+		return this.getLayoutBounds();
 	}
 
 	public void translateRelative(double x, double y) {
