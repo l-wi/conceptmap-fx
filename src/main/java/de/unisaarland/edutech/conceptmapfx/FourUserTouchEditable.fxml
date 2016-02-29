@@ -29,7 +29,7 @@
 	</left>
 
 	<center>
-		<HBox fx:id="captionPane"  id="captionPane">
+		<HBox fx:id="captionPane"  id="captionPane" prefHeight="75">
 		<Label  id="caption" fx:id="caption" />
 		</HBox>
 	</center>

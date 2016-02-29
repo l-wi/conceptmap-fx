@@ -81,7 +81,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 	@Test
 	public void testNewActionAndNotTwice() {
 		// given
-		Set<Node> newButtons = conceptMapView.lookupAll(".newBtn");
+		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
 		Node firstNewButton = newButtons.iterator().next();
 
 		// when
@@ -104,7 +104,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 	@Test
 	public void testNewAndSelectKeyboard() {
 		// given
-		Set<Node> newButtons = conceptMapView.lookupAll(".newBtn");
+		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
 		Node firstNewButton = newButtons.iterator().next();
 		Node rightKeyboard = conceptMapView.lookup("#" + Position.RIGHT).lookup("#keyboard");
 		Node leftKeyboard = conceptMapView.lookup("#" + Position.LEFT).lookup("#keyboard");
@@ -260,7 +260,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 		moveTo(concept).press(MouseButton.PRIMARY).moveBy(2, 0).release(MouseButton.PRIMARY);
 
 		// then
-		assertEquals(rotate, linkCaption.getRotate(), 10.0);
+		assertEquals(rotate, linkCaption.getRotate(), 20.0);
 
 	}
 
