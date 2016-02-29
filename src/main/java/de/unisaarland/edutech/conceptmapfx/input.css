@@ -34,6 +34,18 @@
 	src: url('FontKeyboardFX.ttf');
 }
 
+*{
+	userTop: #F6A4AC; 
+	userLeft: #FFEAAA;
+	userRight: #8180B2;
+	userBottom: #9AD58E;
+	
+	userTopSelected: #7B151F;
+	userLeftSelected: #554000;	
+	userRightSelected:#1B1A59;
+	userBottomSelected: #0C4700;	
+}
+
 #btnClose {
 	-fx-border-width: 5 5 0 5;
 	-fx-border-color: #222222;
@@ -60,13 +72,31 @@
 	-fx-background-position: center center;
 }
 
-.newBtn {
+.newBtnTop, .newBtnLeft, .newBtnRight, .newBtnBottom {
 	-fx-font-size: 30;
 	/*-fx-background-color: #646a78;*/
-	-fx-background-color: #3c4250;
 	-fx-border-color: #222222;
 	-fx-border-width: 5 5 0 0;
 	-fx-text-fill: white;
+}
+
+.newBtnTop{
+		-fx-background-color: userTop;
+}
+
+.newBtnBottom{
+		-fx-background-color: userBottom;
+	
+}
+
+.newBtnLeft{
+		-fx-background-color: userLeft;
+	
+}
+
+.newBtnRight{
+		-fx-background-color: userRight;
+	
 }
 
 .key-background {

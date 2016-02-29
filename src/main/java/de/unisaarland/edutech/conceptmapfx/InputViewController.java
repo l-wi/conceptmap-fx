@@ -20,10 +20,12 @@ import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.FadeTransition;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -48,6 +50,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private VBox inputControls;
 	@FXML
 	private AnchorPane inputPane;
+	@FXML
+	private Button btnNewConcept;
 
 	private Position position;
 
@@ -200,6 +204,26 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void setPosition(Position position) {
 		this.position = position;
+		adjustNewButton();
+	}
+
+	private void adjustNewButton() {
+		ObservableList<String> styleClasses = btnNewConcept.getStyleClass();
+		String css = "newBtn";
+		switch (position) {
+		case BOTTOM:
+			styleClasses.add(css + "Bottom");
+			break;
+		case TOP:
+			styleClasses.add(css + "Top");
+			break;
+		case LEFT:
+			styleClasses.add(css + "Left");
+			break;
+		case RIGHT:
+			styleClasses.add(css + "Right");
+			break;
+		}
 	}
 
 	public Point2D transformLocalToScene(Point2D pLocalToInput) {
