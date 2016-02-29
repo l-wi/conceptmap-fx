@@ -94,7 +94,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.conceptDeletedListeners.forEach((l) -> l.conceptDeleted(this, u));
 	}
 
-	User getActiveUser() {
+	private User getActiveUser() {
 		int index = getView().getSelected();
 		if (index == -1)
 			return null;
