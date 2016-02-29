@@ -230,8 +230,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 				this.fireEditRequested(participants.get(n.index));
 				
 			}
-			this.highlightInput(n.index, n.isSelected);
-
 		});
 
 	}
@@ -247,42 +245,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.setSelected(index, b);
 	}
 
-	private void highlightInput(int index, boolean inputEnabled) {
-		final String cssClass = getCSSClassForIndex(index) + "Underline";
-
-		Node caption = getView().lookup("#caption");
-		
-		if (inputEnabled) {
-			underlineOnEditToggle = true;
-			removeUnderlineTimeline(cssClass, caption);
-			underlineAnimation = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
-
-				@Override
-				public void handle(ActionEvent event) {
-					if (underlineOnEditToggle) {
-						caption.getStyleClass().add(cssClass);
-					} else {
-						caption.getStyleClass().remove(cssClass);
-					}
-					underlineOnEditToggle = !underlineOnEditToggle;
-				}
-			}));
-			underlineAnimation.setCycleCount(Timeline.INDEFINITE);
-			underlineAnimation.play();
-		}
-
-		else {
-			removeUnderlineTimeline(cssClass, caption);
-
-		}
-	}
-
-	private void removeUnderlineTimeline(final String cssClass, Node caption) {
-		if(underlineAnimation == null)
-			return;
-		underlineAnimation.stop();
-		caption.getStyleClass().remove(cssClass);
-	}
 
 	public void translate(double x, double y) {
 		double rotation = Math.toRadians(conceptCaption.getRotate());

@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovedInterface;
 import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovingInterface;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
@@ -14,12 +16,14 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.CacheHint;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -29,6 +33,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class FourUserTouchEditable extends BorderPane {
 
@@ -76,6 +81,10 @@ public class FourUserTouchEditable extends BorderPane {
 	private LowLevelInteractionListener lowLevelInteractionListener;
 	private SimpleObjectProperty<SelectionChanged> selectionChangedProperty;
 
+	private boolean underlineOnEditToggle = true;
+
+	private Timeline underlineAnimation;
+
 	public FourUserTouchEditable() {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("FourUserTouchEditable.fxml"));
 		loader.setRoot(this);
@@ -83,7 +92,7 @@ public class FourUserTouchEditable extends BorderPane {
 
 		this.setCache(true);
 		this.setCacheShape(true);
-		
+
 		rotationColor = Color.AQUA;
 
 		tryLoadingFXMLOrThrow(loader);
@@ -101,7 +110,16 @@ public class FourUserTouchEditable extends BorderPane {
 		initChangeIfEmpty();
 
 		toUnselectedState();
+		
+		initInputHighlighting();
 
+	}
+
+	private void initInputHighlighting() {
+
+		this.selectionChangedProperty.addListener((c,o,n) -> {
+			this.highlightInput(n.index, n.isSelected);
+		});
 	}
 
 	private void initInteraction() {
@@ -494,4 +512,60 @@ public class FourUserTouchEditable extends BorderPane {
 		return selectionChangedProperty;
 	}
 
+	private String getCSSClassForIndex(int index) {
+		String result = "belongsTo";
+
+		switch (index) {
+		case 0:
+			result += "Top";
+			break;
+		case 1:
+			result += "Left";
+			break;
+		case 2:
+			result += "Bottom";
+			break;
+		case 3:
+			result += "Right";
+			break;
+		}
+		return result;
+	}
+	
+	private void highlightInput(int index, boolean inputEnabled) {
+		final String cssClass = getCSSClassForIndex(index) + "Underline";
+
+		Node caption = this.lookup("#caption");
+		
+		if (inputEnabled) {
+			underlineOnEditToggle = true;
+			removeUnderlineTimeline(cssClass, caption);
+			underlineAnimation = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					if (underlineOnEditToggle) {
+						caption.getStyleClass().add(cssClass);
+					} else {
+						caption.getStyleClass().remove(cssClass);
+					}
+					underlineOnEditToggle = !underlineOnEditToggle;
+				}
+			}));
+			underlineAnimation.setCycleCount(Timeline.INDEFINITE);
+			underlineAnimation.play();
+		}
+
+		else {
+			removeUnderlineTimeline(cssClass, caption);
+
+		}
+	}
+
+	private void removeUnderlineTimeline(final String cssClass, Node caption) {
+		if(underlineAnimation == null)
+			return;
+		underlineAnimation.stop();
+		caption.getStyleClass().remove(cssClass);
+	}
 }

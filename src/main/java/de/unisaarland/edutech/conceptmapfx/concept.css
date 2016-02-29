@@ -4,12 +4,11 @@
 	userRight: #CCF000;
 	userBottom: #00F09C;
 	
-	userTopSelected: #7B151F;
-	userLeftSelected: #554000;	
-	userRightSelected:#1B1A59;
-	userBottomSelected: #0C4700;	
+	userTopSelected: #2400F0;
+	userLeftSelected: #F00054;	
+	userRightSelected:#CCF000;
+	userBottomSelected: #00F09C;	
 }
-
 #conceptNode
 {
 	-fx-padding:20.0;
