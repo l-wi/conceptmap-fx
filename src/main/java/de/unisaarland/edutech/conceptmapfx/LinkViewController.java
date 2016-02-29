@@ -113,8 +113,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			}
 		});
 
-		linkingPath.setCache(true);
 		
+		
+		linkCaption.setPrefHeight(20);
+		linkingPath.setCache(true);
+
 		layout();
 	}
 

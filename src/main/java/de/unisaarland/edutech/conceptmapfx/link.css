@@ -9,11 +9,7 @@
 	userRightSelected:#CCF000;
 	userBottomSelected: #00F09C;	
 }
-#conceptNode
-{
 
-	 
-}
 
 #caption{
 	-fx-text-fill: white;
@@ -66,10 +62,6 @@
 
 .empty{
 	-fx-background-color:#FF0000;
-}
-
-Label{
-	
 }
 
 
