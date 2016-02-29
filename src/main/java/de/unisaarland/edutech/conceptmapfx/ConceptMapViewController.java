@@ -259,6 +259,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	private void deleteConcept(ConceptViewController cv) {
 		conceptMapPane.getChildren().remove(cv.getView());
 		conceptMap.removeConcept(cv.getConcept());
+		
+		userToConceptViewControllers.get(cv.getConcept().getOwner()).remove(cv);
 	}
 
 	private void loadMap() {
