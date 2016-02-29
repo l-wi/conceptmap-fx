@@ -96,7 +96,7 @@ public class FourUserTouchEditable extends BorderPane {
 		this.setCache(true);
 		this.setCacheShape(true);
 
-		rotationColor = Color.AQUA;
+		rotationColor = Color.RED;
 
 		tryLoadingFXMLOrThrow(loader);
 
