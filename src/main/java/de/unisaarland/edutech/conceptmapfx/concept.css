@@ -1,16 +1,9 @@
 #caption{
-
-	
-	/*-fx-background-color:#222222;*/
 	-fx-text-fill: black;
-	/*-fx-text-fill: white;*/
 	-fx-padding:20.0;
 	-fx-border-color:black;
  	-fx-border-radius:20.0;
 	 -fx-background-radius: 20.0;
-	-fx-effect: dropshadow(three-pass-box, rgba(255.0,255.0,255.0,0.7), 10.0, 0.0, 0.0, 0.0);
-	
-	
 }
 
 .dropTarget{
