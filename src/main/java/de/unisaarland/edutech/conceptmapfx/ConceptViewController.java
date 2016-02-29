@@ -13,16 +13,10 @@ import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.transform.Transform;
-import javafx.util.Duration;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
 
@@ -42,9 +36,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	private CollaborativeStringTextFieldBinding colBinding;
 
-	private boolean underlineOnEditToggle = true;
-
-	private Timeline underlineAnimation;
 
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);

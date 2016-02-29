@@ -47,9 +47,10 @@ public class AnchorView extends Pane {
 	}
 
 	private void createArrow(Color color, double width, double height) {
-		double[] arrowShape = new double[] { width / 2, height / 2, width, height, width, 0 };
+		double[] arrowShape = new double[] { 0, height / 2, width, height, width, 0 };
 		arrowPolygon = new Polygon(arrowShape);
 		arrowPolygon.setFill(color);
+		arrowPolygon.setStroke(Color.BLACK);
 		arrowPolygon.setCache(true);
 	}
 
@@ -85,10 +86,10 @@ public class AnchorView extends Pane {
 	public void setActive(boolean isSelected) {
 		this.isActive = isSelected;
 		if (isActive) {
-			this.arrowPolygon.setStroke(Color.RED);
+			this.arrowPolygon.setFill(Color.RED);
 			this.circle.setStroke(Color.RED);
 		} else {
-			this.arrowPolygon.setStroke(Color.WHITE);
+			this.arrowPolygon.setFill(Color.WHITE);
 			this.circle.setStroke(Color.WHITE);
 		}
 	}
