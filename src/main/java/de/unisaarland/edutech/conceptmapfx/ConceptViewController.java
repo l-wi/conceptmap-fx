@@ -83,7 +83,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.setOnMoved(() -> this.fireConceptMoved());
 
 		conceptCaption.setOnMouseClicked((evt) -> {
-			//TODO do not show the selection view first when deleting!
+			// TODO do not show the selection view first when deleting!
 			if (evt.getClickCount() == 2) {
 				fireConceptDeleted(getActiveUser());
 			}
@@ -182,6 +182,25 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.concept = concept;
 		this.colBinding = new CollaborativeStringTextFieldBinding(concept.getName(), conceptCaption.textProperty());
 
+		int index = participants.indexOf(concept.getOwner());
+		String result = "belongsTo";
+
+		switch (index) {
+		case 0:
+			result += "Top";
+			break;
+		case 1:
+			result += "Left";
+			break;
+		case 2:
+			result += "Bottom";
+			break;
+		case 3:
+			result += "Right";
+			break;
+		}
+
+		this.getView().getStyleClass().add(result);
 	}
 
 	public void setParticipants(List<User> participants) {
