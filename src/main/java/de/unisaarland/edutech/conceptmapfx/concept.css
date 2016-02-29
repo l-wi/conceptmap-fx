@@ -18,7 +18,7 @@
 
 #caption{
 	-fx-text-fill: black;
-
+	-fx-font-size:1.3em;
 }
 
 .belongsToTopUnderline{
@@ -42,9 +42,10 @@
 }
 
 .belongsToTop, .belongsToBottom, .belongsToLeft, .belongsToRight{
-	 -fx-border-radius:20.0;
+	 -fx-border-radius:15.0;
 	 -fx-background-radius: 20.0;
-	 -fx-border-width:4;	
+	 -fx-border-width:6;	
+ 
 	
 }
 .belongsToTop{
