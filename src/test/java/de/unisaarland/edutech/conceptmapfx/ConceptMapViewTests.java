@@ -228,7 +228,6 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		map.addUndirectedLink(c1, c2).getCaption().append(user, "hunts");
 
-		
 		interact(() -> {
 			controller.setConceptMap(map);
 			controller.layout();
@@ -295,8 +294,6 @@ public class ConceptMapViewTests extends ApplicationTest {
 		assertEquals(1, linkCaptions.size());
 
 	}
-
-	
 
 	@Test
 	public void testConceptDelete() {
@@ -390,4 +387,6 @@ public class ConceptMapViewTests extends ApplicationTest {
 		assertNull(map.getLink(c1, c3));
 
 	}
+	// TODO too many touch points reported exception kills whole multitouch
+	// process, find out if this is a javafx bug and how to fix it
 }
