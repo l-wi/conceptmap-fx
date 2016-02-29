@@ -59,9 +59,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	private boolean isSelected = false;
 
 	private double userRotationFactor = 0;
-	
+
 	private double rotateTreshold = 0;
-	
+
 	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
 		this.cmv = cmv;
@@ -81,10 +81,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		this.linkingPath.getElements().add(end);
 
 		this.linkingPath.getStyleClass().add("linkPath");
-		
+
 		this.linkingPath.setCache(true);
 		this.linkingPath.setCacheHint(CacheHint.SPEED);
-		
+
 		this.participants = participants;
 
 	}
@@ -104,7 +104,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		view.widthProperty().addListener((c, o, n) -> this.layout());
 		view.heightProperty().addListener((c, o, n) -> this.layout());
 
-		
 		linkingPath.setOnMouseClicked((e) -> {
 			if (e.getClickCount() == 2) {
 				this.remove();
@@ -113,8 +112,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			}
 		});
 
-		
-		
 		linkCaption.setPrefHeight(20);
 		linkingPath.setCache(true);
 
@@ -147,12 +144,12 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private void onRotate(Double rotate) {
 		rotateTreshold += rotate;
-		if(Math.abs(rotateTreshold) < 70)
+		if (Math.abs(rotateTreshold) < 70)
 			return;
 		rotateTreshold = 0;
-		
+
 		userRotationFactor = (userRotationFactor + 180) % 360;
-		
+
 		double r = (this.linkCaption.getRotate() + 180) % 360;
 		this.linkCaption.setRotate(r);
 
@@ -215,10 +212,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		a.toggle();
 
 		if (a.isDirected() && b.isDirected()) {
-			// FIXME indicate that this is not possible on the UI!
-			a.toCircle();
-			return;
-		} else if (aStart.isDirected() && !aEnd.isDirected())
+			b.toCircle();
+		}
+		if (aStart.isDirected() && !aEnd.isDirected())
 			d = Direction.END_TO_START;
 		else if (!aStart.isDirected() && aEnd.isDirected())
 			d = Direction.START_TO_END;
@@ -358,7 +354,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		aEnd.translateXProperty().bind(aEndXTranslate);
 		aEnd.translateYProperty().bind(aEndYTranslate);
-		
+
 		if (angleY < 90) {
 			aStart.setRotate(angleX);
 			aEnd.setRotate(angleX + 180);
@@ -366,7 +362,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		} else {
 			aStart.setRotate(-angleX);
 			aEnd.setRotate(-angleX + 180);
-			linkCaption.setRotate(-angleX + userRotationFactor );
+			linkCaption.setRotate(-angleX + userRotationFactor);
 		}
 
 	}

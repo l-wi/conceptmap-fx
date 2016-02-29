@@ -41,7 +41,7 @@ public class AnchorView extends Pane {
 		circle = new Circle(width / 2, height / 2, width / 2);
 		circle.setFill(color.deriveColor(0, 0, 0, 0.8));
 		circle.setStroke(color);
-		circle.setStrokeWidth(2);
+		circle.setStrokeWidth(4);
 		circle.setStrokeType(StrokeType.OUTSIDE);
 		circle.setCache(true);
 	}
@@ -86,8 +86,8 @@ public class AnchorView extends Pane {
 	public void setActive(boolean isSelected) {
 		this.isActive = isSelected;
 		if (isActive) {
-			this.arrowPolygon.setFill(Color.RED);
-			this.circle.setStroke(Color.RED);
+			this.arrowPolygon.setFill(Color.GREEN);
+			this.circle.setStroke(Color.GREEN);
 		} else {
 			this.arrowPolygon.setFill(Color.WHITE);
 			this.circle.setStroke(Color.WHITE);
