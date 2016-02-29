@@ -185,7 +185,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		int index = participants.indexOf(concept.getOwner());
 		String result = getCSSClassForIndex(index);
 
-		this.getView().getStyleClass().add(result);
+		this.getView().lookup("#captionPane").getStyleClass().add(result);
 	}
 
 	private String getCSSClassForIndex(int index) {

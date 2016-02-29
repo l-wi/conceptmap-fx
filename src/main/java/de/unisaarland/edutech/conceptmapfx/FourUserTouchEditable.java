@@ -70,6 +70,9 @@ public class FourUserTouchEditable extends BorderPane {
 	private ToggleButton bottomToggle;
 	@FXML
 	private Label caption;
+	
+	@FXML
+	private Node captionPane;
 
 	private Color rotationColor;
 
@@ -330,7 +333,7 @@ public class FourUserTouchEditable extends BorderPane {
 	}
 
 	public Bounds getOverlayBounds() {
-		return this.getLayoutBounds();
+		return this.captionPane.getLayoutBounds();
 	}
 
 	public void translateRelative(double x, double y) {

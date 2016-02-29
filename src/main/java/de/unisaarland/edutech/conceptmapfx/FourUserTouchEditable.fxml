@@ -7,6 +7,9 @@
 <?import javafx.scene.control.ToggleGroup ?>
 <?import javafx.scene.shape.Circle?>
 <?import java.net.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.HBox?>
 
 <fx:root id="conceptNode"  type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml/1">
 
@@ -26,7 +29,9 @@
 	</left>
 
 	<center>
+		<HBox fx:id="captionPane"  id="captionPane">
 		<Label  id="caption" fx:id="caption" />
+		</HBox>
 	</center>
 
 	<right>

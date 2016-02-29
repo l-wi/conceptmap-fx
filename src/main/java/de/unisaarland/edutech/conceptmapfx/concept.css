@@ -9,11 +9,13 @@
 	userRightSelected:#CCF000;
 	userBottomSelected: #00F09C;	
 }
-#conceptNode
-{
+
+#captionPane{
 	-fx-padding:20.0;
-	-fx-background-color:#FFFFFF;	
-	 
+	-fx-background-color:#FFFFFF;
+	-fx-border-radius:15.0;
+	-fx-background-radius: 20.0;
+	-fx-border-width:4;			
 }
 
 #caption{
