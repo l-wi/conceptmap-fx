@@ -89,8 +89,6 @@ public class Main extends Application implements ConceptMapObserver {
 
 			if (l.getCharacter().equals("u") && !states.isEmpty()) {
 				Platform.runLater(() -> {
-					// FIXME when restoring and so deleting the last concept the
-					// keyboard remains enabled!
 					isRestoringState = true;
 					ConceptMapViewController controller = builder.getController();
 					ObservableConceptMap undoMap = states.pop();

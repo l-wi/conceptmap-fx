@@ -71,6 +71,10 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public Concept getConcept() {
 		return concept;
 	}
+	
+	public void fireConceptDeleted(){
+		fireConceptDeleted(getActiveUser());
+	}
 
 	@FXML
 	public void initialize() {

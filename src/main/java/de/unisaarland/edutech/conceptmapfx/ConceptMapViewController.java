@@ -6,13 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
-import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
@@ -23,15 +21,12 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.ScaleTransition;
-import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 //TODO Refactor: extract some listeners into separate classes
@@ -81,15 +76,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void conceptDeleted(ConceptViewController cv, User u) {
 		Concept concept = cv.getConcept();
 
-		ListIterator<LinkViewController> listIterator = linkControllers.listIterator();
+		List<LinkViewController> workingList = new ArrayList<>(linkControllers);
 
-		while (listIterator.hasNext()) {
-			LinkViewController l = listIterator.next();
-
+		for (LinkViewController l : workingList) {
 			if (l.getStart().equals(concept) || l.getEnd().equals(concept)) {
-				l.removeFromView();
-				removeLinkFromMap(l);
-				listIterator.remove();
+				l.remove();
 			}
 		}
 
@@ -244,7 +235,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		clearConcepts();
 
 		this.conceptMap = conceptMap;
-				
+
 		for (User u : conceptMap.getExperiment().getParticipants())
 			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());
 
@@ -254,19 +245,20 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	private void clearConcepts() {
 
-		linkControllers.forEach((lv) -> {
-			lv.removeFromView();
+		List<LinkViewController> workingListLinks = new ArrayList<>(linkControllers);
+
+		workingListLinks.forEach((lv) -> {
+			lv.remove();
 		});
 
-		linkControllers.clear();
-		
 		userToConceptViewControllers.values().forEach((list) -> {
-			list.forEach((cv) -> {
-				conceptMapPane.remove(cv.getView());
-				conceptMap.removeConcept(cv.getConcept());
+			List<ConceptViewController> workingList = new ArrayList<>(list);
+			workingList.forEach((cv) -> {
+				cv.fireConceptDeleted();
 			});
 		});
 
+		linkControllers.clear();
 		userToConceptViewControllers.clear();
 	}
 
@@ -339,8 +331,9 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		for (LinkViewController lvc : linkControllers) {
 			lvc.layout();
 		}
-		
-		//otherwise the textfield does not rescale and links do not end at the right spot
+
+		// otherwise the textfield does not rescale and links do not end at the
+		// right spot
 		this.conceptMapPane.applyCss();
 		this.conceptMapPane.layout();
 	}
