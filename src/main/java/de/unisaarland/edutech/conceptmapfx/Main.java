@@ -101,6 +101,10 @@ public class Main extends Application implements ConceptMapObserver {
 
 		});
 
+		//TODO implement UNDO BUTTON LOGIC IN INPUT INSTEAD OF U KEY
+		//TODO new concept jumps (no coordinates set)
+		
+		
 		primaryStage.setScene(scene);
 		primaryStage.show();
 

@@ -29,11 +29,15 @@
 					<HBox>
 						<children>
 
-							<KeyboardPane styleClass="hideable" id="keyboard" fx:id="keyboard" />
+							<KeyboardPane styleClass="hideable" id="keyboard" fx:id="keyboard"/>
 							<VBox>
 								<children>
+									<Button  styleClass="hideable" id="undo" fx:id="btnUndo"  text="Undo"
+										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"/>
+										
 									<ToggleButton styleClass="hideable" id="voice" fx:id="btnSpeak"
-										mnemonicParsing="false" prefWidth="100.0" prefHeight="100.0"/>
+										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"/>
+										
 									<Button fx:id="btnNewConcept" text="+"
 										onAction="#onNewAction" BorderPane.alignment="CENTER"  prefWidth="100.0" prefHeight="100.0"/>
 								</children>

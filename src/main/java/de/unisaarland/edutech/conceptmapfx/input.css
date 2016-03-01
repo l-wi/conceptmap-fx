@@ -46,6 +46,15 @@
 	userBottomSelected: #0C4700;	
 }
 
+#undo{
+	-fx-border-radius: 0 30 0 0;
+	-fx-background-radius: 0 30 0 0;
+	-fx-background-color: #3c4250;
+	-fx-border-width: 5 5 0 0;
+	-fx-border-color: #222222;	
+	-fx-text-fill: white;
+}
+
 #btnClose {
 	-fx-border-width: 5 5 0 5;
 	-fx-border-color: #222222;
@@ -61,8 +70,6 @@
 }
 
 #voice {
-	-fx-border-radius: 0 30 0 0;
-	-fx-background-radius: 0 30 0 0;
 	-fx-background-color: #3c4250;
 	-fx-border-width: 5 5 0 0;
 	-fx-border-color: #222222;
