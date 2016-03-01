@@ -1,25 +1,27 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
+import java.util.Stack;
 
 import de.unisaarland.edutech.conceptmapfx.observablemap.ConceptMapObserver;
-import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableCollaborativeString;
-import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConcept;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableLinkFactory;
-import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
-import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application implements ConceptMapObserver {
+
+	private ObservableConceptMap conceptMap;
+	private Stack<ObservableConceptMap> states = new Stack<ObservableConceptMap>();
+	private boolean isRestoringState;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -31,7 +33,7 @@ public class Main extends Application implements ConceptMapObserver {
 
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		conceptFactory.addListener(this);
-		
+
 		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
 		linkFactory.addListener(this);
 
@@ -48,19 +50,20 @@ public class Main extends Application implements ConceptMapObserver {
 		experiment.addParticipant(u3);
 		experiment.addParticipant(u4);
 
-		ObservableConceptMap conceptMap = new ObservableConceptMap(experiment, linkFactory);
+		conceptMap = new ObservableConceptMap(experiment, linkFactory);
+
 		conceptMap.addListener(this);
 
 		Concept lightsaber = conceptFactory.create(u2, "Lightsaber");
-		lightsaber.setPosition(0.5,0.5,30);
+		lightsaber.setPosition(0.5, 0.5, 30);
 		conceptMap.addConcept(lightsaber);
 
-		Concept loss =  conceptFactory.create(u4, "Arm loss");
-		loss.setPosition(0.2,0.664,0);
+		Concept loss = conceptFactory.create(u4, "Arm loss");
+		loss.setPosition(0.2, 0.664, 0);
 		conceptMap.addConcept(loss);
 
-		Concept sith =  conceptFactory.create(u1, "Sith");
-		sith.setPosition(0.4,0.664,84);
+		Concept sith = conceptFactory.create(u1, "Sith");
+		sith.setPosition(0.4, 0.664, 84);
 		conceptMap.addConcept(sith);
 
 		Link link = conceptMap.addUndirectedLink(lightsaber, loss);
@@ -76,13 +79,26 @@ public class Main extends Application implements ConceptMapObserver {
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
 
 		ConceptMapViewBuilder builder = new ConceptMapViewBuilder();
-		
+
 		Scene scene = builder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap).build();
 
 		scene.setOnKeyTyped((l) -> {
 
 			if (l.getCharacter().equals("f"))
 				primaryStage.setFullScreen(true);
+
+			if (l.getCharacter().equals("u") && !states.isEmpty()) {
+				Platform.runLater(() -> {
+					isRestoringState = true;
+					ConceptMapViewController controller = builder.getController();
+					ObservableConceptMap undoMap = states.pop();
+					controller.setConceptMap(undoMap);
+					controller.layout();
+					conceptMap = undoMap;
+					isRestoringState = false;
+				});
+			}
+
 		});
 
 		primaryStage.setScene(scene);
@@ -91,17 +107,16 @@ public class Main extends Application implements ConceptMapObserver {
 	}
 
 	@Override
-	public void changedMap(ConceptMap oldMap, ConceptMap newMap) {
-		System.out.println("map change");
+	public void beforeChange() {
+		if (!isRestoringState){
+			states.push(conceptMap.clone());
+		}
+			
+
 	}
 
 	@Override
-	public void changedConcept(Concept oldConcept, Concept newConcept) {
-		System.out.println("concept change");
-	}
+	public void afterChange() {
 
-	@Override
-	public void changedContent(CollaborativeString oldContent, CollaborativeString newContent) {
-		System.out.println("content change");
 	}
 }

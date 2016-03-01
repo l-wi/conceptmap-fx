@@ -63,8 +63,9 @@ public class ConceptMapView extends Pane {
 	}
 
 	public void remove(Node n) {
-
-		if (n instanceof FourUserTouchEditable && n.lookup("#linkCaption") != null)
+		if (n instanceof AnchorView)
+			;
+		else if (n instanceof FourUserTouchEditable && n.lookup("#linkCaption") != null)
 			linkCaptionIndex--;
 		else if (n instanceof Path)
 			linkPathIndex--;

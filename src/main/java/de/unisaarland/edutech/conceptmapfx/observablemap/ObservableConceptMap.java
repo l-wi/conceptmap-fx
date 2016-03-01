@@ -3,7 +3,6 @@ package de.unisaarland.edutech.conceptmapfx.observablemap;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
@@ -13,7 +12,7 @@ import javafx.beans.value.ChangeListener;
 
 public class ObservableConceptMap extends ConceptMap implements Cloneable {
 
-	private List<ConceptMapObserver> observers  = new ArrayList<>();;
+	private List<ConceptMapObserver> observers = new ArrayList<>();;
 
 	public ObservableConceptMap(Experiment experiment, int conceptCapacity, LinkFactory factory,
 			ChangeListener<ConceptMap> c) {
@@ -35,78 +34,77 @@ public class ObservableConceptMap extends ConceptMap implements Cloneable {
 
 	@Override
 	public int addConcept(Concept c) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		int res = super.addConcept(c);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 		return res;
 	}
 
 	@Override
 	public Link addDirectedLink(Concept a, Concept b) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		Link res = super.addDirectedLink(a, b);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 		return res;
 	}
 
 	@Override
 	public Link addDirectedLink(int firstConceptIndex, int secondConceptIndex) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		Link res = super.addDirectedLink(firstConceptIndex, secondConceptIndex);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 		return res;
 	}
 
 	@Override
 	public Link addUndirectedLink(Concept a, Concept b) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		Link res = super.addUndirectedLink(a, b);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 		return res;
 	}
 
 	@Override
 	public Link addUndirectedLink(int a, int b) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		Link res = super.addUndirectedLink(a, b);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 		return res;
 	}
 
 	@Override
 	public void removeConcept(Concept c) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		super.removeConcept(c);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 	}
 
 	@Override
 	public void removeDirectedLink(Concept a, Concept b) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		super.removeDirectedLink(a, b);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 	}
 
 	@Override
 	public void removeUndirectedLink(Concept a, Concept b) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
-
+		observers.forEach((l) -> l.beforeChange());
 		super.removeUndirectedLink(a, b);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 	}
 
 	@Override
 	public void setDirectedRelationToUndirected(Concept start, Concept end) {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		super.setDirectedRelationToUndirected(start, end);
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 	}
 
 	@Override
 	public void clear() {
-		ConceptMap oldMap = (ConceptMap) this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		super.clear();
-		observers.forEach((l) -> l.changedMap(oldMap, this));
+		observers.forEach((l) -> l.afterChange());
 	}
 
 	@Override

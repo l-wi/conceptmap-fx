@@ -20,9 +20,9 @@ public class ObservableConcept extends Concept implements Cloneable {
 
 	@Override
 	public void setPosition(double x, double y, double r) {
-		Concept old = this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		super.setPosition(x, y, r);
-		observers.forEach((l) -> l.changedConcept(old, this));
+		observers.forEach((l) -> l.afterChange());
 	}
 
 	@Override

@@ -27,17 +27,17 @@ public class ObservableCollaborativeString extends CollaborativeString implement
 
 	@Override
 	public CollaborativeString insert(User u, int index, String content) {
-		CollaborativeString old = this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		super.insert(u, index, content);
-		observers.forEach((l) -> l.changedContent(old, this));
+		observers.forEach((l) -> l.afterChange());
 		return this;
 	}
 
 	@Override
 	public CollaborativeString remove(int startIndex, int count) {
-		CollaborativeString old = this.clone();
+		observers.forEach((l) -> l.beforeChange());
 		super.remove(startIndex, count);
-		observers.forEach((l) -> l.changedContent(old, this));
+		observers.forEach((l) -> l.afterChange());
 		return this;
 	}
 

@@ -244,10 +244,11 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	public void setConceptMap(ConceptMap conceptMap) {
-		this.conceptMap = conceptMap;
 
 		clearConcepts();
 
+		this.conceptMap = conceptMap;
+				
 		for (User u : conceptMap.getExperiment().getParticipants())
 			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());
 
@@ -257,15 +258,19 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	public void clearConcepts() {
 
-		userToConceptViewControllers.values().forEach((list) -> {
-			list.forEach((cv) -> deleteConcept(cv));
-		});
-
 		linkControllers.forEach((lv) -> {
-			lv.remove();
+			lv.removeFromView();
 		});
 
 		linkControllers.clear();
+		
+		userToConceptViewControllers.values().forEach((list) -> {
+			list.forEach((cv) -> {
+				conceptMapPane.remove(cv.getView());
+				conceptMap.removeConcept(cv.getConcept());
+			});
+		});
+
 		userToConceptViewControllers.clear();
 	}
 
