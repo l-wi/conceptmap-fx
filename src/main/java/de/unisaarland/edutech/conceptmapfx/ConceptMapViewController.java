@@ -60,6 +60,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	private Map<ConceptViewController, List<ConceptViewController>> conceptToIntersectedConcepts = new HashMap<>();
 
+	private ConceptViewBuilder conceptViewBuilder;
+
 	public void addConceptDeletedListener(ConceptDeletedListener l) {
 		conceptDeletedListners.add(l);
 	}
@@ -116,23 +118,33 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 		User user = inputViewController.getUser();
 
-		ConceptViewBuilder builder = new ConceptViewBuilder(this.conceptMap);
-		builder = builder.withNewConcept(user).withMovedListener(this).withDeletedListener(this)
-				.withMovingListener(this);
+		conceptViewBuilder.withNewConcept(user);
+		prepareConceptBuilder(user);
+		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(inputViewController,
+				this.conceptMapPane);
+		this.userToConceptViewControllers.get(user).add(cv);
+
+	}
+
+	private void prepareConceptBuilder(User user) {
+
+		conceptViewBuilder.withMovedListener(this).withMovingListener(this).withDeletedListener(this);
 
 		InputViewController usersController = null;
 
 		for (InputViewController l : inputControllers) {
-			builder.withEditRequestedListener(l);
-			builder.withDeletedListener(l);
+			conceptViewBuilder.withEditRequestedListener(l);
+			conceptViewBuilder.withDeletedListener(l);
 			if (l.getUser().equals(user))
 				usersController = l;
 		}
 
-		builder.withConceptEmptyListener(usersController);
+		conceptViewBuilder.withConceptEmptyListener(usersController);
 
-		ConceptViewController controller = builder.buildControllerAndAddView(inputViewController, this.conceptMapPane);
-		this.userToConceptViewControllers.get(user).add(controller);
+	}
+
+	public void setConceptViewBuilder(ConceptViewBuilder builder) {
+		this.conceptViewBuilder = builder;
 	}
 
 	public void newLink(ConceptViewController cv1, ConceptViewController cv2) {
@@ -274,9 +286,12 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			for (int j = 0; j < conceptMap.getConceptCount(); j++) {
 				if (first) {
 					Concept c = conceptMap.getConcept(j);
-					ConceptViewController controller = buildForExistingConcept(c);
-					this.userToConceptViewControllers.get(c.getOwner()).add(controller);
-					tempList.add(controller);
+
+					conceptViewBuilder.forConcept(c);
+					prepareConceptBuilder(c.getOwner());
+					ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(this.conceptMapPane);
+					this.userToConceptViewControllers.get(c.getOwner()).add(cv);
+					tempList.add(cv);
 				}
 
 				LinkViewController lvc = null;
@@ -325,33 +340,17 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		}
 	}
 
-	private ConceptViewController buildForExistingConcept(Concept c) {
-		ConceptViewBuilder builder = new ConceptViewBuilder(conceptMap);
-		builder.forConcept(c).withMovedListener(this).withMovingListener(this).withDeletedListener(this);
-
-		InputViewController usersController = null;
-
-		for (InputViewController l : inputControllers) {
-			builder.withEditRequestedListener(l);
-			builder.withDeletedListener(l);
-			if (l.getUser().equals(c.getOwner()))
-				usersController = l;
-		}
-
-		builder.withConceptEmptyListener(usersController);
-
-		return builder.buildControllerAndAddView(this.conceptMapPane);
-	}
-
 	@Override
 	public void conceptMoved(ConceptViewController cv) {
 		List<ConceptViewController> intersections = findIntersections(cv);
 
 		FourUserTouchEditable view = cv.getView();
 
-		cv.getConcept().setX(view.getOrigin().getX() / sceneWidth.doubleValue());
-		cv.getConcept().setY(view.getOrigin().getY() / sceneHeight.doubleValue());
-		cv.getConcept().setRotate(view.getRotate());
+		double x = (view.getOrigin().getX() / sceneWidth.doubleValue());
+		double y = (view.getOrigin().getY() / sceneHeight.doubleValue());
+		double r = view.getRotate();
+
+		cv.getConcept().setPosition(x, y, r);
 
 		for (ConceptViewController intersected : intersections) {
 			fireNewLinkListener(cv, intersected);

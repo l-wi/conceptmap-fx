@@ -3,13 +3,13 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.io.IOException;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
-import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
-import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
+import de.unisaarland.edutech.conceptmapping.ConceptFactory;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXMLLoader;
@@ -24,21 +24,30 @@ public class ConceptViewBuilder {
 
 	private ConceptViewController controller;
 
-	public ConceptViewBuilder(ConceptMap map) {
+	private ConceptFactory factory;
+
+	public ConceptViewBuilder(ConceptMap map, ConceptFactory factory) {
+
+		reset(map, factory);
+
+	}
+
+	private void reset(ConceptMap map, ConceptFactory factory) {
 		try {
 			this.map = map;
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("ConceptView.fxml"));
 			this.conceptViewPane = loader.load();
 			this.controller = loader.getController();
 			this.controller.setParticipants(map.getExperiment().getParticipants());
+			this.factory = factory;
 		} catch (IOException e) {
 			// should never happen fxml error
 			throw new RuntimeException(e);
 		}
-
 	}
 
-	public ConceptViewController buildControllerAndAddView(InputViewController positionOver, ConceptMapView conceptMapPane) {
+	public ConceptViewController buildControllerAndAddView(InputViewController positionOver,
+			ConceptMapView conceptMapPane) {
 
 		conceptMapPane.add(conceptViewPane);
 		conceptMapPane.applyCss();
@@ -47,7 +56,12 @@ public class ConceptViewBuilder {
 		moveConceptToRightPosition(positionOver, conceptViewPane);
 
 		requestInput(controller);
-		return controller;
+
+		ConceptViewController result = controller;
+		
+		reset(map, factory);
+
+		return result;
 	}
 
 	public ConceptViewController buildControllerAndAddView(ConceptMapView conceptMapPane) {
@@ -55,7 +69,13 @@ public class ConceptViewBuilder {
 		conceptMapPane.add(conceptViewPane);
 
 		requestInput(controller);
-		return controller;
+		
+		ConceptViewController result = controller;
+
+		reset(map, factory);
+
+		
+		return result;
 
 	}
 
@@ -80,7 +100,7 @@ public class ConceptViewBuilder {
 	}
 
 	private Concept initConcept(User u) {
-		Concept concept = new Concept(new CollaborativeString(u));
+		Concept concept = factory.create(u);
 		map.addConcept(concept);
 		return concept;
 	}

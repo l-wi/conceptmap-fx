@@ -49,6 +49,10 @@ public class ConceptMapViewBuilder {
 		return this;
 	}
 
+	public ConceptMapViewBuilder withConceptViewBuilder(ConceptViewBuilder builder){
+		controller.setConceptViewBuilder(builder);
+		return this;
+	}
 	private ConceptMapViewBuilder withParticipants(List<User> participants) {
 		try {
 			setInputPositions(participants.get(0), participants.get(1), participants.get(2), participants.get(3));

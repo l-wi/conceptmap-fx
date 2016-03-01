@@ -142,8 +142,8 @@ public class ConceptMapViewTests extends ApplicationTest {
 		Concept c = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(0), FIRST_CONCEPT));
 		double x = 0.4;
 		double y = 0.4;
-		c.setX(x);
-		c.setY(y);
+		c.setPosition(x,y,0);
+
 		map.addConcept(c);
 
 		// when
@@ -177,13 +177,11 @@ public class ConceptMapViewTests extends ApplicationTest {
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setX(0.5);
-		c1.setX(0.5);
+		c1.setPosition(0.5,0.5,0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setX(0.3);
-		c2.setY(0.3);
-		c2.setRotate(30);
+		c2.setPosition(0.3,0.3,30);
+
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -215,13 +213,12 @@ public class ConceptMapViewTests extends ApplicationTest {
 
 		User user = map.getExperiment().getParticipants().get(2);
 		Concept c1 = new Concept(new CollaborativeString(user, FIRST_CONCEPT));
-		c1.setX(0.2);
-		c1.setY(0.5);
+		c1.setPosition(0.2,0.5,0);
+
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setX(0.4);
-		c2.setY(0.4);
-		c2.setRotate(30);
+		c2.setPosition(0.4,0.4,0);
+
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -269,13 +266,10 @@ public class ConceptMapViewTests extends ApplicationTest {
 		this.map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setX(0.3);
-		c1.setY(0.3);
+		c1.setPosition(0.3,0.3,0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setX(0.6);
-		c2.setY(0.6);
-		c2.setRotate(30);
+		c1.setPosition(0.6,0.6,30);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -301,13 +295,11 @@ public class ConceptMapViewTests extends ApplicationTest {
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setX(0.5);
-		c1.setY(0.5);
+		c1.setPosition(0.5,0.5,0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setX(0.7);
-		c2.setY(0.7);
-		c2.setRotate(30);
+		c1.setPosition(0.7,0.7,30);
+
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -344,18 +336,16 @@ public class ConceptMapViewTests extends ApplicationTest {
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setX(0.5);
-		c1.setY(0.5);
+		c1.setPosition(0.5,0.5,0);
+
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setX(0.7);
-		c2.setY(0.7);
-		c2.setRotate(30);
+		c2.setPosition(0.7,0.7,30);
+
 
 		Concept c3 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(3), THIRD_CONCEPT));
-		c3.setX(0.7);
-		c3.setY(0.2);
-		c3.setRotate(0);
+		c3.setPosition(0.7,0.2,0);
+
 
 		map.addConcept(c1);
 		map.addConcept(c2);
