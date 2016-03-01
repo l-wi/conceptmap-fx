@@ -389,15 +389,24 @@ public class ConceptMapViewTests extends ApplicationTest {
 	}
 	// TODO too many touch points reported exception kills whole multitouch
 	// process, find out if this is a javafx bug and how to fix i
-	
-	// TODO test for bug --> create new, delete, try add new (bug already gefixt)
-	
+
+	// TODO test for bug --> create new, delete, try add new (bug already
+	// gefixt)
+
 	// TODO test disable new Button with various states:
 	/*
-	 *	press new -> delete new concept : new is again pressable
-	 *  press new -> add to concept : new is again pressable
-	 *  add concept -> remove all : new is NOT pressable
-	 *  add concept 1,2 --> remove all from 1,2 --> add to 1 --> new is NOT pressable  
+	 * press new -> delete new concept : new is again pressable press new -> add
+	 * to concept : new is again pressable add concept -> remove all : new is
+	 * NOT pressable add concept 1,2 --> remove all from 1,2 --> add to 1 -->
+	 * new is NOT pressable
+	 */
+
+	// TODO test order in ConceptMapView
+	/*
+	 *
+	 * adding different components --> order ok adding,removing, adding
+	 * different components --> order ok
 	 */
 	
+
 }

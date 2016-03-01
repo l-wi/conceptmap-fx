@@ -38,9 +38,9 @@ public class ConceptViewBuilder {
 
 	}
 
-	public ConceptViewController buildControllerAndAddView(InputViewController positionOver, Pane conceptMapPane) {
+	public ConceptViewController buildControllerAndAddView(InputViewController positionOver, ConceptMapView conceptMapPane) {
 
-		conceptMapPane.getChildren().add(conceptViewPane);
+		conceptMapPane.add(conceptViewPane);
 		conceptMapPane.applyCss();
 		conceptMapPane.layout();
 
@@ -50,9 +50,9 @@ public class ConceptViewBuilder {
 		return controller;
 	}
 
-	public ConceptViewController buildControllerAndAddView(Pane conceptMapPane) {
+	public ConceptViewController buildControllerAndAddView(ConceptMapView conceptMapPane) {
 
-		conceptMapPane.getChildren().add(conceptViewPane);
+		conceptMapPane.add(conceptViewPane);
 
 		requestInput(controller);
 		return controller;

@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 
 public class ConceptMapViewBuilder {
 
-	private Pane conceptMapView;
+	private ConceptMapView conceptMapView;
 	private ConceptMapViewController controller;
 	private Scene scene;
 
@@ -116,7 +116,7 @@ public class ConceptMapViewBuilder {
 		InputViewController inputController = inputLoader.getController();
 		inputController.setUser(u);
 		inputController.setPosition(p);
-		conceptMapView.getChildren().add(inputView);
+		conceptMapView.add(inputView);
 		inputController.addNewConceptListener(controller);
 		controller.addInputViewController(inputController);
 		return inputView;

@@ -3,6 +3,7 @@ package de.unisaarland.edutech.conceptmapfx;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
+import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Link;
 import javafx.scene.layout.Pane;
@@ -11,7 +12,7 @@ public class LinkViewBuilder {
 
 	private ConceptMap map;
 
-	private Pane pane;
+	private ConceptMapView pane;
 
 	private LinkViewController controller;
 
@@ -19,7 +20,7 @@ public class LinkViewBuilder {
 
 	private ConceptViewController cv2;
 
-	public LinkViewBuilder(ConceptMap m, Pane conceptMapPane, ConceptViewController cv1, ConceptViewController cv2) {
+	public LinkViewBuilder(ConceptMap m, ConceptMapView conceptMapPane, ConceptViewController cv1, ConceptViewController cv2) {
 		this.map = m;
 		this.pane = conceptMapPane;
 		this.cv1 = cv1;

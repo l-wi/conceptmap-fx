@@ -8,7 +8,7 @@
 <?import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable?>
 
 <FourUserTouchEditable xmlns:fx="http://javafx.com/fxml/1"
-	stylesheets="@link.css" styleClass="link">
+	stylesheets="@link.css" styleClass="link" id="linkCaption">
 
 
 

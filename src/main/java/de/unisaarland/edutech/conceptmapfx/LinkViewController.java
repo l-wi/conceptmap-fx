@@ -54,7 +54,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private Link link;
 
-	private Pane cmv;
+	private ConceptMapView cmv;
 
 	private boolean isSelected = false;
 
@@ -62,7 +62,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private double rotateTreshold = 0;
 
-	public LinkViewController(List<User> participants, Pane cmv, ConceptViewController cv1, ConceptViewController cv2) {
+	public LinkViewController(List<User> participants, ConceptMapView cmv, ConceptViewController cv1, ConceptViewController cv2) {
 
 		this.cmv = cmv;
 		this.cv1 = cv1;
@@ -91,11 +91,11 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	public void initialize() {
 		initEditorComponent();
-		cmv.getChildren().add(aStart);
-		cmv.getChildren().add(aEnd);
+		cmv.add(aStart);
+		cmv.add(aEnd);
 
-		cmv.getChildren().add(linkingPath);
-		cmv.getChildren().add(linkCaption);
+		cmv.add(linkingPath);
+		cmv.add(linkCaption);
 
 		FourUserTouchEditable view = cv1.getView();
 
@@ -377,10 +377,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	}
 
 	public void removeFromView() {
-		cmv.getChildren().remove(aStart);
-		cmv.getChildren().remove(aEnd);
-		cmv.getChildren().remove(linkingPath);
-		cmv.getChildren().remove(linkCaption);
+		cmv.remove(aStart);
+		cmv.remove(aEnd);
+		cmv.remove(linkingPath);
+		cmv.remove(linkCaption);
 	}
 
 	public User getActiveUser() {

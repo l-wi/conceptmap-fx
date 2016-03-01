@@ -31,6 +31,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 //TODO Refactor: extract some listeners into separate classes
@@ -46,7 +47,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	private List<NewLinkListener> newLinkListeners = new ArrayList<NewLinkListener>();
 
 	@FXML
-	private AnchorPane conceptMapPane;
+	private ConceptMapView conceptMapPane;
 
 	private ConceptMap conceptMap;
 	private List<InputViewController> inputControllers = new ArrayList<InputViewController>();
@@ -257,7 +258,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	}
 
 	private void deleteConcept(ConceptViewController cv) {
-		conceptMapPane.getChildren().remove(cv.getView());
+		conceptMapPane.remove(cv.getView());
 		conceptMap.removeConcept(cv.getConcept());
 
 		userToConceptViewControllers.get(cv.getConcept().getOwner()).remove(cv);
