@@ -155,9 +155,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 			return;
 		}
 
-		// TODO would be cool if we also try first the direction the link comes
-		// from
-
 		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
 				+ cv2.getConcept().getName().getContent());
 
