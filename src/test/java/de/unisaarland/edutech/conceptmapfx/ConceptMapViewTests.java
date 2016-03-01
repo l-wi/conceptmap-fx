@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
+import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
@@ -32,7 +33,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 	private static final String FIRST_CONCEPT = "Dog";
 	private static final String SECOND_CONCEPT = "Cat";
 	private ConceptMapViewController controller;
-	private Pane conceptMapView;
+	private ConceptMapView conceptMapView;
 	private ConceptMap map;
 
 	private static Scene scene = null;
@@ -60,11 +61,16 @@ public class ConceptMapViewTests extends ApplicationTest {
 		map = new ConceptMap(experiment);
 
 		ConceptMapViewBuilder builder = new ConceptMapViewBuilder();
-		scene = builder.withConceptMap(map).build();
+		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
+		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(map, conceptFactory);
+
+		
+		
+		scene = builder.withConceptViewBuilder(conceptBuilder).withConceptMap(map).build();
 
 		controller = builder.getController();
 
-		conceptMapView = (AnchorPane) scene.getRoot();
+		conceptMapView = (ConceptMapView) scene.getRoot();
 		stage.setScene(scene);
 		stage.setFullScreen(true);
 		stage.show();
