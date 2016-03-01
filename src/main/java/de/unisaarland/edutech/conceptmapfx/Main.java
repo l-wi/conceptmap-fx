@@ -54,7 +54,7 @@ public class Main extends Application implements ConceptMapObserver {
 
 		conceptMap.addListener(this);
 
-		Concept lightsaber = conceptFactory.create(u2, "Lightsaber");
+		Concept lightsaber = conceptFactory.create(u2, "very very long Lightsaber");
 		lightsaber.setPosition(0.5, 0.5, 30);
 		conceptMap.addConcept(lightsaber);
 
@@ -89,6 +89,8 @@ public class Main extends Application implements ConceptMapObserver {
 
 			if (l.getCharacter().equals("u") && !states.isEmpty()) {
 				Platform.runLater(() -> {
+					// FIXME when restoring and so deleting the last concept the
+					// keyboard remains enabled!
 					isRestoringState = true;
 					ConceptMapViewController controller = builder.getController();
 					ObservableConceptMap undoMap = states.pop();
@@ -108,10 +110,9 @@ public class Main extends Application implements ConceptMapObserver {
 
 	@Override
 	public void beforeChange() {
-		if (!isRestoringState){
+		if (!isRestoringState) {
 			states.push(conceptMap.clone());
 		}
-			
 
 	}
 
