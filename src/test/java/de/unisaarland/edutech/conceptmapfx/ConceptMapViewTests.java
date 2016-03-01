@@ -408,5 +408,11 @@ public class ConceptMapViewTests extends ApplicationTest {
 	 * different components --> order ok
 	 */
 	
+	//TODO test for bug when bringing links to front
+	/*
+	 * have two links, click on link a, click on link b, click on link a
+	 * expected a in front, actual b in front.
+	 */
+	
 
 }

@@ -24,7 +24,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -135,13 +134,21 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		ObservableList<Node> workingCollection = FXCollections.observableArrayList(cmv.getChildren());
 
 		int aStartIndex = workingCollection.indexOf(aStart);
-		int aEndIndex = workingCollection.indexOf(aEnd);
-		int end = workingCollection.size() - 1;
+		int end = workingCollection.size();
+	
 		Collections.rotate(workingCollection.subList(aStartIndex, end), -1);
+		cmv.getChildren().setAll(workingCollection);
+
+		int aEndIndex = workingCollection.indexOf(aEnd);
+
 		Collections.rotate(workingCollection.subList(aEndIndex, end), -1);
 		cmv.getChildren().setAll(workingCollection);
+		
 	}
 
+
+
+	
 	private void onRotate(Double rotate) {
 		rotateTreshold += rotate;
 		if (Math.abs(rotateTreshold) < 70)
