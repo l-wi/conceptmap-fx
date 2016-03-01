@@ -252,7 +252,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 	}
 
-	public void clearConcepts() {
+	private void clearConcepts() {
 
 		linkControllers.forEach((lv) -> {
 			lv.removeFromView();
