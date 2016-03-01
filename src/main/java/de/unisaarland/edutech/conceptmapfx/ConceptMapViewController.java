@@ -334,15 +334,19 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 				Concept c = cv.getConcept();
 				double x = c.getX() * this.sceneWidth.doubleValue();
 				double y = c.getY() * this.sceneHeight.doubleValue();
-				LOG.info("moving after rescale: x / y " + x + "/" + y);
 				cv.translateAbsolute(x, y);
 				cv.getView().setRotate(c.getRotate());
 			}
+
 		}
 
 		for (LinkViewController lvc : linkControllers) {
 			lvc.layout();
 		}
+		
+		//otherwise the textfield does not rescale and links do not end at the right spot
+		this.conceptMapPane.applyCss();
+		this.conceptMapPane.layout();
 	}
 
 	@Override
