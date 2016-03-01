@@ -206,7 +206,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 
 				if (!hasIntersections(viewToMove)) {
 					linkControllers.forEach((l) -> l.layout());
-					LOG.info("a" + Math.toDegrees(angle));
 					return;
 				}
 
