@@ -59,6 +59,10 @@ public class ConceptMapViewBuilder {
 		return scene;
 	}
 
+	public Optional<SessionSaver> getSessionSaver() {
+		return saver;
+	}
+	
 	public ConceptMapViewBuilder withConceptMap(ConceptMap conceptMap) {
 		this.conceptMap = conceptMap;
 

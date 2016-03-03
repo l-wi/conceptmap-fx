@@ -22,9 +22,13 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+	private static final String RESTORE_FILE_NAME = "lock";
+
 	public static void main(String[] args) {
 		launch(args);
 	}
+
+	private File lockFile;
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
@@ -62,7 +66,8 @@ public class Main extends Application {
 
 		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
 
-		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory).attachToListener(conceptFactory);
+		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
+				.attachToListener(conceptFactory);
 
 		if (restoredMap.isPresent())
 			conceptMapViewBuilder.attachToReloadedMap();
@@ -102,9 +107,20 @@ public class Main extends Application {
 		});
 
 		primaryStage.setScene(scene);
+
+		Optional<SessionSaver> sessionSaver = conceptMapViewBuilder.getSessionSaver();
+
+		if (sessionSaver.isPresent()) {
+			File workingDir = sessionSaver.get().getWorkingDir();
+			this.lockFile = new File(workingDir, RESTORE_FILE_NAME);
+			lockFile.createNewFile();
+			primaryStage.setOnCloseRequest((e) -> {
+				lockFile.delete();
+				System.exit(0);
+			});
+		}
 		primaryStage.show();
 
-		// TODO save / load
 		// TODO Frontend
 		// TODO Rotate Translate Group
 		// TODO selected eintippen geht nicht (Bug?)
@@ -124,7 +140,8 @@ public class Main extends Application {
 
 				if (directoryContents.length > 0) {
 
-					if (directoryContents[0].getName().equals("lock")) {
+					if (directoryContents[0].getName().equals(RESTORE_FILE_NAME)) {
+						directoryContents[0].delete();
 						File currentState = directoryContents[directoryContents.length - 1];
 						try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(currentState))) {
 							ObservableConceptMap cm = (ObservableConceptMap) stream.readObject();

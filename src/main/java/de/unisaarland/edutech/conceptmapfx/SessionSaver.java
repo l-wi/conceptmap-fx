@@ -39,7 +39,16 @@ public class SessionSaver implements ConceptMapObserver {
 		isSetup = true;
 		workingDir.mkdir();
 
-		
+		try {
+			serialize();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	public File getWorkingDir() {
+		return workingDir;
 	}
 
 	private void startTimer() {
