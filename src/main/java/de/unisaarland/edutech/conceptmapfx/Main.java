@@ -92,7 +92,6 @@ public class Main extends Application {
 		primaryStage.show();
 		
 		// TODO save / load
-		// TODO new concept jumps (no coordinates set)
 		// TODO Frontend
 		// TODO Rotate Translate Group
 		// TODO selected eintippen geht nicht (Bug?)

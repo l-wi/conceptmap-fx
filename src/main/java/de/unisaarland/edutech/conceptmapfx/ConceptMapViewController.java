@@ -112,8 +112,20 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		prepareConceptBuilder(user);
 		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(inputViewController,
 				this.conceptMapPane);
+		
+		updateConceptPosition(cv);
+		
 		this.userToConceptViewControllers.get(user).add(cv);
 
+	}
+
+	private void updateConceptPosition(ConceptViewController cv) {
+		double x = cv.getView().getTranslateX() / this.sceneWidth.doubleValue();
+		double y = cv.getView().getTranslateY() / this.sceneHeight.doubleValue();
+		double r = cv.getView().getRotate();
+
+		
+		cv.getConcept().setPosition(x, y, r);
 	}
 
 	private void prepareConceptBuilder(User user) {

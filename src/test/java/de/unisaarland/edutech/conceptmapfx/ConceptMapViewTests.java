@@ -420,5 +420,13 @@ public class ConceptMapViewTests extends ApplicationTest {
 	 * 5. undo
 	 */
 	
+	//TODO test concept new jump
+	/*
+	 * create new concept
+	 * rescale
+	 * concept on right position
+	 * 
+	 */
+	
 
 }
