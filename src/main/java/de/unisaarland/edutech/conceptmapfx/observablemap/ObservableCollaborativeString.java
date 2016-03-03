@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx.observablemap;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.User;
 
-public class ObservableCollaborativeString extends CollaborativeString implements Cloneable,Observable,Serializable {
+public class ObservableCollaborativeString extends CollaborativeString implements Cloneable, Observable, Serializable {
 
 	private transient List<ConceptMapObserver> observers = new ArrayList<>();
 
@@ -23,8 +24,6 @@ public class ObservableCollaborativeString extends CollaborativeString implement
 	public void addListener(ConceptMapObserver c) {
 		this.observers.add(c);
 	}
-
-
 
 	@Override
 	public CollaborativeString insert(User u, int index, String content) {
@@ -42,7 +41,6 @@ public class ObservableCollaborativeString extends CollaborativeString implement
 		return this;
 	}
 
-
 	@Override
 	public ObservableCollaborativeString clone() {
 		ObservableCollaborativeString s;
@@ -50,10 +48,15 @@ public class ObservableCollaborativeString extends CollaborativeString implement
 		s = (ObservableCollaborativeString) super.clone();
 
 		s.observers = new ArrayList<>();
-		if(observers != null)
+		if (observers != null)
 			s.observers.addAll(this.observers);
 		return s;
 
+	}
+
+	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		this.observers = new ArrayList<>();
 	}
 
 }

@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx.observablemap;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import javafx.beans.value.ChangeListener;
 
 public class ObservableConceptMap extends ConceptMap implements Cloneable, Observable,Serializable {
 
-	private transient List<ConceptMapObserver> observers = new ArrayList<>();;
+	private transient List<ConceptMapObserver> observers = new ArrayList<>();
 
 	public ObservableConceptMap(Experiment experiment, int conceptCapacity, LinkFactory factory,
 			ChangeListener<ConceptMap> c) {
@@ -116,4 +117,10 @@ public class ObservableConceptMap extends ConceptMap implements Cloneable, Obser
 		s.observers.addAll(this.observers);
 		return s;
 	}
+	
+	private void readObject(java.io.ObjectInputStream in)
+		    throws IOException, ClassNotFoundException {
+		    in.defaultReadObject();
+		    this.observers = new ArrayList<>();
+		}
 }

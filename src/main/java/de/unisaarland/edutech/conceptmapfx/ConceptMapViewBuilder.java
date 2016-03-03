@@ -6,8 +6,12 @@ import java.util.Optional;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.observablemap.Observable;
+import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableCollaborativeString;
+import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConcept;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
+import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
+import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -166,4 +170,32 @@ public class ConceptMapViewBuilder {
 
 		return this;
 	}
+
+	public ConceptMapViewBuilder attachToReloadedMap() {
+		for (int i = 0; i < conceptMap.getConceptCount(); i++) {
+			ObservableConcept c = (ObservableConcept) conceptMap.getConcept(i);
+			c.addListener(history.get());
+			c.addListener(saver.get());
+
+			ObservableCollaborativeString name = (ObservableCollaborativeString) c.getName();
+
+			name.addListener(history.get());
+			name.addListener(saver.get());
+		}
+
+		for (int col = 0; col < conceptMap.getConceptCount(); col++) {
+			for (int row = 0; row < conceptMap.getConceptCount(); row++) {
+				Link link = conceptMap.getLink(col, row);
+				if (link != null) {
+					ObservableCollaborativeString name = (ObservableCollaborativeString) link.getCaption();
+
+					name.addListener(history.get());
+					name.addListener(saver.get());
+				}
+			}
+		}
+
+		return this;
+	}
+
 }

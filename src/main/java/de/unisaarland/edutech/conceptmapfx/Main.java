@@ -1,6 +1,12 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Optional;
 
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
@@ -22,8 +28,12 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		
-		//data from other view
+
+		ObservableConceptMap conceptMap = null;
+
+		Optional<ObservableConceptMap> restoredMap = restoreSessionIfNeeded();
+
+		// data from other view
 		User u1 = new User("Ben", "ben@localhost.com");
 		User u2 = new User("Han", "han@localhost.com");
 		User u3 = new User("Chewi", "chewi@localhost.com");
@@ -37,48 +47,54 @@ public class Main extends Application {
 		experiment.addParticipant(u3);
 		experiment.addParticipant(u4);
 
-		
 		// setting up construction facilities
 
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
-				
-		ObservableConceptMap conceptMap = new ObservableConceptMap(experiment, linkFactory);
+
+		if (!restoredMap.isPresent())
+			conceptMap = new ObservableConceptMap(experiment, linkFactory);
+		else
+			conceptMap = restoredMap.get();
 
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
-		ConceptMapViewBuilder conceptMapBuilder = new ConceptMapViewBuilder();
-		
-		conceptMapBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
-		conceptMapBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
-				.attachToListener(conceptFactory);
-		
-	
-		//creating some dummy data
+		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
 
-		Concept lightsaber = conceptFactory.create(u2, "very very long Lightsaber");
-		lightsaber.setPosition(0.5, 0.5, 30);
-		conceptMap.addConcept(lightsaber);
+		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
 
-		Concept loss = conceptFactory.create(u4, "Arm loss");
-		loss.setPosition(0.2, 0.664, 0);
-		conceptMap.addConcept(loss);
+		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory).attachToListener(conceptFactory);
 
-		Concept sith = conceptFactory.create(u1, "Sith");
-		sith.setPosition(0.4, 0.664, 84);
-		conceptMap.addConcept(sith);
+		if (restoredMap.isPresent())
+			conceptMapViewBuilder.attachToReloadedMap();
 
-		Link link = conceptMap.addUndirectedLink(lightsaber, loss);
-		link.getCaption().append(u4, "causes");
+		// creating some dummy data
 
-		Link link2 = conceptMap.addDirectedLink(lightsaber, sith);
-		link2.getCaption().append(u2, "uses");
+		if (!restoredMap.isPresent()) {
+			Concept lightsaber = conceptFactory.create(u2, "very very long	 Lightsaber");
+			lightsaber.setPosition(0.5, 0.5, 30);
+			conceptMap.addConcept(lightsaber);
 
+			Concept loss = conceptFactory.create(u4, "Arm loss");
+			loss.setPosition(0.2, 0.664, 0);
+			conceptMap.addConcept(loss);
+
+			Concept sith = conceptFactory.create(u1, "Sith");
+			sith.setPosition(0.4, 0.664, 84);
+			conceptMap.addConcept(sith);
+
+			Link link = conceptMap.addUndirectedLink(lightsaber, loss);
+			link.getCaption().append(u4, "causes");
+
+			Link link2 = conceptMap.addDirectedLink(lightsaber, sith);
+			link2.getCaption().append(u2, "uses");
+		} else
+			System.out.println("loading restored map!");
 		// Begin UI code
-		
+
 		primaryStage.setMaximized(true);
 		primaryStage.setTitle("Concept Mapping");
 
-		Scene scene = conceptMapBuilder.build();
+		Scene scene = conceptMapViewBuilder.build();
 
 		scene.setOnKeyTyped((l) -> {
 			if (l.getCharacter().equals("f"))
@@ -87,15 +103,74 @@ public class Main extends Application {
 
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
+
 		// TODO save / load
 		// TODO Frontend
 		// TODO Rotate Translate Group
 		// TODO selected eintippen geht nicht (Bug?)
 		// TODO rotate two nodes simultaneously (Bug?)
 		// TODO parallel keyboard input (Bug?)
+	}
 
+	public Optional<ObservableConceptMap> restoreSessionIfNeeded() {
+		File sessionFolder = new File("./session");
 
+		if (!isDirectory(sessionFolder))
+			sessionFolder.mkdir();
+
+		for (File d : sessionFolder.listFiles()) {
+			if (isDirectory(sessionFolder)) {
+				File[] directoryContents = sortContentsNumerical(d);
+
+				if (directoryContents.length > 0) {
+
+					if (directoryContents[0].getName().equals("lock")) {
+						File currentState = directoryContents[directoryContents.length - 1];
+						try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(currentState))) {
+							ObservableConceptMap cm = (ObservableConceptMap) stream.readObject();
+							return Optional.of(cm);
+
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+					}
+				}
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	private File[] sortContentsNumerical(File d) {
+		File[] directoryContents = d.listFiles();
+
+		Comparator<File> c = (a, b) -> {
+
+			String nameA = a.getName();
+			String nameB = b.getName();
+
+			int n1 = nameAsInt(nameA);
+			int n2 = nameAsInt(nameB);
+
+			return n1 - n2;
+		};
+
+		Arrays.sort(directoryContents, c);
+		return directoryContents;
+	}
+
+	private boolean isDirectory(File r) {
+		return r.exists() && r.isDirectory();
+	}
+
+	private int nameAsInt(String nameA) {
+
+		int index = nameA.indexOf(".");
+		if (index == -1)
+			return -1000;
+		String nameWithoutEnding = nameA.substring(0, index);
+
+		return Integer.parseInt(nameWithoutEnding);
 
 	}
 

@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx.observablemap;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 
-public class ObservableConcept extends Concept implements Cloneable,Observable,Serializable {
+public class ObservableConcept extends Concept implements Cloneable, Observable, Serializable {
 
 	private transient List<ConceptMapObserver> observers = new ArrayList<>();
 
@@ -32,5 +33,10 @@ public class ObservableConcept extends Concept implements Cloneable,Observable,S
 		s.observers = new ArrayList<>();
 		s.observers.addAll(this.observers);
 		return s;
+	}
+
+	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		this.observers = new ArrayList<>();
 	}
 }

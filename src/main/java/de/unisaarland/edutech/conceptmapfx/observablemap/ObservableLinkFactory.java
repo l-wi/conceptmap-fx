@@ -10,7 +10,7 @@ import de.unisaarland.edutech.conceptmapping.User;
 
 public class ObservableLinkFactory implements LinkFactory, Observable,Serializable {
 
-	private transient List<ConceptMapObserver> observers  = new ArrayList<>();;
+	private transient List<ConceptMapObserver> observers  = new ArrayList<>();
 
 	public void addListener(ConceptMapObserver c) {
 		this.observers.add(c);
