@@ -11,7 +11,6 @@ import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
 public class ConceptMapViewBuilder {
@@ -19,6 +18,7 @@ public class ConceptMapViewBuilder {
 	private ConceptMapView conceptMapView;
 	private ConceptMapViewController controller;
 
+	private Optional<SessionSaver> saver = Optional.empty();
 	private Optional<UndoHistory> history = Optional.empty();
 
 	private Scene scene;
@@ -48,24 +48,28 @@ public class ConceptMapViewBuilder {
 
 	public Scene build() {
 		controller.setConceptMap(conceptMap);
-		if(history.isPresent())
+		if (history.isPresent())
 			history.get().activate();
+		if (saver.isPresent())
+			saver.get().activate();
 		return scene;
 	}
 
 	public ConceptMapViewBuilder withConceptMap(ConceptMap conceptMap) {
 		this.conceptMap = conceptMap;
 
-		initHistoryIfNeeded(conceptMap);
+		initHistoryAndSessionSaverIfNeeded(conceptMap);
 
 		withParticipants(conceptMap.getExperiment().getParticipants());
 
 		return this;
 	}
 
-	private void initHistoryIfNeeded(ConceptMap conceptMap) {
+	private void initHistoryAndSessionSaverIfNeeded(ConceptMap conceptMap) {
 		if (conceptMap instanceof ObservableConceptMap) {
 			UndoHistory history = new UndoHistory((ObservableConceptMap) conceptMap, controller);
+			this.saver = Optional.of(new SessionSaver((ObservableConceptMap) conceptMap));
+			history.addListener(this.saver.get());
 			this.history = Optional.of(history);
 		}
 	}
@@ -153,11 +157,12 @@ public class ConceptMapViewBuilder {
 		return inputView;
 	}
 
-	public ConceptMapViewBuilder attachUndoToChangesIn(Observable o) {
-		if (history.isPresent())
+	public ConceptMapViewBuilder attachToListener(Observable o) {
+		if (history.isPresent() && saver.isPresent()) {
 			o.addListener(history.get());
-		else
-			throw new RuntimeException("No Undo set!");
+			o.addListener(saver.get());
+		} else
+			throw new RuntimeException("No Undo / Session Saver set!");
 
 		return this;
 	}

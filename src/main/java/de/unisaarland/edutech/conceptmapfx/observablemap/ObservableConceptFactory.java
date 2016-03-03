@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx.observablemap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,9 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptFactory;
 import de.unisaarland.edutech.conceptmapping.User;
 
-public class ObservableConceptFactory implements ConceptFactory, Observable {
+public class ObservableConceptFactory implements ConceptFactory, Observable,Serializable{
 
-	private List<ConceptMapObserver> observers = new ArrayList<>();
+	private transient List<ConceptMapObserver> observers = new ArrayList<>();
 
 	public void addListener(ConceptMapObserver c) {
 		this.observers.add(c);

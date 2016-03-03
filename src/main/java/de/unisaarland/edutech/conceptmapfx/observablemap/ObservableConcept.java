@@ -1,14 +1,15 @@
 package de.unisaarland.edutech.conceptmapfx.observablemap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 
-public class ObservableConcept extends Concept implements Cloneable,Observable {
+public class ObservableConcept extends Concept implements Cloneable,Observable,Serializable {
 
-	private List<ConceptMapObserver> observers = new ArrayList<>();
+	private transient List<ConceptMapObserver> observers = new ArrayList<>();
 
 	public ObservableConcept(CollaborativeString name) {
 		super(name);

@@ -49,8 +49,8 @@ public class Main extends Application {
 		ConceptMapViewBuilder conceptMapBuilder = new ConceptMapViewBuilder();
 		
 		conceptMapBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
-		conceptMapBuilder.attachUndoToChangesIn(conceptMap).attachUndoToChangesIn(linkFactory)
-				.attachUndoToChangesIn(conceptFactory);
+		conceptMapBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
+				.attachToListener(conceptFactory);
 		
 	
 		//creating some dummy data
