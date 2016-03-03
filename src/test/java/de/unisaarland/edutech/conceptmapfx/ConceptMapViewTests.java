@@ -1,6 +1,9 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,8 +26,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class ConceptMapViewTests extends ApplicationTest {
@@ -408,6 +409,15 @@ public class ConceptMapViewTests extends ApplicationTest {
 	/*
 	 * have two links, click on link a, click on link b, click on link a
 	 * expected a in front, actual b in front.
+	 */
+	
+	// TODO test undo logic
+	/*
+	 * 1. create map with some concepts by using UI
+	 * 2. undo all
+	 * 3. create new concept
+	 * 4. remove new concept
+	 * 5. undo
 	 */
 	
 

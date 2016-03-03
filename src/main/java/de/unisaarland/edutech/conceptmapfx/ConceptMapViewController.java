@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -235,6 +234,8 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		clearConcepts();
 
 		this.conceptMap = conceptMap;
+
+		conceptViewBuilder.withMap(conceptMap);
 
 		for (User u : conceptMap.getExperiment().getParticipants())
 			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());

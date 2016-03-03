@@ -19,6 +19,7 @@ import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
+import de.unisaarland.edutech.conceptmapfx.observablemap.ConceptMapObserver;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.FadeTransition;
@@ -54,6 +55,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private AnchorPane inputPane;
 	@FXML
 	private Button btnNewConcept;
+	@FXML
+	private Button btnUndo;
 
 	private Position position;
 
@@ -62,6 +65,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private CollaborativeStringTextFieldBinding collaborativeStringBinding;
 
 	private int emptyConceptCount = 0;
+
+	private UndoHistory undoHistory;
 
 	@FXML
 	public void initialize() {
@@ -185,15 +190,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void conceptDeleted(ConceptViewController cv, User u) {
 
 		Concept concept = cv.getConcept();
-		
+
 		boolean belongsToUser = concept.getOwner().equals(this.user);
 		boolean isEmpty = concept.getName().getContent().isEmpty();
-		if(belongsToUser && isEmpty){
+		if (belongsToUser && isEmpty) {
 			emptyConceptCount--;
 			btnNewConcept.setDisable(emptyConceptCount > 0);
 		}
-		
-		
+
 		if (u == null || !u.equals(this.user))
 			return;
 
@@ -264,6 +268,19 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 		btnNewConcept.setDisable(emptyConceptCount > 0);
 
+	}
+
+	@FXML
+	public void onUndoAction() {
+		undoHistory.undo();
+		if (undoHistory.isEmpty()) {
+			btnUndo.setDisable(true);
+		}
+	}
+
+	public void setUndoHistory(UndoHistory undo) {
+		this.undoHistory = undo;
+		this.undoHistory.addUndoButton(btnUndo);
 	}
 
 }

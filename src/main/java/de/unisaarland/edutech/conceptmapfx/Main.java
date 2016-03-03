@@ -17,11 +17,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application implements ConceptMapObserver {
-
-	private ObservableConceptMap conceptMap;
-	private Stack<ObservableConceptMap> states = new Stack<ObservableConceptMap>();
-	private boolean isRestoringState;
+public class Main extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
@@ -29,14 +25,8 @@ public class Main extends Application implements ConceptMapObserver {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		// setup dummy data
-
-		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
-		conceptFactory.addListener(this);
-
-		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
-		linkFactory.addListener(this);
-
+		
+		//data from other view
 		User u1 = new User("Ben", "ben@localhost.com");
 		User u2 = new User("Han", "han@localhost.com");
 		User u3 = new User("Chewi", "chewi@localhost.com");
@@ -50,9 +40,23 @@ public class Main extends Application implements ConceptMapObserver {
 		experiment.addParticipant(u3);
 		experiment.addParticipant(u4);
 
-		conceptMap = new ObservableConceptMap(experiment, linkFactory);
+		
+		// setting up construction facilities
 
-		conceptMap.addListener(this);
+		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
+		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
+				
+		ObservableConceptMap conceptMap = new ObservableConceptMap(experiment, linkFactory);
+
+		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
+		ConceptMapViewBuilder conceptMapBuilder = new ConceptMapViewBuilder();
+		
+		conceptMapBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
+		conceptMapBuilder.attachUndoToChangesIn(conceptMap).attachUndoToChangesIn(linkFactory)
+				.attachUndoToChangesIn(conceptFactory);
+		
+	
+		//creating some dummy data
 
 		Concept lightsaber = conceptFactory.create(u2, "very very long Lightsaber");
 		lightsaber.setPosition(0.5, 0.5, 30);
@@ -73,58 +77,30 @@ public class Main extends Application implements ConceptMapObserver {
 		link2.getCaption().append(u2, "uses");
 
 		// Begin UI code
+		
 		primaryStage.setMaximized(true);
 		primaryStage.setTitle("Concept Mapping");
 
-		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
-
-		ConceptMapViewBuilder builder = new ConceptMapViewBuilder();
-
-		Scene scene = builder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap).build();
+		Scene scene = conceptMapBuilder.build();
 
 		scene.setOnKeyTyped((l) -> {
-
 			if (l.getCharacter().equals("f"))
 				primaryStage.setFullScreen(true);
-
-			if (l.getCharacter().equals("u") && !states.isEmpty()) {
-				Platform.runLater(() -> {
-					isRestoringState = true;
-					ConceptMapViewController controller = builder.getController();
-					ObservableConceptMap undoMap = states.pop();
-					controller.setConceptMap(undoMap);
-					controller.layout();
-					conceptMap = undoMap;
-					isRestoringState = false;
-				});
-			}
-
 		});
 
-		//TODO implement UNDO BUTTON LOGIC IN INPUT INSTEAD OF U KEY
-		//TODO new concept jumps (no coordinates set)
-		//TODO Frontend
-		//TODO Rotate Translate Group
-		//TODO selected eintippen geht nicht (Bug?)
-		//TODO rotate two nodes simultaneously (Bug?)
-		//TODO parallel keyboard input (Bug?)
-
-		
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
+		// TODO save / load
+		// TODO new concept jumps (no coordinates set)
+		// TODO Frontend
+		// TODO Rotate Translate Group
+		// TODO selected eintippen geht nicht (Bug?)
+		// TODO rotate two nodes simultaneously (Bug?)
+		// TODO parallel keyboard input (Bug?)
+
+
 
 	}
 
-	@Override
-	public void beforeChange() {
-		if (!isRestoringState) {
-			states.push(conceptMap.clone());
-		}
-
-	}
-
-	@Override
-	public void afterChange() {
-
-	}
 }

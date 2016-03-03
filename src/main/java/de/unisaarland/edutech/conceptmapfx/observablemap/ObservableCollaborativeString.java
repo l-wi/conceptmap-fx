@@ -6,7 +6,7 @@ import java.util.List;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.User;
 
-public class ObservableCollaborativeString extends CollaborativeString implements Cloneable {
+public class ObservableCollaborativeString extends CollaborativeString implements Cloneable,Observable {
 
 	private List<ConceptMapObserver> observers = new ArrayList<>();
 

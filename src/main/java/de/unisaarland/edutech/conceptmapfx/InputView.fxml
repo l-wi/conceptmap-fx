@@ -33,6 +33,7 @@
 							<VBox>
 								<children>
 									<Button  styleClass="hideable" id="undo" fx:id="btnUndo"  text="Undo"
+										onAction="#onUndoAction"
 										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"/>
 										
 									<ToggleButton styleClass="hideable" id="voice" fx:id="btnSpeak"

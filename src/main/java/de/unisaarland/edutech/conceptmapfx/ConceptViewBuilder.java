@@ -45,6 +45,11 @@ public class ConceptViewBuilder {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public ConceptViewBuilder withMap(ConceptMap map){
+		reset(map,this.factory);
+		return this;
+	}
 
 	public ConceptViewController buildControllerAndAddView(InputViewController positionOver,
 			ConceptMapView conceptMapPane) {

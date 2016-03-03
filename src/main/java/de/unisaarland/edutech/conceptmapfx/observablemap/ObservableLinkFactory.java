@@ -7,7 +7,7 @@ import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.LinkFactory;
 import de.unisaarland.edutech.conceptmapping.User;
 
-public class ObservableLinkFactory implements LinkFactory {
+public class ObservableLinkFactory implements LinkFactory, Observable {
 
 	private List<ConceptMapObserver> observers  = new ArrayList<>();;
 

@@ -7,7 +7,7 @@ import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptFactory;
 import de.unisaarland.edutech.conceptmapping.User;
 
-public class ObservableConceptFactory implements ConceptFactory {
+public class ObservableConceptFactory implements ConceptFactory, Observable {
 
 	private List<ConceptMapObserver> observers = new ArrayList<>();
 

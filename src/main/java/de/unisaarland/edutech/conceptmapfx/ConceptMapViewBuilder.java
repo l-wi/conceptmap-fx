@@ -2,19 +2,27 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
+import de.unisaarland.edutech.conceptmapfx.observablemap.Observable;
+import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
 public class ConceptMapViewBuilder {
 
 	private ConceptMapView conceptMapView;
 	private ConceptMapViewController controller;
+
+	private Optional<UndoHistory> history = Optional.empty();
+
 	private Scene scene;
+	private ConceptMap conceptMap;
 
 	public ConceptMapViewBuilder() {
 		try {
@@ -22,9 +30,9 @@ public class ConceptMapViewBuilder {
 
 			conceptMapView = conceptMapLoader.load();
 			controller = conceptMapLoader.getController();
-			scene = new Scene(conceptMapView,800,600);
+			scene = new Scene(conceptMapView, 800, 600);
 			controller.addNewLinkListener(controller);
-			
+
 			controller.sceneWidthProperty().bind(scene.widthProperty());
 			controller.sceneHeightProperty().bind(scene.heightProperty());
 
@@ -37,22 +45,36 @@ public class ConceptMapViewBuilder {
 	public ConceptMapViewController getController() {
 		return controller;
 	}
-	
+
 	public Scene build() {
+		controller.setConceptMap(conceptMap);
+		if(history.isPresent())
+			history.get().activate();
 		return scene;
 	}
 
 	public ConceptMapViewBuilder withConceptMap(ConceptMap conceptMap) {
+		this.conceptMap = conceptMap;
+
+		initHistoryIfNeeded(conceptMap);
+
 		withParticipants(conceptMap.getExperiment().getParticipants());
 
-		controller.setConceptMap(conceptMap);
 		return this;
 	}
 
-	public ConceptMapViewBuilder withConceptViewBuilder(ConceptViewBuilder builder){
+	private void initHistoryIfNeeded(ConceptMap conceptMap) {
+		if (conceptMap instanceof ObservableConceptMap) {
+			UndoHistory history = new UndoHistory((ObservableConceptMap) conceptMap, controller);
+			this.history = Optional.of(history);
+		}
+	}
+
+	public ConceptMapViewBuilder withConceptViewBuilder(ConceptViewBuilder builder) {
 		controller.setConceptViewBuilder(builder);
 		return this;
 	}
+
 	private ConceptMapViewBuilder withParticipants(List<User> participants) {
 		try {
 			setInputPositions(participants.get(0), participants.get(1), participants.get(2), participants.get(3));
@@ -66,14 +88,14 @@ public class ConceptMapViewBuilder {
 
 	private void setInputPositions(User u1, User u2, User u3, User u4) throws IOException {
 		// north
-		final Pane v1 = addInputComponent(Position.TOP, u1);
+		final Pane v1 = initInputController(Position.TOP, u1);
 		v1.setRotate(180);
 		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
 			v1.setLayoutX(newVal.doubleValue() * 0.6 - v1.getWidth() / 2);
 		});
 
 		// west
-		final Pane v2 = addInputComponent(Position.LEFT, u2);
+		final Pane v2 = initInputController(Position.LEFT, u2);
 		v2.setRotate(90);
 
 		// as we rotate around center, we need to readjust on screen
@@ -86,7 +108,7 @@ public class ConceptMapViewBuilder {
 		});
 
 		// south
-		final Pane v3 = addInputComponent(Position.BOTTOM, u3);
+		final Pane v3 = initInputController(Position.BOTTOM, u3);
 		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
 			v3.setLayoutX(newVal.doubleValue() * 0.5 - (v3.getWidth() / 2));
 		});
@@ -96,7 +118,7 @@ public class ConceptMapViewBuilder {
 		});
 
 		// east
-		final Pane v4 = addInputComponent(Position.RIGHT, u4);
+		final Pane v4 = initInputController(Position.RIGHT, u4);
 		v4.setRotate(270);
 		// as we rotate around center, we need to readjust on screen
 		scene.heightProperty().addListener(c -> {
@@ -113,16 +135,30 @@ public class ConceptMapViewBuilder {
 
 	}
 
-	private Pane addInputComponent(InputViewController.Position p, User u) throws IOException {
+	private Pane initInputController(InputViewController.Position p, User u) throws IOException {
 		FXMLLoader inputLoader = new FXMLLoader(Main.class.getResource("InputView.fxml"));
 		Pane inputView = inputLoader.load();
 		inputView.setId(p.toString());
+
 		InputViewController inputController = inputLoader.getController();
 		inputController.setUser(u);
 		inputController.setPosition(p);
+
+		if (history.isPresent())
+			inputController.setUndoHistory(history.get());
+
 		conceptMapView.add(inputView);
 		inputController.addNewConceptListener(controller);
 		controller.addInputViewController(inputController);
 		return inputView;
+	}
+
+	public ConceptMapViewBuilder attachUndoToChangesIn(Observable o) {
+		if (history.isPresent())
+			o.addListener(history.get());
+		else
+			throw new RuntimeException("No Undo set!");
+
+		return this;
 	}
 }

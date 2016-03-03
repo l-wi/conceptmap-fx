@@ -10,7 +10,7 @@ import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.LinkFactory;
 import javafx.beans.value.ChangeListener;
 
-public class ObservableConceptMap extends ConceptMap implements Cloneable {
+public class ObservableConceptMap extends ConceptMap implements Cloneable, Observable {
 
 	private List<ConceptMapObserver> observers = new ArrayList<>();;
 
@@ -34,6 +34,7 @@ public class ObservableConceptMap extends ConceptMap implements Cloneable {
 
 	@Override
 	public int addConcept(Concept c) {
+
 		observers.forEach((l) -> l.beforeChange());
 		int res = super.addConcept(c);
 		observers.forEach((l) -> l.afterChange());
