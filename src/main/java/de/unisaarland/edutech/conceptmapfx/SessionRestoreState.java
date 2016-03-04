@@ -18,20 +18,20 @@ public class SessionRestoreState {
 	private static final String RESTORE_FILE_NAME = "lock";
 
 	public void handleRestoreState(Stage primaryStage, SessionSaver sessionSaver) {
-
-		File workingDir = sessionSaver.getWorkingDir();
-		this.restoreFile = new File(workingDir, RESTORE_FILE_NAME);
 		try {
-			restoreFile.createNewFile();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		primaryStage.setOnCloseRequest((e) -> {
-			restoreFile.delete();
-			System.exit(0);
-		});
+			File workingDir = sessionSaver.getWorkingDir();
+			this.restoreFile = new File(workingDir, RESTORE_FILE_NAME);
 
+			restoreFile.createNewFile();
+
+			primaryStage.setOnCloseRequest((e) -> {
+				restoreFile.delete();
+				System.exit(0);
+			});
+			
+		} catch (IOException exception) {
+			throw new RuntimeException("Cannot create restore file! " + exception);
+		}
 	}
 
 	public Optional<ObservableConceptMap> restoreSessionIfNeeded() {
