@@ -110,26 +110,7 @@ public class ConceptViewTests extends ApplicationTest {
 		assertTrue(control.getState() == State.UNSELECTED);
 	}
 
-	@Test
-	public void testSelectNoMove() {
-		// given
-		FourUserTouchEditable view = cv1.getView();
 
-		int translateX = 100;
-		int translateY = 10;
-		double x = view.getLayoutX() + view.getTranslateX();
-		double y = view.getLayoutY() + view.getTranslateY();
-
-		// when
-		clickOn(conceptView1).sleep(1000);
-		assertTrue(view.getState() == State.SELECTED);
-
-		press(MouseButton.PRIMARY).moveBy(translateX, translateY).release(MouseButton.PRIMARY);
-
-		// then
-		assertEquals(x, view.getLayoutX() + view.getTranslateX(), 0);
-		assertEquals(y, view.getLayoutY() + view.getTranslateY(), 0);
-	}
 
 	@Test
 	public void testRotate() {
