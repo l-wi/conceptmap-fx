@@ -35,11 +35,12 @@ public class FourUserTouchEditableTests extends ApplicationTest {
 	public void testMouseClickOnEditable() {
 		// when
 		clickOn(root);
-
+		sleep(500);
 		// then
 		assertTrue(root.getState() == State.SELECTED);
 
 		clickOn(root);
+		sleep(500);
 
 		assertTrue(root.getState() == State.UNSELECTED);
 	}
