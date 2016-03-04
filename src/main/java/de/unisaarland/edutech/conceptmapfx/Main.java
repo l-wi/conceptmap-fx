@@ -3,6 +3,8 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.io.IOException;
 import java.util.Optional;
 
+import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableCollaborativeString;
+import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConcept;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableLinkFactory;
@@ -49,10 +51,14 @@ public class Main extends Application {
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
 
-		if (!restoredMap.isPresent())
-			conceptMap = new ObservableConceptMap(experiment, linkFactory);
-		else
+		if (!restoredMap.isPresent()){
+			conceptMap = new ObservableConceptMap(experiment, linkFactory);			
+		}
+		else{
 			conceptMap = restoredMap.get();
+			System.out.println("loading restored map!");
+			
+		}
 
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
@@ -62,33 +68,7 @@ public class Main extends Application {
 		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
 				.attachToListener(conceptFactory);
 
-		if (restoredMap.isPresent())
-			conceptMapViewBuilder.attachToReloadedMap();
-
-		// creating some dummy data
-
-		if (!restoredMap.isPresent()) {
-			Concept lightsaber = conceptFactory.create(u2, "very very long	 Lightsaber");
-			lightsaber.setPosition(0.5, 0.5, 30);
-			conceptMap.addConcept(lightsaber);
-
-			Concept loss = conceptFactory.create(u4, "Arm loss");
-			loss.setPosition(0.2, 0.664, 0);
-			conceptMap.addConcept(loss);
-
-			Concept sith = conceptFactory.create(u1, "Sith");
-			sith.setPosition(0.4, 0.664, 84);
-			conceptMap.addConcept(sith);
-
-			Link link = conceptMap.addUndirectedLink(lightsaber, loss);
-			link.getCaption().append(u4, "causes");
-
-			Link link2 = conceptMap.addDirectedLink(lightsaber, sith);
-			link2.getCaption().append(u2, "uses");
-		} else
-			System.out.println("loading restored map!");
 		// Begin UI code
-
 		primaryStage.setMaximized(true);
 		primaryStage.setTitle("Concept Mapping");
 

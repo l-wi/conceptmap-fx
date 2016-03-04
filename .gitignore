@@ -9,4 +9,4 @@ buildNumber.properties
 .mvn/timing.properties
 .class
 
-/session/
+/session/[0-9]*

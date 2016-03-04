@@ -50,6 +50,7 @@ public class ConceptMapViewBuilder {
 	}
 
 	public Scene build() {
+		attachToReloadedMap();
 		controller.setConceptMap(conceptMap);
 		if (history.isPresent())
 			history.get().activate();
@@ -174,7 +175,7 @@ public class ConceptMapViewBuilder {
 		return this;
 	}
 
-	public ConceptMapViewBuilder attachToReloadedMap() {
+	private ConceptMapViewBuilder attachToReloadedMap() {
 		for (int i = 0; i < conceptMap.getConceptCount(); i++) {
 			ObservableConcept c = (ObservableConcept) conceptMap.getConcept(i);
 			c.addListener(history.get());
