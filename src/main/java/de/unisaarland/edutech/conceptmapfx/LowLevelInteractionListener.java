@@ -152,6 +152,10 @@ public class LowLevelInteractionListener {
 			return;
 
 		showRotateTransition.stop();
+		
+		if (showSelectedTransition != null)
+			showSelectedTransition.stop();
+
 		if (fourUserTouchEditable.getState() == State.UNSELECTED)
 			fourUserTouchEditable.toMovingState();
 		if (fourUserTouchEditable.getState() == State.MOVING)
@@ -201,9 +205,10 @@ public class LowLevelInteractionListener {
 	}
 
 	private void fireDoubleClickEvent() {
-		if(doubleTapFunction != null)
+		if (doubleTapFunction != null && (this.fourUserTouchEditable.getState() == State.UNSELECTED
+				|| this.fourUserTouchEditable.getState() == State.SELECTED))
 			doubleTapFunction.apply();
-		
+
 	}
 
 	private void cancelSingleClickEvent() {
@@ -225,8 +230,8 @@ public class LowLevelInteractionListener {
 	}
 
 	private boolean isSingleClickEventPending() {
-		
-		return (showSelectedTransition != null)  && (showSelectedTransition.getStatus() == Status.RUNNING);
+
+		return (showSelectedTransition != null) && (showSelectedTransition.getStatus() == Status.RUNNING);
 	}
 
 	private void moved() {
@@ -234,8 +239,6 @@ public class LowLevelInteractionListener {
 			movedFunction.apply();
 	}
 
-
-	
 	public void setOnDoubleTapped(VoidFunction func) {
 		this.doubleTapFunction = func;
 	}
