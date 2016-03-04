@@ -30,7 +30,7 @@ public class ConceptMapViewBuilder {
 
 	public ConceptMapViewBuilder() {
 		try {
-			FXMLLoader conceptMapLoader = new FXMLLoader(getClass().getResource("ConceptMapView.fxml"));
+			FXMLLoader conceptMapLoader = new FXMLLoader(getClass().getResource("/ConceptMapView.fxml"));
 
 			conceptMapView = conceptMapLoader.load();
 			controller = conceptMapLoader.getController();
@@ -148,7 +148,7 @@ public class ConceptMapViewBuilder {
 	}
 
 	private Pane initInputController(InputViewController.Position p, User u) throws IOException {
-		FXMLLoader inputLoader = new FXMLLoader(Main.class.getResource("InputView.fxml"));
+		FXMLLoader inputLoader = new FXMLLoader(Main.class.getResource("/InputView.fxml"));
 		Pane inputView = inputLoader.load();
 		inputView.setId(p.toString());
 

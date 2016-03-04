@@ -168,7 +168,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private void initEditorComponent() {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("LinkView.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/LinkView.fxml"));
 
 			this.linkCaption = loader.load();
 

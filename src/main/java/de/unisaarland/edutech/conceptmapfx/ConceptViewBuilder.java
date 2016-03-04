@@ -35,7 +35,7 @@ public class ConceptViewBuilder {
 	private void reset(ConceptMap map, ConceptFactory factory) {
 		try {
 			this.map = map;
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ConceptView.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ConceptView.fxml"));
 			this.conceptViewPane = loader.load();
 			this.controller = loader.getController();
 			this.controller.setParticipants(map.getExperiment().getParticipants());

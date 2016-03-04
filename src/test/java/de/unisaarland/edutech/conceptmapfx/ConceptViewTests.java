@@ -47,7 +47,7 @@ public class ConceptViewTests extends ApplicationTest {
 
 		AnchorPane pane = new AnchorPane();
 
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("ConceptView.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/ConceptView.fxml"));
 		conceptView1 = loader.load();
 		cv1 = loader.getController();
 		cv1.setParticipants(p);

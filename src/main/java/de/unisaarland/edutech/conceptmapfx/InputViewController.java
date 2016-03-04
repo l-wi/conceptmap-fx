@@ -71,7 +71,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	public void initialize() {
 		try {
-			keyboard.setKeyBoardStyle(getClass().getResource("input.css").toString());
+			keyboard.setKeyBoardStyle(getClass().getResource("/input.css").toString());
 			keyboard.setSpaceKeyMove(false);
 			keyboard.setLayerPath(new File("./keyboardLayout").toPath());
 			keyboard.load();

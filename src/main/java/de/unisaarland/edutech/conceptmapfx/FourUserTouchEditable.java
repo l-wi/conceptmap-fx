@@ -89,7 +89,7 @@ public class FourUserTouchEditable extends BorderPane {
 	private Timeline underlineAnimation;
 
 	public FourUserTouchEditable() {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("FourUserTouchEditable.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/FourUserTouchEditable.fxml"));
 		loader.setRoot(this);
 		loader.setController(this);
 

@@ -31,8 +31,8 @@ public class Main extends Application {
 	private File lockFile;
 
 	@Override
-	public void start(Stage primaryStage) throws IOException {
-
+	public void start(Stage primaryStage) throws IOException {	
+		
 		ObservableConceptMap conceptMap = null;
 
 		Optional<ObservableConceptMap> restoredMap = restoreSessionIfNeeded();
