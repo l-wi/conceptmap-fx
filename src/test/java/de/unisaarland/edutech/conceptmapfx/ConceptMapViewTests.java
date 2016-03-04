@@ -137,6 +137,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 		moveTo(concept).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
 
 		Node rightToggle = concept.lookup("#fourUserEditable-rightToggle");
+		sleep(500);
 		moveTo(rightToggle).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
 
 		// then
