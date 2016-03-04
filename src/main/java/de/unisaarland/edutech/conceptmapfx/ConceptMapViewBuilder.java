@@ -9,7 +9,6 @@ import de.unisaarland.edutech.conceptmapfx.observablemap.Observable;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableCollaborativeString;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConcept;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
-import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;

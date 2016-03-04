@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.management.RuntimeErrorException;
-
 import de.unisaarland.edutech.conceptmapfx.observablemap.ConceptMapObserver;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
 

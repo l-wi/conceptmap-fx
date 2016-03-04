@@ -1,12 +1,11 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;

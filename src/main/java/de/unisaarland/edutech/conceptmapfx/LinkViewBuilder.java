@@ -3,10 +3,8 @@ package de.unisaarland.edutech.conceptmapfx;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
-import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Link;
-import javafx.scene.layout.Pane;
 
 public class LinkViewBuilder {
 
