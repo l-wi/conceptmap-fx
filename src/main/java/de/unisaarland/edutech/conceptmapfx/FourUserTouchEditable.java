@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovedInterface;
+import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.VoidFunction;
 import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovingInterface;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -503,8 +503,13 @@ public class FourUserTouchEditable extends BorderPane {
 
 	}
 
-	public void setOnMoved(OnMovedInterface moved) {
+	public void setOnMoved(VoidFunction moved) {
 		this.lowLevelInteractionListener.setOnMoved(moved);
+	}
+
+	
+	public void setOnDoubleTapped(VoidFunction tap) {
+		this.lowLevelInteractionListener.setOnDoubleTapped(tap);
 	}
 
 	public void setOnMoving(OnMovingInterface<Double, Double, Double> movingFunction) {

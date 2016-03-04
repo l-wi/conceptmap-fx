@@ -71,8 +71,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public Concept getConcept() {
 		return concept;
 	}
-	
-	public void fireConceptDeleted(){
+
+	public void fireConceptDeleted() {
 		fireConceptDeleted(getActiveUser());
 	}
 
@@ -87,16 +87,14 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		conceptCaption.setOnMoved(() -> this.fireConceptMoved());
 
-		conceptCaption.setOnMouseClicked((evt) -> {
-			// TODO do not show the selection view first when deleting!
-			if (evt.getClickCount() == 2) {
-				fireConceptDeleted(getActiveUser());
-			}
-		});
+		conceptCaption.setOnDoubleTapped(() -> fireConceptDeleted(getActiveUser()));
+		
+		conceptCaption.textProperty().addListener((c, o, n) ->
 
-		conceptCaption.textProperty().addListener((c, o, n) -> {
+		{
 			fireConceptContentChanged(o, n);
 		});
+
 	}
 
 	private void fireConceptContentChanged(String oldContent, String newContent) {

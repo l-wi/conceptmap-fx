@@ -19,6 +19,7 @@ import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -35,9 +36,11 @@ public class ConceptMapViewTests extends ApplicationTest {
 	private ConceptMap map;
 
 	private static Scene scene = null;
+	private Stage stage;
 
 	@Override
 	public void start(Stage stage) throws IOException {
+		this.stage = stage;
 		List<User> p = new ArrayList<User>();
 
 		User u1 = new User("alfred", "a@test.de");
@@ -399,29 +402,155 @@ public class ConceptMapViewTests extends ApplicationTest {
 		assertSame(1,conceptMapView.lookupAll(".concept").size());
 	}
 	
-	// TODO test for bug --> create new, delete, try add new (bug already
-	// gefixt)
+	@Test
+	public void testDelete(){
+		//given
+		map.clear();
 
-	// TODO test disable new Button with various states:
-	/*
-	 * press new -> delete new concept : new is again pressable press new -> add
-	 * to concept : new is again pressable add concept -> remove all : new is
-	 * NOT pressable add concept 1,2 --> remove all from 1,2 --> add to 1 -->
-	 * new is NOT pressable
-	 */
+		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		c1.setPosition(0.5,0.5,0);
 
-	// TODO test order in ConceptMapView
-	/*
-	 *
-	 * adding different components --> order ok adding,removing, adding
-	 * different components --> order ok
-	 */
+		map.addConcept(c1);
+		
+		super.interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+		
+		
+		Node concept = conceptMapView.lookup(".concept");
+
+		//when 
+		moveTo(concept).doubleClickOn(MouseButton.PRIMARY);
+		
+		Set<Node> concepts = conceptMapView.lookupAll(".concept");
+		
+		//then
+		assertSame(0,concepts.size());
+
+	}
+	@Test
+	public void testDisableNew(){
+		//given
+		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
+		Node firstNewButton = newButtons.iterator().next();
+
+		//when
+		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);	
+		
+		assertTrue(firstNewButton.isDisabled());
+		
+		//Delete Concept again
+		Node concept = conceptMapView.lookup(".concept");
+		moveTo(concept).doubleClickOn(MouseButton.PRIMARY);
+		
+		assertFalse(firstNewButton.isDisabled());
+		
+		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+		concept = conceptMapView.lookup(".concept");
+
+		assertTrue(firstNewButton.isDisabled());
+
+		moveTo(concept).clickOn(MouseButton.PRIMARY);
+		
+		// right Keyboard
+		Node rightToggle = concept.lookup("#fourUserEditable-topToggle");
+		moveTo(rightToggle).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+
+		//press a key
+		moveTo(1200,140).clickOn(MouseButton.PRIMARY);
+		
+		assertFalse(firstNewButton.isDisabled());
+
+	}
 	
-	//TODO test for bug when bringing links to front
-	/*
-	 * have two links, click on link a, click on link b, click on link a
-	 * expected a in front, actual b in front.
-	 */
+	@Test
+	public void testLinkAnchorSelection(){
+		//given
+		map.clear();
+
+		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
+		c1.setPosition(0.5,0.5,0);
+
+
+		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
+		c2.setPosition(0.3,0.5,30);
+
+
+		Concept c3 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(3), THIRD_CONCEPT));
+		c3.setPosition(0.7,0.2,0);
+
+		map.addConcept(c1);
+		map.addConcept(c2);
+		map.addConcept(c3);
+
+		map.addDirectedLink(c1, c2);
+		map.addUndirectedLink(c2, c3);
+
+		map.addDirectedLink(c1, c3);
+				
+		super.interact(() -> {
+			controller.setConceptMap(map);
+			controller.layout();
+		});
+		
+		Set<Node> links = conceptMapView.lookupAll(".linkPath");
+		
+		Iterator<Node> iterator = links.iterator();
+		Node link1 = iterator.next();
+		Node link2 = iterator.next();
+		
+		//when
+		moveTo(link1).clickOn(MouseButton.PRIMARY);
+		
+		ObservableList<Node> children = conceptMapView.getChildren();
+		Node lookupAnchor = children.get(children.size()-1);
+		
+		moveTo(lookupAnchor).clickOn(MouseButton.PRIMARY);
+		
+		moveTo(link1).clickOn(MouseButton.PRIMARY);
+		
+		//select second link
+		moveTo(link2).clickOn(MouseButton.PRIMARY);
+		
+		children = conceptMapView.getChildren();
+		lookupAnchor = children.get(children.size()-1);
+		
+		moveTo(lookupAnchor).clickOn(MouseButton.PRIMARY);
+		
+		assertSame(0, conceptMapView.lookupAll(".anchorPolygon").size());
+		
+	}
+	
+	@Test
+	public void testConceptNewJump(){
+		//given
+		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
+		Node firstNewButton = newButtons.iterator().next();
+
+		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+		Node concept = conceptMapView.lookup(".concept");
+		
+		double expectedX = concept.getLayoutX()+ concept.getTranslateX();
+		double expectedY = concept.getLayoutY()+ concept.getTranslateY();
+		
+		//when
+		
+		super.interact(() -> {
+			stage.setFullScreen(false);
+			stage.setWidth(stage.getWidth()-40);
+			stage.setHeight(stage.getHeight()-40);
+		});
+		
+		//then
+		
+		double actualX = concept.getLayoutX()+ concept.getTranslateX();
+		double actualY = concept.getLayoutY()+ concept.getTranslateY();
+		
+		assertEquals(expectedX, actualX,50 );
+		assertEquals(expectedY, actualY,50 );
+
+	}
 	
 	// TODO test undo logic
 	/*
@@ -431,14 +560,7 @@ public class ConceptMapViewTests extends ApplicationTest {
 	 * 4. remove new concept
 	 * 5. undo
 	 */
-	
-	//TODO test concept new jump
-	/*
-	 * create new concept
-	 * rescale
-	 * concept on right position
-	 * 
-	 */
+
 	// TODO too many touch points reported exception kills whole multitouch
 	// process, find out if this is a javafx bug and how to fix i
 

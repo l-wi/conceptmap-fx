@@ -44,6 +44,7 @@ public class AnchorView extends Pane {
 		circle.setStrokeWidth(4);
 		circle.setStrokeType(StrokeType.OUTSIDE);
 		circle.setCache(true);
+		circle.getStyleClass().add("anchorCircle");
 	}
 
 	private void createArrow(Color color, double width, double height) {
@@ -52,6 +53,7 @@ public class AnchorView extends Pane {
 		arrowPolygon.setFill(color);
 		arrowPolygon.setStroke(Color.BLACK);
 		arrowPolygon.setCache(true);
+		arrowPolygon.getStyleClass().add("anchorPolygon");
 	}
 
 	public void toggle() {

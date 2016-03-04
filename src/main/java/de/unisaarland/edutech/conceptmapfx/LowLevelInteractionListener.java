@@ -4,11 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
+import javafx.animation.Animation.Status;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.scene.CacheHint;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
@@ -18,7 +17,11 @@ import javafx.util.Duration;
 
 public class LowLevelInteractionListener {
 
-	private static final int JITTER_THRESHOLD = 5;
+	private static final int DOUBLE_CLICK_PENDING_TIME = 200;
+
+	private static final int ENTER_ROTATE_STATE_TIME = 1500;
+
+	private static final int JITTER_THRESHOLD = 10;
 
 	private static final Logger LOG = LoggerFactory.getLogger(LowLevelInteractionListener.class);
 
@@ -30,18 +33,22 @@ public class LowLevelInteractionListener {
 
 	private int touchEventsActive;
 
-	private PauseTransition showSelectedMenuTransition;
+	private PauseTransition showRotateTransition;
+
+	private PauseTransition showSelectedTransition;
 
 	private long clickInTime;
 
 	private FourUserTouchEditable fourUserTouchEditable;
 
-	private OnMovedInterface movedFunction;
+	private VoidFunction movedFunction;
 
 	private OnMovingInterface<Double, Double, Double> movingFunction;
 
+	private VoidFunction doubleTapFunction;
+
 	@FunctionalInterface
-	public interface OnMovedInterface {
+	public interface VoidFunction {
 		public void apply();
 	}
 
@@ -53,13 +60,13 @@ public class LowLevelInteractionListener {
 	public LowLevelInteractionListener(FourUserTouchEditable fourUserTouchEditable) {
 		this.fourUserTouchEditable = fourUserTouchEditable;
 
-		showSelectedMenuTransition = new PauseTransition(Duration.millis(1500));
-		showSelectedMenuTransition.setOnFinished((l) -> {
+		showRotateTransition = new PauseTransition(Duration.millis(ENTER_ROTATE_STATE_TIME));
+		showRotateTransition.setOnFinished((l) -> {
 			fourUserTouchEditable.toRotateState();
 		});
 	}
 
-	public void setOnMoved(OnMovedInterface moved) {
+	public void setOnMoved(VoidFunction moved) {
 		this.movedFunction = moved;
 	}
 
@@ -88,8 +95,8 @@ public class LowLevelInteractionListener {
 		if (isPressed)
 			return;
 		//
-		
-		showSelectedMenuTransition.play();
+
+		showRotateTransition.play();
 
 		clickInTime = System.currentTimeMillis();
 
@@ -144,7 +151,7 @@ public class LowLevelInteractionListener {
 		if (movedFunction == null)
 			return;
 
-		showSelectedMenuTransition.stop();
+		showRotateTransition.stop();
 		if (fourUserTouchEditable.getState() == State.UNSELECTED)
 			fourUserTouchEditable.toMovingState();
 		if (fourUserTouchEditable.getState() == State.MOVING)
@@ -174,23 +181,52 @@ public class LowLevelInteractionListener {
 		if (touchEventsActive >= 1)
 			return;
 
-
-		
 		isPressed = false;
 
-		showSelectedMenuTransition.stop();
+		showRotateTransition.stop();
 
 		long delta = System.currentTimeMillis() - clickInTime;
 
 		State state = fourUserTouchEditable.getState();
 
-		if (delta < 1000 && state != State.MOVING && state != State.SELECTED) {
-			fourUserTouchEditable.toSelectedState();
-		} else
-			fourUserTouchEditable.toUnselectedState();
+		if (isSingleClickEventPending()) {
+			cancelSingleClickEvent();
+			fireDoubleClickEvent();
+		} else {
+			initiateSingeClickEvent(delta, state);
+		}
 
 		this.moved();
 
+	}
+
+	private void fireDoubleClickEvent() {
+		if(doubleTapFunction != null)
+			doubleTapFunction.apply();
+		
+	}
+
+	private void cancelSingleClickEvent() {
+		showSelectedTransition.stop();
+		showSelectedTransition = null;
+	}
+
+	private void initiateSingeClickEvent(long delta, State state) {
+
+		showSelectedTransition = new PauseTransition(Duration.millis(DOUBLE_CLICK_PENDING_TIME));
+		showSelectedTransition.setOnFinished((l) -> {
+			if (delta < ENTER_ROTATE_STATE_TIME && state != State.MOVING && state != State.SELECTED) {
+				fourUserTouchEditable.toSelectedState();
+			} else
+				fourUserTouchEditable.toUnselectedState();
+		});
+
+		showSelectedTransition.play();
+	}
+
+	private boolean isSingleClickEventPending() {
+		
+		return (showSelectedTransition != null)  && (showSelectedTransition.getStatus() == Status.RUNNING);
 	}
 
 	private void moved() {
@@ -198,12 +234,10 @@ public class LowLevelInteractionListener {
 			movedFunction.apply();
 	}
 
-	public void onRotateStarted() {
 
-	}
-
-	public void onRotateFinished() {
-
+	
+	public void setOnDoubleTapped(VoidFunction func) {
+		this.doubleTapFunction = func;
 	}
 
 }
