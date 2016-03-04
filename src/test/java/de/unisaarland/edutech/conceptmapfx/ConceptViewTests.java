@@ -107,6 +107,8 @@ public class ConceptViewTests extends ApplicationTest {
 
 		release(MouseButton.PRIMARY);
 
+		sleep(1000);
+		
 		assertTrue(control.getState() == State.UNSELECTED);
 	}
 
