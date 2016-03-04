@@ -1,9 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -184,10 +181,10 @@ public class ConceptMapViewTests extends ApplicationTest {
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setPosition(0.5,0.5,0);
+		c1.setPosition(0.8,0.5,0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setPosition(0.3,0.3,30);
+		c2.setPosition(0.5,0.3,30);
 
 
 		map.addConcept(c1);
@@ -384,9 +381,24 @@ public class ConceptMapViewTests extends ApplicationTest {
 		assertNull(map.getLink(c1, c3));
 
 	}
-	// TODO too many touch points reported exception kills whole multitouch
-	// process, find out if this is a javafx bug and how to fix i
 
+	@Test
+	public void testBugSecondNewNotShown(){
+		//given
+		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
+		Node firstNewButton = newButtons.iterator().next();
+
+		//when
+		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+		Node concept = conceptMapView.lookup(".concept");
+		moveTo(concept).doubleClickOn(MouseButton.PRIMARY);
+		assertSame(0,conceptMapView.lookupAll(".concept").size());
+		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+		
+		//then
+		assertSame(1,conceptMapView.lookupAll(".concept").size());
+	}
+	
 	// TODO test for bug --> create new, delete, try add new (bug already
 	// gefixt)
 
@@ -427,6 +439,8 @@ public class ConceptMapViewTests extends ApplicationTest {
 	 * concept on right position
 	 * 
 	 */
-	
+	// TODO too many touch points reported exception kills whole multitouch
+	// process, find out if this is a javafx bug and how to fix i
+
 
 }
