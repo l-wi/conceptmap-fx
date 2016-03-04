@@ -11,6 +11,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import java.lang.Double ?>
 
 <AnchorPane styleClass="input" fx:id="inputPane"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
@@ -21,26 +23,38 @@
 			<VBox fx:id="inputControls">
 				<children>
 					<HBox>
-						<Button styleClass="hideable" id="btnClose" fx:id="btnClose" mnemonicParsing="false" onAction="#onCloseAction"
-							prefHeight="80.0" prefWidth="80.0" text="" />
-							
+						<Button styleClass="hideable" id="btnClose" fx:id="btnClose"
+							mnemonicParsing="false" onAction="#onCloseAction" prefHeight="80.0"
+							prefWidth="80.0" text="" />
+
 						<Label fx:id="lblStatus" text="" />
 					</HBox>
 					<HBox>
 						<children>
 
-							<KeyboardPane styleClass="hideable" id="keyboard" fx:id="keyboard"/>
 							<VBox>
 								<children>
-									<Button  styleClass="hideable" id="undo" fx:id="btnUndo"  text="Undo"
-										onAction="#onUndoAction"
-										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"/>
-										
-									<ToggleButton styleClass="hideable" id="voice" fx:id="btnSpeak"
-										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"/>
-										
-									<Button fx:id="btnNewConcept" text="+"
-										onAction="#onNewAction" BorderPane.alignment="CENTER"  prefWidth="100.0" prefHeight="100.0"/>
+									<KeyboardPane styleClass="hideable" id="keyboard"
+										fx:id="keyboard" />
+									<AnchorPane id="ownerPane" prefHeight="60">
+										<AnchorPane fx:id="ownerIcon" prefHeight="60" prefWidth="60"></AnchorPane>
+										<Label fx:id="owner" id="owner" />
+									</AnchorPane>
+								</children>
+							</VBox>
+
+							<VBox>
+								<children>
+									<Button styleClass="hideable" id="undo" fx:id="btnUndo"
+										text="Undo" onAction="#onUndoAction" mnemonicParsing="false"
+										prefWidth="100.0" prefHeight="50.0" />
+
+									<ToggleButton styleClass="hideable" id="voice"
+										fx:id="btnSpeak" mnemonicParsing="false" prefWidth="100.0"
+										prefHeight="50.0" />
+
+									<Button fx:id="btnNewConcept" text="+" onAction="#onNewAction"
+										BorderPane.alignment="CENTER" prefWidth="100.0" prefHeight="100.0" />
 								</children>
 							</VBox>
 						</children>
@@ -49,12 +63,13 @@
 			</VBox>
 			<BorderPane>
 				<bottom>
-				
+
 				</bottom>
 			</BorderPane>
 		</HBox>
 	</children>
 	<stylesheets>
 		<URL value="@input.css" />
+		<URL value="@user.css" />
 	</stylesheets>
 </AnchorPane>

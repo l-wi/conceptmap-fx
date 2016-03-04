@@ -28,6 +28,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -56,6 +57,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private Button btnNewConcept;
 	@FXML
 	private Button btnUndo;
+	@FXML
+	private Label owner;
+	@FXML
+	private AnchorPane ownerIcon;
 
 	private Position position;
 
@@ -212,6 +217,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void setUser(User u) {
 		this.user = u;
+		owner.setText(u.getName());
+
 	}
 
 	public User getUser() {
@@ -229,6 +236,27 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void setPosition(Position position) {
 		this.position = position;
 		adjustNewButton();
+		adjustIcon();
+	}
+
+	private void adjustIcon() {
+		ObservableList<String> styleClasses = ownerIcon.getStyleClass();
+		String css = "background-";
+		switch (position) {
+		case BOTTOM:
+			styleClasses.add(css + "bottom");
+			break;
+		case TOP:
+			styleClasses.add(css + "top");
+			break;
+		case LEFT:
+			styleClasses.add(css + "left");
+			break;
+		case RIGHT:
+			styleClasses.add(css + "right");
+			break;
+		}
+		return;
 	}
 
 	private void adjustNewButton() {
