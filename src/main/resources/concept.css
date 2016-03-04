@@ -76,14 +76,13 @@ Label{
 	-fx-background-color:#FFFFFF;	
 }
 
-
-.belongsTo-top{
-	
-}
 .fourUserEditable-toggle{
 -fx-border-color:black;
--fx-border-radius: 5.0;
-
+-fx-border-radius: 10.0;
+-fx-background-radius: 10.0;
+-fx-background-repeat: no-repeat;
+-fx-background-size: 30 30;
+-fx-background-position: center;
 }
 
 
@@ -91,40 +90,8 @@ Label{
 -fx-border-color:white;
 -fx-border-radius: 10.0;
 -fx-background-radius: 10.0;
+
 -fx-font-size: 1.3em;
 -fx-text-fill:#ffffff;
 }
 
-
-#fourUserEditable-topToggle{
--fx-background-color: userTop;
-}
-
-#fourUserEditable-leftToggle{
--fx-background-color:userLeft;
-}
-
-#fourUserEditable-rightToggle{
--fx-background-color: userRight;
-}
-
-#fourUserEditable-bottomToggle{
--fx-background-color: userBottom;
-}
-
-
-#fourUserEditable-topToggle:selected{
--fx-background-color: userTopSelected;
-}
-
-#fourUserEditable-leftToggle:selected{
--fx-background-color: userLeftSelected;
-}
-
-#fourUserEditable-rightToggle:selected{
--fx-background-color: userRightSelected;
-}
-
-#fourUserEditable-bottomToggle:selected{
--fx-background-color: userBottomSelected;
-}

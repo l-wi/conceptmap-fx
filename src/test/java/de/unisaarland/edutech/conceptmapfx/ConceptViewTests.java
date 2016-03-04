@@ -121,7 +121,7 @@ public class ConceptViewTests extends ApplicationTest {
 		double y = view.getLayoutY() + view.getTranslateY();
 
 		// when
-		clickOn(conceptView1);
+		clickOn(conceptView1).sleep(1000);
 		assertTrue(view.getState() == State.SELECTED);
 
 		press(MouseButton.PRIMARY).moveBy(translateX, translateY).release(MouseButton.PRIMARY);

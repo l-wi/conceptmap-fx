@@ -17,15 +17,15 @@
 		<ToggleGroup fx:id="toggleGroup" />
 	</fx:define>
 	<top>
-		<ToggleButton id="fourUserEditable-topToggle" styleClass="fourUserEditable-toggle"
+		<ToggleButton id="fourUserEditable-topToggle" styleClass="fourUserEditable-toggle, background-top"
 			BorderPane.alignment="CENTER" toggleGroup="$toggleGroup" fx:id="topToggle"
-			text="t1" />
+			prefWidth="70" prefHeight="70"/>
 	</top>
 
 	<left>
 		<ToggleButton id="fourUserEditable-leftToggle"
-			styleClass="fourUserEditable-toggle" toggleGroup="$toggleGroup"
-			fx:id="leftToggle" text="t2" />
+			styleClass="fourUserEditable-toggle, background-left" toggleGroup="$toggleGroup"
+			fx:id="leftToggle"  prefWidth="70" prefHeight="70" />
 	</left>
 
 	<center>
@@ -36,14 +36,14 @@
 
 	<right>
 		<ToggleButton id="fourUserEditable-rightToggle"
-			styleClass="fourUserEditable-toggle" toggleGroup="$toggleGroup"
-			fx:id="rightToggle" text="t3" />
+			styleClass="fourUserEditable-toggle, background-right" toggleGroup="$toggleGroup"
+			fx:id="rightToggle"  prefWidth="70" prefHeight="70" />
 	</right>
 
 	<bottom>
 		<ToggleButton id="fourUserEditable-bottomToggle"
-			styleClass="fourUserEditable-toggle" BorderPane.alignment="CENTER"
-			toggleGroup="$toggleGroup" fx:id="bottomToggle" text="t4" />
+			styleClass="fourUserEditable-toggle, background-bottom" BorderPane.alignment="CENTER"
+			toggleGroup="$toggleGroup" fx:id="bottomToggle"   prefWidth="70" prefHeight="70"/>
 	</bottom>
 
 

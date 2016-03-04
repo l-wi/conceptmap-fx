@@ -3,15 +3,11 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.io.IOException;
 import java.util.Optional;
 
-import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableCollaborativeString;
-import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConcept;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableLinkFactory;
-import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
-import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.application.Application;
 import javafx.scene.Scene;

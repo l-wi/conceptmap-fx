@@ -1,0 +1,35 @@
+*{
+	userTop: #2400F0; 
+	userLeft: #F00054;
+	userRight: #CCF000;
+	userBottom: #00F09C;
+	
+	userTopSelected: #2400F0;
+	userLeftSelected: #F00054;	
+	userRightSelected:#CCF000;
+	userBottomSelected: #00F09C;	
+}
+
+
+.background-top{
+-fx-background-color: userTop;
+-fx-background-image: url("dog.png");
+}
+
+.background-left{
+-fx-background-color:userLeft;
+-fx-background-image: url("turtle.png");
+
+}
+
+.background-right{
+-fx-background-color: userRight;
+-fx-background-image: url("cat.png");
+
+}
+
+.background-bottom{
+-fx-background-color: userBottom;
+-fx-background-image: url("duck.png");
+
+}

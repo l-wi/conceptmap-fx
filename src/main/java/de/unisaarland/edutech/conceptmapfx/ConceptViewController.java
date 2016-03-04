@@ -221,12 +221,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
-
-		conceptCaption.setTopToggleText(participants.get(0).getName());
-		conceptCaption.setLeftToggleText(participants.get(1).getName());
-		conceptCaption.setBottomToggleText(participants.get(2).getName());
-		conceptCaption.setRightToggleText(participants.get(3).getName());
-
+		
 		conceptCaption.selectionChangedProperty().addListener((l, o, n) -> {
 			if (n.isSelected) {
 				this.fireEditRequested(participants.get(n.index));
