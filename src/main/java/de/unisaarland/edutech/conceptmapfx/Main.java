@@ -1,11 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Optional;
 
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
@@ -22,20 +17,18 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private static final String RESTORE_FILE_NAME = "lock";
-
 	public static void main(String[] args) {
 		launch(args);
 	}
 
-	private File lockFile;
-
 	@Override
-	public void start(Stage primaryStage) throws IOException {	
-		
+	public void start(Stage primaryStage) throws IOException {
+
+		SessionRestoreState restorer = new SessionRestoreState();
+
 		ObservableConceptMap conceptMap = null;
 
-		Optional<ObservableConceptMap> restoredMap = restoreSessionIfNeeded();
+		Optional<ObservableConceptMap> restoredMap = restorer.restoreSessionIfNeeded();
 
 		// data from other view
 		User u1 = new User("Ben", "ben@localhost.com");
@@ -108,17 +101,12 @@ public class Main extends Application {
 
 		primaryStage.setScene(scene);
 
-		Optional<SessionSaver> sessionSaver = conceptMapViewBuilder.getSessionSaver();
+		Optional<SessionSaver> sessionSaverOptional = conceptMapViewBuilder.getSessionSaver();
 
-		if (sessionSaver.isPresent()) {
-			File workingDir = sessionSaver.get().getWorkingDir();
-			this.lockFile = new File(workingDir, RESTORE_FILE_NAME);
-			lockFile.createNewFile();
-			primaryStage.setOnCloseRequest((e) -> {
-				lockFile.delete();
-				System.exit(0);
-			});
+		if (sessionSaverOptional.isPresent()) {
+			restorer.handleRestoreState(primaryStage, sessionSaverOptional.get());
 		}
+
 		primaryStage.show();
 
 		// TODO Frontend
@@ -126,69 +114,6 @@ public class Main extends Application {
 		// TODO selected eintippen geht nicht (Bug?)
 		// TODO rotate two nodes simultaneously (Bug?)
 		// TODO parallel keyboard input (Bug?)
-	}
-
-	public Optional<ObservableConceptMap> restoreSessionIfNeeded() {
-		File sessionFolder = new File("./session");
-
-		if (!isDirectory(sessionFolder))
-			sessionFolder.mkdir();
-
-		for (File d : sessionFolder.listFiles()) {
-			if (isDirectory(sessionFolder)) {
-				File[] directoryContents = sortContentsNumerical(d);
-
-				if (directoryContents.length > 0) {
-
-					if (directoryContents[0].getName().equals(RESTORE_FILE_NAME)) {
-						directoryContents[0].delete();
-						File currentState = directoryContents[directoryContents.length - 1];
-						try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(currentState))) {
-							ObservableConceptMap cm = (ObservableConceptMap) stream.readObject();
-							return Optional.of(cm);
-
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
-				}
-			}
-		}
-
-		return Optional.empty();
-	}
-
-	private File[] sortContentsNumerical(File d) {
-		File[] directoryContents = d.listFiles();
-
-		Comparator<File> c = (a, b) -> {
-
-			String nameA = a.getName();
-			String nameB = b.getName();
-
-			int n1 = nameAsInt(nameA);
-			int n2 = nameAsInt(nameB);
-
-			return n1 - n2;
-		};
-
-		Arrays.sort(directoryContents, c);
-		return directoryContents;
-	}
-
-	private boolean isDirectory(File r) {
-		return r.exists() && r.isDirectory();
-	}
-
-	private int nameAsInt(String nameA) {
-
-		int index = nameA.indexOf(".");
-		if (index == -1)
-			return -1000;
-		String nameWithoutEnding = nameA.substring(0, index);
-
-		return Integer.parseInt(nameWithoutEnding);
-
 	}
 
 }
