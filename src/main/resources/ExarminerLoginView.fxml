@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.net.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.collections.*?>
+<?import java.net.* ?>
+<?import org.comtel2000.keyboard.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.40"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="de.unisaarland.edutech.conceptmapfx.examiner.ExaminerLoginController">
+	<center>
+		<VBox alignment="CENTER" spacing="100">
+			<children>
+				<HBox alignment="CENTER">
+					<children>
+						<ImageView fitHeight="264.0" fitWidth="203.0"
+							pickOnBounds="true" preserveRatio="true">
+
+							<image>
+								<Image url="@researcher.png" />
+							</image>
+
+						</ImageView>
+						<GridPane hgap="10.0" vgap="10.0">
+							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints minHeight="10.0" prefHeight="30.0"
+									vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="60.0" minHeight="10.0"
+									prefHeight="32.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="28.0" minHeight="0.0"
+									prefHeight="28.0" vgrow="SOMETIMES" />
+							</rowConstraints>
+							<children>
+								<HBox GridPane.columnIndex="2" GridPane.rowIndex="2">
+									<children>
+										<ImageView fx:id="error" fitHeight="34.0" fitWidth="39.0"
+											pickOnBounds="true" preserveRatio="true">
+											<image>
+												<Image url="@error.png" />
+											</image>
+										</ImageView>
+
+										<Label fx:id="lblStatus" text="Invalid email address"
+											visible="false" />
+									</children>
+								</HBox>
+								<TextField fx:id="txtName" prefWidth="300"
+									GridPane.columnIndex="1" GridPane.rowIndex="1">
+									<GridPane.margin>
+										<Insets top="10.0" />
+									</GridPane.margin>
+								</TextField>
+								<TextField fx:id="txtEmail" prefWidth="300"
+									GridPane.columnIndex="1" GridPane.rowIndex="2" />
+								<Label text="Name" GridPane.rowIndex="1" />
+								<Label text="EMail" GridPane.rowIndex="2" />
+								<VBox GridPane.columnIndex="1">
+									<children>
+
+										<Label text="Who are you?">
+											<VBox.margin>
+												<Insets bottom="10.0" top="10.0" />
+											</VBox.margin>
+										</Label>
+										<ComboBox fx:id="cmbUser" editable="false"
+											prefHeight="26.0" prefWidth="259.0" promptText="Select Examiner">
+											<items>
+												<FXCollections fx:factory="observableArrayList">
+													<String fx:id="nothingSelected" fx:value="New User" />
+												</FXCollections>
+											</items>
+											<VBox.margin>
+												<Insets bottom="10.0" />
+											</VBox.margin>
+
+										</ComboBox>
+									</children>
+								</VBox>
+								<Button fx:id="btnLogin" mnemonicParsing="false" text="Login"
+									GridPane.columnIndex="1" GridPane.rowIndex="3" />
+							</children>
+						</GridPane>
+					</children>
+				</HBox>
+			</children>
+
+		</VBox>
+	</center>
+	<bottom>
+
+
+		<HBox alignment="CENTER" BorderPane.alignment="CENTER">
+			<children>
+				<KeyboardPane id="keyboard" fx:id="keyboard"
+					styleClass="hideable" />
+			</children>
+		</HBox>
+	</bottom>
+	<stylesheets>
+		<URL value="@ExaminerView.css" />
+	</stylesheets>
+</BorderPane>

@@ -1,15 +1,11 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
-import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
-import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableLinkFactory;
-import de.unisaarland.edutech.conceptmapping.Experiment;
-import de.unisaarland.edutech.conceptmapping.FocusQuestion;
-import de.unisaarland.edutech.conceptmapping.User;
+import de.unisaarland.edutech.conceptmapfx.examiner.ExaminerLoginController;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -21,75 +17,95 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-
-		SessionRestoreState restorer = new SessionRestoreState();
-
-		ObservableConceptMap conceptMap = null;
-
-		Optional<ObservableConceptMap> restoredMap = restorer.restoreSessionIfNeeded();
-
-		// data from other view
-		User u1 = new User("Ben", "ben@localhost.com");
-		User u2 = new User("Han", "han@localhost.com");
-		User u3 = new User("Chewi", "chewi@localhost.com");
-		User u4 = new User("Lea", "lea@localhost.com");
-
-		FocusQuestion question = new FocusQuestion("Who is Ray?", u3);
-		Experiment experiment = new Experiment(u4, question);
-
-		experiment.addParticipant(u1);
-		experiment.addParticipant(u2);
-		experiment.addParticipant(u3);
-		experiment.addParticipant(u4);
-
-		// setting up construction facilities
-
-		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
-		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
-
-		if (!restoredMap.isPresent()){
-			conceptMap = new ObservableConceptMap(experiment, linkFactory);			
-		}
-		else{
-			conceptMap = restoredMap.get();
-			System.out.println("loading restored map!");
-			
-		}
-
-		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
-		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
-
-		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
-
-		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
-				.attachToListener(conceptFactory);
-
-		// Begin UI code
+		
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/ExarminerLoginView.fxml"));
+		Parent p = loader.load();
+		ExaminerLoginController controller = loader.getController();
+		controller.setNext((u) -> System.out.println(u));
+		
+		
+		Scene s = new Scene(p);
+		
 		primaryStage.setMaximized(true);
-		primaryStage.setTitle("Concept Mapping");
-
-		Scene scene = conceptMapViewBuilder.build();
-
-		scene.setOnKeyTyped((l) -> {
-			if (l.getCharacter().equals("f"))
-				primaryStage.setFullScreen(true);
-		});
-
-		primaryStage.setScene(scene);
-
-		Optional<SessionSaver> sessionSaverOptional = conceptMapViewBuilder.getSessionSaver();
-
-		if (sessionSaverOptional.isPresent()) {
-			restorer.handleRestoreState(primaryStage, sessionSaverOptional.get());
-		}
-
+		primaryStage.setScene(s);
 		primaryStage.show();
-
-		// TODO Frontend
-		// TODO Rotate Translate Group
-		// TODO selected eintippen geht nicht (Bug?)
-		// TODO rotate two nodes simultaneously (Bug?)
-		// TODO parallel keyboard input (Bug?)
+	
+		
+		
+//		
+//
+//		// data from other view
+//		User u1 = new User("Ben", "ben@localhost.com");
+//		User u2 = new User("Han", "han@localhost.com");
+//		User u3 = new User("Chewi", "chewi@localhost.com");
+//		User u4 = new User("Lea", "lea@localhost.com");
+//
+//		FocusQuestion question = new FocusQuestion("Who is Ray?", u3);
+//		Experiment experiment = new Experiment(u4, question);
+//
+//		experiment.addParticipant(u1);
+//		experiment.addParticipant(u2);
+//		experiment.addParticipant(u3);
+//		experiment.addParticipant(u4);
+//
+//		toConceptMapStage(primaryStage, experiment);
+//
+//		// TODO Frontend
+//		// TODO Rotate Translate Group
+//		// TODO selected eintippen geht nicht (Bug?)
+//		// TODO rotate two nodes simultaneously (Bug?)
+//		// TODO parallel keyboard input (Bug?)
+//	}
+//
+//	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
+//		// setting up construction facilities
+//
+//		ObservableConceptMap conceptMap = null;
+//
+//		SessionRestoreState restorer = new SessionRestoreState();
+//
+//		Optional<ObservableConceptMap> restoredMap = restorer.restoreSessionIfNeeded();
+//		
+//		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
+//		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
+//
+//		if (!restoredMap.isPresent()){
+//			conceptMap = new ObservableConceptMap(experiment, linkFactory);			
+//		}
+//		else{
+//			conceptMap = restoredMap.get();
+//			System.out.println("loading restored map!");
+//			
+//		}
+//
+//		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
+//		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
+//
+//		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
+//
+//		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
+//				.attachToListener(conceptFactory);
+//
+//		// Begin UI code
+//		primaryStage.setMaximized(true);
+//		primaryStage.setTitle("Concept Mapping");
+//
+//		Scene scene = conceptMapViewBuilder.build();
+//
+//		scene.setOnKeyTyped((l) -> {
+//			if (l.getCharacter().equals("f"))
+//				primaryStage.setFullScreen(true);
+//		});
+//
+//		primaryStage.setScene(scene);
+//
+//		Optional<SessionSaver> sessionSaverOptional = conceptMapViewBuilder.getSessionSaver();
+//
+//		if (sessionSaverOptional.isPresent()) {
+//			restorer.handleRestoreState(primaryStage, sessionSaverOptional.get());
+//		}
+//
+//		primaryStage.show();
 	}
 
 }
