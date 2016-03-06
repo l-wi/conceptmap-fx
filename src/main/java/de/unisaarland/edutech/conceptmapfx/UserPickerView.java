@@ -3,38 +3,40 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapping.User;
+import de.unisaarland.edutech.conceptmapping.exception.EmailException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 public class UserPickerView extends VBox {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ExaminerLoginController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
-	@FXML
 	private String userFilePath;
 
 	private File workingFile;
 
 	private List<User> users;
-
-	private User activeUser;
 
 	private boolean isNewUser;
 
@@ -48,52 +50,101 @@ public class UserPickerView extends VBox {
 	private ImageView error;
 	@FXML
 	private Label lblStatus;
+	@FXML
+	private Button btnLogin;
+	@FXML
+	private AnchorPane imagePanel;
 
 	@FXML
-	private String btnLoginId;
+	private ImageView image;
 
-	private Button btnLogin;
+	private User activeUser;
+
+	private boolean isWriteUsersOnAction = true;
+
+	private String imageURL = "/researcher.png";
+
+	private double imgWidth;
+
+	private double imgHeight;
+
+	private String prompt;
 
 	public UserPickerView() {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserPickerView.fxml"));
 		loader.setRoot(this);
 		loader.setController(this);
 
+		tryLoadingFXMLOrThrow(loader);
+
+		initiailze();
+
 	}
 
-	@FXML
-	public void initialize() {
-		workingFile = new File(userFilePath);
-		btnLogin = (Button) this.lookup(btnLoginId);
+	private void tryLoadingFXMLOrThrow(FXMLLoader loader) {
+		try {
+			loader.load();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
-		btnLogin.setDisable(true);
+	public void initiailze() {
+
 		txtName.setDisable(true);
 		txtEmail.setDisable(true);
 		error.setVisible(false);
 
-		loadUsers();
-		initComboBox();
+//		initImage();
 		initTxtFields();
-
 		initComboBoxListener();
+
 	}
 
-	private void loadUsers() {
+//	public void setImageURL(String url) {
+//		this.imageURL = url;
+//		initImage();
+//	}
+
+//	public String getImageURL() {
+//		return imageURL;
+//	}
+
+//	private void initImage() {
+//		this.image.setImage(new Image(imageURL));
+//	}
+
+	public void setUserFilePath(String userFilePath) {
+
+		this.userFilePath = userFilePath;
+		workingFile = new File(userFilePath);
+
+
+	}
+
+	public void setWriteUsersOnAction(boolean b) {
+		this.isWriteUsersOnAction = b;
+	}
+
+	public boolean isWriteUsersOnAction() {
+		return isWriteUsersOnAction;
+	}
+
+	public String getUserFilePath() {
+		return userFilePath;
+	}
+
+	public void loadUsers() {
+		
 		users = new ArrayList<>();
 
 		try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(workingFile))) {
-
-			User u = null;
-
-			while ((u = (User) stream.readObject()) != null)
-				users.add(u);
-
-		} catch (EOFException ex) {
-			LOG.info("finished reading user input!");
+			users = (List<User>) stream.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			LOG.error("could not load existing users!", e);
 		}
-
+		
+		initComboBox();
 	}
 
 	private void initComboBox() {
@@ -142,5 +193,78 @@ public class UserPickerView extends VBox {
 		isNewUser = true;
 	}
 
-	
+	public void setOnAction(Consumer<User> c) {
+
+		btnLogin.setOnAction((e) -> {
+			String name = this.getName();
+			String email = this.getEMail();
+
+			try {
+				this.activeUser = new User(name, email);
+				this.users.add(0,activeUser);
+				if (isWriteUsersOnAction && this.isNewUser())
+					appendUser();
+
+				c.accept(activeUser);
+			} catch (EmailException ex) {
+				this.showError();
+			}
+		});
+	}
+
+	private void showError() {
+		error.setVisible(true);
+		lblStatus.setVisible(true);
+	}
+
+	public String getEMail() {
+		return txtEmail.getText();
+	}
+
+	public String getName() {
+		return txtName.getText();
+	}
+
+	public boolean isNewUser() {
+		return isNewUser;
+	}
+
+	private void appendUser() {
+		try (ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(workingFile))) {
+			stream.writeObject(users);
+		} catch (IOException ex) {
+			LOG.error("could not save user!", ex);
+		}
+	}
+
+	public double getImgHeight() {
+		return imgHeight;
+	}
+
+	public double getImgWidth() {
+		return imgWidth;
+	}
+
+	public void setImgHeight(double imgHeight) {
+		this.imgHeight = imgHeight;
+		this.image.setFitHeight(imgHeight);
+	}
+
+	public void setImgWidth(double imgWidth) {
+		this.imgWidth = imgWidth;
+		this.image.setFitWidth(imgWidth);
+	}
+
+	public void setPrompt(String prompt) {
+		this.cmbUser.setPromptText(prompt);
+	}
+
+	public String getPrompt() {
+		return this.cmbUser.getPromptText();
+	}
+
+	public void addImageCSSClass(String css) {
+		this.imagePanel.getStyleClass().add(css);
+	}
+
 }

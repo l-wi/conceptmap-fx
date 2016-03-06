@@ -3,6 +3,7 @@
 	userLeft: #F00054;
 	userRight: #CCF000;
 	userBottom: #00F09C;
+	researcher: black;
 	
 	userTopSelected: #2400F0;
 	userLeftSelected: #F00054;	
@@ -32,4 +33,9 @@
 -fx-background-color: userBottom;
 -fx-background-image: url("duck.png");
 
+}
+
+.researcher{
+-fx-background-color: researcher;
+-fx-background-image: url("researcher.png");
 }

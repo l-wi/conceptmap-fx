@@ -21,6 +21,7 @@ import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.FocusQuestion;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 
@@ -31,6 +32,9 @@ public class ExperimentCreateController {
 	private Consumer<Experiment> next;
 	private User researcher;
 
+	@FXML
+	private Parent root;
+	
 	@FXML
 	private KeyboardPane keyboard;
 	@FXML
@@ -130,6 +134,11 @@ public class ExperimentCreateController {
 
 	public void setResearcher(User researcher) {
 		this.researcher = researcher;
+	}
+	
+	
+	public Parent getView() {
+		return root;
 	}
 
 }
