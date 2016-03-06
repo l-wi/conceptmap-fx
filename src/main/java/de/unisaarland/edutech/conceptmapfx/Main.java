@@ -65,15 +65,15 @@ public class Main extends Application {
 		LoginController userTopController = initUserLoginView();
 		userTopController.setPrompt("insert/select top user");
 		userTopController.addImageCSSClass("background-top");
-		
+
 		LoginController userLeftController = initUserLoginView();
 		userLeftController.setPrompt("insert/select left user");
 		userLeftController.addImageCSSClass("background-left");
-		
+
 		LoginController userRightController = initUserLoginView();
 		userRightController.setPrompt("insert/select right user");
 		userRightController.addImageCSSClass("background-right");
-		
+
 		LoginController userBottomController = initUserLoginView();
 		userBottomController.setPrompt("insert/select bottom user");
 		userBottomController.addImageCSSClass("background-bottom");
@@ -117,10 +117,13 @@ public class Main extends Application {
 	}
 
 	// TODO Frontend ( Show Focus Question + Show Focus Question during mapping)
-	// TODO Rotate Translate Group
+	// TODO highlight that it is possible to add a new focus question!
+	// TODO close keyboard and undo causes somehow bug !
+	// TODO test the damn thing to death
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO parallel keyboard input (Bug?)
+	// TODO Rotate Translate Group
 
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities

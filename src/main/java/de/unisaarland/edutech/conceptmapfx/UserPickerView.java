@@ -90,29 +90,15 @@ public class UserPickerView extends VBox {
 	}
 
 	public void initiailze() {
-
+		btnLogin.setDisable(true);
 		txtName.setDisable(true);
 		txtEmail.setDisable(true);
 		error.setVisible(false);
 
-//		initImage();
 		initTxtFields();
 		initComboBoxListener();
 
 	}
-
-//	public void setImageURL(String url) {
-//		this.imageURL = url;
-//		initImage();
-//	}
-
-//	public String getImageURL() {
-//		return imageURL;
-//	}
-
-//	private void initImage() {
-//		this.image.setImage(new Image(imageURL));
-//	}
 
 	public void setUserFilePath(String userFilePath) {
 
