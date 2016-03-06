@@ -62,7 +62,7 @@ public class ConceptMapViewBuilder {
 	public Optional<SessionSaver> getSessionSaver() {
 		return saver;
 	}
-	
+
 	public ConceptMapViewBuilder withConceptMap(ConceptMap conceptMap) {
 		this.conceptMap = conceptMap;
 
@@ -155,7 +155,7 @@ public class ConceptMapViewBuilder {
 		InputViewController inputController = inputLoader.getController();
 		inputController.setUser(u);
 		inputController.setPosition(p);
-
+		inputController.setFocusQuestion(conceptMap.getExperiment().getFocusQuestion().getQuestion());
 		if (history.isPresent())
 			inputController.setUndoHistory(history.get());
 

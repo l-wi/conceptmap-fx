@@ -30,6 +30,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -61,6 +62,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private Label owner;
 	@FXML
 	private AnchorPane ownerIcon;
+	@FXML
+	private Label question;
 
 	private Position position;
 
@@ -85,6 +88,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			keyboard.removeRobotHandler(defaultHandler);
 
 			keyboard.setDisable(true);
+
+			question.setWrapText(true);
+			btnNewConcept.setMaxHeight(Double.MAX_VALUE);
+			VBox.setVgrow(btnNewConcept, Priority.ALWAYS);
 
 		} catch (IOException | URISyntaxException e) {
 			LOG.error("Program cannot run!", e);
@@ -310,4 +317,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		this.undoHistory.addUndoButton(btnUndo);
 	}
 
+	public void setFocusQuestion(String question) {
+		this.question.setText(question);
+	}
 }

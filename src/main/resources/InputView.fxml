@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.BorderPane?>
 <?import java.lang.Double ?>
+<?import javafx.scene.layout.StackPane?>
 
 <AnchorPane styleClass="input" fx:id="inputPane"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
@@ -37,8 +38,20 @@
 									<KeyboardPane styleClass="hideable" id="keyboard"
 										fx:id="keyboard" />
 									<AnchorPane id="ownerPane" prefHeight="60">
-										<AnchorPane fx:id="ownerIcon" prefHeight="60" prefWidth="60"></AnchorPane>
-										<Label fx:id="owner" id="owner" />
+										<HBox>
+											<children>
+												<AnchorPane fx:id="ownerIcon" prefHeight="60"
+													prefWidth="60"></AnchorPane>
+												<VBox>
+													<children>
+														<Label fx:id="owner" id="owner" />
+														<Label fx:id="question" id="question" wrapText="true"
+															prefWidth="390" />
+
+													</children>
+												</VBox>
+											</children>
+										</HBox>
 									</AnchorPane>
 								</children>
 							</VBox>
@@ -52,9 +65,11 @@
 									<ToggleButton styleClass="hideable" id="voice"
 										fx:id="btnSpeak" mnemonicParsing="false" prefWidth="100.0"
 										prefHeight="50.0" />
-
-									<Button fx:id="btnNewConcept" text="+" onAction="#onNewAction"
-										BorderPane.alignment="CENTER" prefWidth="100.0" prefHeight="100.0" />
+									
+											<Button fx:id="btnNewConcept" text="+" onAction="#onNewAction"
+												BorderPane.alignment="CENTER" prefWidth="100.0" />
+										
+									
 								</children>
 							</VBox>
 						</children>

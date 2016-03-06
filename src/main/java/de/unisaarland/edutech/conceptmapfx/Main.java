@@ -19,7 +19,9 @@ public class Main extends Application {
 		launch(args);
 	}
 
+	private SessionRestoreState restorer;
 	private Experiment experiment;
+	private ObservableConceptMap conceptMap;
 
 	public LoginController initUserLoginView() {
 
@@ -54,6 +56,17 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
+
+		restorer = new SessionRestoreState();
+
+		Optional<ObservableConceptMap> restoredMap = restorer.restoreSessionIfNeeded();
+
+		if (restoredMap.isPresent()) {
+			this.conceptMap = restoredMap.get();
+			toConceptMapStage(primaryStage, experiment);
+			primaryStage.show();
+			return;
+		}
 
 		// Load examiner view
 
@@ -116,7 +129,7 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-	// TODO Frontend ( Show Focus Question + Show Focus Question during mapping)
+	// TODO Frontend ( Show Focus Question shortly in BIG)
 	// TODO highlight that it is possible to add a new focus question!
 	// TODO close keyboard and undo causes somehow bug !
 	// TODO test the damn thing to death
@@ -128,22 +141,11 @@ public class Main extends Application {
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
 
-		ObservableConceptMap conceptMap = null;
-
-		SessionRestoreState restorer = new SessionRestoreState();
-
-		Optional<ObservableConceptMap> restoredMap = restorer.restoreSessionIfNeeded();
-
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
 
-		if (!restoredMap.isPresent()) {
+		if (conceptMap == null)
 			conceptMap = new ObservableConceptMap(experiment, linkFactory);
-		} else {
-			conceptMap = restoredMap.get();
-			System.out.println("loading restored map!");
-
-		}
 
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();

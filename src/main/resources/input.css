@@ -60,10 +60,15 @@
 
 	-fx-font-size:1.4em;
 	-fx-text-fill:white;
-	-fx-padding: 20 0 0 80;
+	-fx-padding: 10 0 0 50;
 	
 }
 
+#question{
+	-fx-font-size:1.1em;
+	-fx-text-fill:white;
+	-fx-padding: 10 0 0 50;
+}
 #undo{
 	-fx-border-radius: 0 30 0 0;
 	-fx-background-radius: 0 30 0 0;
