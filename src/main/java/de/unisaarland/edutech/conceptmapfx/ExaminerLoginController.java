@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx.examiner;
+package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.EOFException;
 import java.io.File;

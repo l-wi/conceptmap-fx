@@ -1,0 +1,19 @@
+.root {
+	-fx-background-image: url("textureMetal2.jpg");
+	-fx-background-size: cover;
+}
+
+Label{
+		-fx-text-fill:white;
+}
+
+.btn{
+	-fx-background-color: #3c4250;
+	-fx-padding: 30;
+	-fx-border-color: #222222;
+	-fx-text-fill:white;
+	-fx-background-radius: 20;
+	-fx-border-radius: 20;
+	
+}
+

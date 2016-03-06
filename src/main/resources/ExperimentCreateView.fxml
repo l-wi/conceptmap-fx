@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import org.comtel2000.keyboard.control.*?>
+<?import java.net.* ?>
+
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
+	fx:controller="de.unisaarland.edutech.conceptmapfx.ExperimentCreateController">
+	<center>
+		<VBox alignment="CENTER">
+			<children>
+				<HBox alignment="CENTER">
+					<children>
+						<VBox alignment="CENTER" 
+
+							spacing="10.0">
+							<children>
+								<Label text="Focus Question" />
+								<ComboBox fx:id="cmbFocusQuestion" editable="true"
+									prefHeight="26.0" prefWidth="625.0" promptText="input or select focus question" />
+								<Separator prefWidth="200.0" />
+								<HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+									<children>
+										<VBox alignment="CENTER" spacing="10.0">
+											<children>
+												<Label text="Scripts" />
+												<ListView prefHeight="200.0" prefWidth="200.0" />
+											</children>
+										</VBox>
+										<Separator orientation="VERTICAL" prefHeight="200.0" />
+										<VBox alignment="CENTER" spacing="10.0">
+											<children>
+												<Label text="Awareness Tools" />
+												<ListView prefHeight="200.0" prefWidth="200.0" />
+											</children>
+										</VBox>
+									</children>
+								</HBox>
+								<Separator prefWidth="200.0" />
+								<Button fx:id="btnRun" styleClass="btn" mnemonicParsing="false" text="Run" />
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+			</children>
+		</VBox>
+	</center>
+	<bottom>
+		<HBox alignment="CENTER" BorderPane.alignment="CENTER">
+			<children>
+				<KeyboardPane id="keyboard" fx:id="keyboard"
+					styleClass="hideable" />
+			</children>
+		</HBox>
+	</bottom>
+		<stylesheets>
+		<URL value="@setup.css" />
+	</stylesheets>
+</BorderPane>
