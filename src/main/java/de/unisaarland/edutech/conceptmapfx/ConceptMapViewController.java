@@ -14,7 +14,6 @@ import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
-import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
@@ -29,8 +28,8 @@ import javafx.scene.Node;
 import javafx.util.Duration;
 
 //TODO Refactor: extract some listeners into separate classes
-public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
-		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener, ConceptMovingListener {
+public class ConceptMapViewController implements NewLinkListener, LinkDeletedListener, ConceptDeletedListener,
+		ConceptMovedListener, LinkDirectionUpdatedListener, ConceptMovingListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
@@ -47,7 +46,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	private Map<User, List<ConceptViewController>> userToConceptViewControllers = new HashMap<>();
 
 	private DoubleProperty sceneWidth = new SimpleDoubleProperty(0);
-
 	private DoubleProperty sceneHeight = new SimpleDoubleProperty(0);
 
 	private Map<ConceptViewController, List<ConceptViewController>> conceptToIntersectedConcepts = new HashMap<>();
@@ -100,31 +98,6 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 	public void initialize() {
 		sceneWidth.addListener((c, o, n) -> layout());
 		sceneHeight.addListener((c, o, n) -> layout());
-	}
-
-	public void newConcept(InputViewController inputViewController) {
-
-		User user = inputViewController.getUser();
-
-		conceptViewBuilder.withNewConcept(user);
-
-		conceptViewBuilder.withConceptEmptyListener(inputViewController);
-
-		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(inputViewController,
-				this.conceptMapPane);
-
-		updateConceptPosition(cv);
-
-		this.userToConceptViewControllers.get(user).add(cv);
-
-	}
-
-	private void updateConceptPosition(ConceptViewController cv) {
-		double x = cv.getView().getTranslateX() / this.sceneWidth.doubleValue();
-		double y = cv.getView().getTranslateY() / this.sceneHeight.doubleValue();
-		double r = cv.getView().getRotate();
-
-		cv.getConcept().setPosition(x, y, r);
 	}
 
 	public void setConceptViewBuilder(ConceptViewBuilder builder) {
@@ -447,6 +420,22 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		st.setToX(1);
 		st.setToY(1);
 		st.play();
+	}
+
+	public DoubleProperty getWidth() {
+		return sceneWidth;
+	}
+
+	public DoubleProperty getHeight() {
+		return sceneHeight;
+	}
+
+	public ConceptMapView getView() {
+		return conceptMapPane;
+	}
+
+	public void manage(User user, ConceptViewController cv) {
+		this.userToConceptViewControllers.get(user).add(cv);
 	}
 
 }

@@ -164,7 +164,7 @@ public class ConceptMapViewBuilder {
 			inputController.setUndoHistory(history.get());
 
 		conceptMapView.add(inputView);
-		inputController.addNewConceptListener(controller);
+		inputController.addNewConceptListener(new DefaultNewConceptListener(conceptViewBuilder, controller));
 		controller.addInputViewController(inputController);
 
 		conceptViewBuilder.withEditRequestedListener(inputController);
