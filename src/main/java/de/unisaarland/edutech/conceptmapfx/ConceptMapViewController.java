@@ -20,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 
-//TODO Refactor: extract some listeners into separate classes
 public class ConceptMapViewController implements LinkDeletedListener, LinkDirectionUpdatedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
