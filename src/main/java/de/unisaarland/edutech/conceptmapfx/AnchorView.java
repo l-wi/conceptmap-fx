@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import de.unisaarland.edutech.conceptmapfx.event.AnchorAlteredListener;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -15,7 +16,7 @@ public class AnchorView extends Pane {
 	private Polygon arrowPolygon;
 
 	private Shape currentlyActive;
-	private LinkViewController controller;
+	private AnchorAlteredListener controller;
 
 	private boolean isActive = false;
 
@@ -24,7 +25,7 @@ public class AnchorView extends Pane {
 			controller.anchorAltered(this);
 	};
 
-	AnchorView(LinkViewController controller, Color color, double width, double height) {
+	public AnchorView(AnchorAlteredListener controller, Color color, double width, double height) {
 		this.controller = controller;
 		createCircle(color, width, height);
 		createArrow(color, width, 1.5 * height);

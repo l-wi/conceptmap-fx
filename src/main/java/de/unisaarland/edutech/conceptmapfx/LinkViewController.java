@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.event.AnchorAlteredListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
@@ -29,7 +30,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
-public class LinkViewController implements ConceptMovingListener, InputClosedListener {
+public class LinkViewController implements ConceptMovingListener, InputClosedListener, AnchorAlteredListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LinkViewController.class);
 
