@@ -33,7 +33,6 @@ public class AnchorView extends Pane {
 		circle.setOnMouseClicked(onClickToggle);
 		arrowPolygon.setOnMouseClicked(onClickToggle);
 		currentlyActive = circle;
-		// this.setStyle("-fx-background-color: #FF0000;");
 
 	}
 
