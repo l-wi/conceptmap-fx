@@ -84,7 +84,7 @@
 		</HBox>
 	</children>
 	<stylesheets>
-		<URL value="@input.css" />
-		<URL value="@user.css" />
+		<URL value="@/css/input.css" />
+		<URL value="@/css/user.css" />
 	</stylesheets>
 </AnchorPane>

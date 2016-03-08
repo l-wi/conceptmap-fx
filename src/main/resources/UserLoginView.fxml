@@ -20,7 +20,7 @@
 	<center>
 		<VBox alignment="CENTER">
 			<children>
-				<UserPickerView stylesheets="@user.css" fx:id="picker" UserFilePath="./profiles/user.ostream" prompt="select user"></UserPickerView>
+				<UserPickerView stylesheets="@/css/user.css" fx:id="picker" UserFilePath="./profiles/user.ostream" prompt="select user"></UserPickerView>
 			</children>
 		</VBox>
 	</center>
@@ -35,7 +35,7 @@
 		</HBox>
 	</bottom>
 	<stylesheets>
-		<URL value="@setup.css" />
+		<URL value="@/css/setup.css" />
 		
 	</stylesheets>
 </BorderPane>

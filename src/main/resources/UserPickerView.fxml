@@ -95,8 +95,8 @@
 	</children>
 
 	<stylesheets>
-		<URL value="@setup.css" />
-		<URL value="@user.css" />
+		<URL value="@/css/setup.css" />
+		<URL value="@/css/user.css" />
 	</stylesheets>
 </fx:root>
 

@@ -14,28 +14,28 @@
 
 .background-top{
 -fx-background-color: userTop;
--fx-background-image: url("gfx/dog.png");
+-fx-background-image: url("/gfx/dog.png");
 }
 
 .background-left{
 -fx-background-color:userLeft;
--fx-background-image: url("gfx/turtle.png");
+-fx-background-image: url("/gfx/turtle.png");
 
 }
 
 .background-right{
 -fx-background-color: userRight;
--fx-background-image: url("gfx/cat.png");
+-fx-background-image: url("/gfx/cat.png");
 
 }
 
 .background-bottom{
 -fx-background-color: userBottom;
--fx-background-image: url("gfx/duck.png");
+-fx-background-image: url("/gfx/duck.png");
 
 }
 
 .researcher{
 -fx-background-color: researcher;
--fx-background-image: url("researcher.png");
+-fx-background-image: url("/gfx/researcher.png");
 }

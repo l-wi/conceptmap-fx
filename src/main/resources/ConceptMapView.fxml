@@ -9,7 +9,7 @@
 	
 	
 	<stylesheets>
-		<URL value="@conceptMapPane.css" />
+		<URL value="@css/conceptMapPane.css" />
 	</stylesheets>
 	
 </ConceptMapView>

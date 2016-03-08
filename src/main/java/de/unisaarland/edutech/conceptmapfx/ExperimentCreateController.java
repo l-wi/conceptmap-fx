@@ -121,7 +121,7 @@ public class ExperimentCreateController {
 	}
 
 	private void initKeyboard() {
-		keyboard.setKeyBoardStyle(getClass().getResource("/input.css").toString());
+		keyboard.setKeyBoardStyle(getClass().getResource("/css/input.css").toString());
 		keyboard.setSpaceKeyMove(false);
 		keyboard.setLayerPath(new File("./keyboardLayout").toPath());
 

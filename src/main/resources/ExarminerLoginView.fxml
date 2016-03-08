@@ -35,6 +35,6 @@
 		</HBox>
 	</bottom>
 	<stylesheets>
-		<URL value="@setup.css" />
+		<URL value="@/css/setup.css" />
 	</stylesheets>
 </BorderPane>
