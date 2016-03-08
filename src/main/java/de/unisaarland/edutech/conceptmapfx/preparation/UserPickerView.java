@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.preparation;
 
 import java.io.File;
 import java.io.FileInputStream;

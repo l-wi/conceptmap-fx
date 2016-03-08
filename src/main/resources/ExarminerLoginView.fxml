@@ -12,11 +12,11 @@
 <?import java.net.* ?>
 <?import org.comtel2000.keyboard.control.*?>
 <?import javafx.scene.layout.VBox?>
-<?import de.unisaarland.edutech.conceptmapfx.UserPickerView?>
+<?import de.unisaarland.edutech.conceptmapfx.preparation.UserPickerView?>
 
 
 <BorderPane fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/8.0.40"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unisaarland.edutech.conceptmapfx.LoginController">
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unisaarland.edutech.conceptmapfx.preparation.LoginController">
 	<center>
 		<VBox alignment="CENTER">
 			<children>
