@@ -28,8 +28,8 @@ import javafx.scene.Node;
 import javafx.util.Duration;
 
 //TODO Refactor: extract some listeners into separate classes
-public class ConceptMapViewController implements NewLinkListener, LinkDeletedListener, ConceptDeletedListener,
-		ConceptMovedListener, LinkDirectionUpdatedListener, ConceptMovingListener {
+public class ConceptMapViewController implements NewLinkListener, LinkDeletedListener, ConceptMovedListener,
+		LinkDirectionUpdatedListener, ConceptMovingListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
@@ -66,20 +66,6 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 
 	public void addNewLinkListener(NewLinkListener l) {
 		newLinkListeners.add(l);
-	}
-
-	public void conceptDeleted(ConceptViewController cv, User u) {
-		Concept concept = cv.getConcept();
-
-		List<LinkViewController> workingList = new ArrayList<>(linkControllers);
-
-		for (LinkViewController l : workingList) {
-			if (l.getStart().equals(concept) || l.getEnd().equals(concept)) {
-				l.remove();
-			}
-		}
-
-		deleteConcept(cv);
 	}
 
 	public void linkDeleted(LinkViewController lv, User u) {
@@ -228,13 +214,6 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 
 		linkControllers.clear();
 		userToConceptViewControllers.clear();
-	}
-
-	private void deleteConcept(ConceptViewController cv) {
-		conceptMapPane.remove(cv.getView());
-		conceptMap.removeConcept(cv.getConcept());
-
-		userToConceptViewControllers.get(cv.getConcept().getOwner()).remove(cv);
 	}
 
 	private void loadMap() {
@@ -438,4 +417,15 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 		this.userToConceptViewControllers.get(user).add(cv);
 	}
 
+	public ConceptMap getMap() {
+		return this.conceptMap;
+	}
+
+	public void unmanage(User owner, ConceptViewController cv) {
+		userToConceptViewControllers.get(owner).remove(cv);
+	}
+
+	public List<LinkViewController> getLinkControllers() {
+		return linkControllers;
+	}
 }
