@@ -130,7 +130,6 @@ public class Main extends Application {
 	}
 
 	// TODO Frontend ( Show Focus Question shortly in BIG)
-	// TODO highlight that it is possible to add a new focus question!
 	// TODO close keyboard and undo causes somehow bug !
 	// TODO test the damn thing to death
 	// TODO selected eintippen geht nicht (Bug?)
