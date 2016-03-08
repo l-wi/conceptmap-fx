@@ -34,7 +34,7 @@ public class DefaultConceptDeletedListener implements ConceptDeletedListener {
 		conceptMapController.getView().remove(cv.getView());
 		conceptMapController.getMap().removeConcept(cv.getConcept());
 		User owner = cv.getConcept().getOwner();
-		conceptMapController.unmanage(owner, cv);
+		conceptMapController.remove(cv);
 	}
 
 }

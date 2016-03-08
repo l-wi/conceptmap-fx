@@ -28,7 +28,7 @@ public class DefaultNewConceptListener implements NewConceptListener {
 
 		updateConceptPosition(cv);
 
-		this.mapController.manage(user, cv);
+		this.mapController.add(cv);
 	}
 
 	private void updateConceptPosition(ConceptViewController cv) {

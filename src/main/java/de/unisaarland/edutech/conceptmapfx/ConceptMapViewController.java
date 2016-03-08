@@ -43,7 +43,7 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 	private ConceptMap conceptMap;
 	private List<InputViewController> inputControllers = new ArrayList<InputViewController>();
 	private List<LinkViewController> linkControllers = new ArrayList<LinkViewController>();
-	private Map<User, List<ConceptViewController>> userToConceptViewControllers = new HashMap<>();
+	private List<ConceptViewController> conceptControllers = new ArrayList<>();
 
 	private DoubleProperty sceneWidth = new SimpleDoubleProperty(0);
 	private DoubleProperty sceneHeight = new SimpleDoubleProperty(0);
@@ -190,8 +190,9 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 
 		conceptViewBuilder.withMap(conceptMap);
 
-		for (User u : conceptMap.getExperiment().getParticipants())
-			userToConceptViewControllers.put(u, new ArrayList<ConceptViewController>());
+		// for (User u : conceptMap.getExperiment().getParticipants())
+		// userToConceptViewControllers.put(u, new
+		// ArrayList<ConceptViewController>());
 
 		loadMap();
 
@@ -205,15 +206,11 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 			lv.remove();
 		});
 
-		userToConceptViewControllers.values().forEach((list) -> {
-			List<ConceptViewController> workingList = new ArrayList<>(list);
-			workingList.forEach((cv) -> {
-				cv.fireConceptDeleted();
-			});
-		});
+		List<ConceptViewController> copy = new ArrayList<>(conceptControllers);
+		copy.forEach((cv) -> cv.fireConceptDeleted());
 
 		linkControllers.clear();
-		userToConceptViewControllers.clear();
+		conceptControllers.clear();
 	}
 
 	private void loadMap() {
@@ -235,7 +232,7 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 					conceptViewBuilder.withConceptEmptyListener(ownerController);
 
 					ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(this.conceptMapPane);
-					this.userToConceptViewControllers.get(c.getOwner()).add(cv);
+					this.conceptControllers.add(cv);
 					tempList.add(cv);
 				}
 
@@ -269,15 +266,12 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 
 	public void layout() {
 
-		for (List<ConceptViewController> list : userToConceptViewControllers.values()) {
-			for (ConceptViewController cv : list) {
-				Concept c = cv.getConcept();
-				double x = c.getX() * this.sceneWidth.doubleValue();
-				double y = c.getY() * this.sceneHeight.doubleValue();
-				cv.translateAbsolute(x, y);
-				cv.getView().setRotate(c.getRotate());
-			}
-
+		for (ConceptViewController cv : conceptControllers) {
+			Concept c = cv.getConcept();
+			double x = c.getX() * this.sceneWidth.doubleValue();
+			double y = c.getY() * this.sceneHeight.doubleValue();
+			cv.translateAbsolute(x, y);
+			cv.getView().setRotate(c.getRotate());
 		}
 
 		for (LinkViewController lvc : linkControllers) {
@@ -322,12 +316,12 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 
 	private List<ConceptViewController> findIntersections(ConceptViewController cv) {
 		List<ConceptViewController> result = new ArrayList<>();
-		for (List<ConceptViewController> list : userToConceptViewControllers.values()) {
-			for (ConceptViewController controller : list) {
-				if (!cv.equals(controller) && cv.intersects(controller)) {
-					result.add(controller);
-				}
+
+		for (ConceptViewController controller : conceptControllers) {
+			if (!cv.equals(controller) && cv.intersects(controller)) {
+				result.add(controller);
 			}
+
 		}
 		return result;
 	}
@@ -413,19 +407,23 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 		return conceptMapPane;
 	}
 
-	public void manage(User user, ConceptViewController cv) {
-		this.userToConceptViewControllers.get(user).add(cv);
+	public void add(ConceptViewController cv) {
+		this.conceptControllers.add(cv);
 	}
 
 	public ConceptMap getMap() {
 		return this.conceptMap;
 	}
 
-	public void unmanage(User owner, ConceptViewController cv) {
-		userToConceptViewControllers.get(owner).remove(cv);
+	public void remove(ConceptViewController cv) {
+		conceptControllers.remove(cv);
 	}
 
 	public List<LinkViewController> getLinkControllers() {
 		return linkControllers;
+	}
+
+	public List<ConceptViewController> getConceptViewControllers() {
+		return conceptControllers;
 	}
 }
