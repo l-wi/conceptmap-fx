@@ -32,7 +32,6 @@ import javafx.util.Duration;
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
 		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener, ConceptMovingListener {
 
-
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
 	private List<ConceptDeletedListener> conceptDeletedListners = new ArrayList<ConceptDeletedListener>();
@@ -108,12 +107,14 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		User user = inputViewController.getUser();
 
 		conceptViewBuilder.withNewConcept(user);
-		prepareConceptBuilder(user);
+
+		conceptViewBuilder.withConceptEmptyListener(inputViewController);
+
 		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(inputViewController,
 				this.conceptMapPane);
-		
+
 		updateConceptPosition(cv);
-		
+
 		this.userToConceptViewControllers.get(user).add(cv);
 
 	}
@@ -123,25 +124,7 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 		double y = cv.getView().getTranslateY() / this.sceneHeight.doubleValue();
 		double r = cv.getView().getRotate();
 
-		
 		cv.getConcept().setPosition(x, y, r);
-	}
-
-	private void prepareConceptBuilder(User user) {
-
-		conceptViewBuilder.withMovedListener(this).withMovingListener(this).withDeletedListener(this);
-
-		InputViewController usersController = null;
-
-		for (InputViewController l : inputControllers) {
-			conceptViewBuilder.withEditRequestedListener(l);
-			conceptViewBuilder.withDeletedListener(l);
-			if (l.getUser().equals(user))
-				usersController = l;
-		}
-
-		conceptViewBuilder.withConceptEmptyListener(usersController);
-
 	}
 
 	public void setConceptViewBuilder(ConceptViewBuilder builder) {
@@ -293,7 +276,12 @@ public class ConceptMapViewController implements NewLinkListener, NewConceptList
 					Concept c = conceptMap.getConcept(j);
 
 					conceptViewBuilder.forConcept(c);
-					prepareConceptBuilder(c.getOwner());
+
+					InputViewController ownerController = inputControllers.stream()
+							.filter((in) -> in.getUser().equals(c.getOwner())).findFirst().get();
+
+					conceptViewBuilder.withConceptEmptyListener(ownerController);
+
 					ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(this.conceptMapPane);
 					this.userToConceptViewControllers.get(c.getOwner()).add(cv);
 					tempList.add(cv);

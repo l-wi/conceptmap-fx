@@ -1,6 +1,8 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
@@ -26,6 +28,15 @@ public class ConceptViewBuilder {
 
 	private ConceptFactory factory;
 
+
+	private List<ConceptDeletedListener> deletedListeners = new ArrayList<>();
+
+	private List<ConceptMovingListener> movingListeners = new ArrayList<>();
+
+	private List<ConceptMovedListener> movedListeners = new ArrayList<>();
+
+	private List<ConceptEditRequestedListener> editListeners = new ArrayList<>();
+
 	public ConceptViewBuilder(ConceptMap map, ConceptFactory factory) {
 
 		reset(map, factory);
@@ -45,9 +56,9 @@ public class ConceptViewBuilder {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public ConceptViewBuilder withMap(ConceptMap map){
-		reset(map,this.factory);
+
+	public ConceptViewBuilder withMap(ConceptMap map) {
+		reset(map, this.factory);
 		return this;
 	}
 
@@ -60,10 +71,12 @@ public class ConceptViewBuilder {
 
 		moveConceptToRightPosition(positionOver, conceptViewPane);
 
+		addListenersToController();
+
 		requestInput(controller);
 
 		ConceptViewController result = controller;
-		
+
 		reset(map, factory);
 
 		return result;
@@ -73,13 +86,14 @@ public class ConceptViewBuilder {
 
 		conceptMapPane.add(conceptViewPane);
 
+		addListenersToController();
+
 		requestInput(controller);
-		
+
 		ConceptViewController result = controller;
 
 		reset(map, factory);
 
-		
 		return result;
 
 	}
@@ -92,16 +106,6 @@ public class ConceptViewBuilder {
 	public ConceptViewBuilder withNewConcept(User u) {
 		Concept c = initConcept(u);
 		return forConcept(c);
-	}
-
-	public ConceptViewBuilder withEditRequestedListener(ConceptEditRequestedListener l) {
-		controller.addConceptEditRequestedListener(l);
-		return this;
-	}
-
-	public ConceptViewBuilder withMovedListener(ConceptMovedListener l) {
-		controller.addConceptMovedListener(l);
-		return this;
 	}
 
 	private Concept initConcept(User u) {
@@ -143,18 +147,35 @@ public class ConceptViewBuilder {
 
 	}
 
+	public void addListenersToController() {
+		editListeners.forEach((l) -> controller.addConceptEditRequestedListener(l));
+		movedListeners.forEach((l) -> controller.addConceptMovedListener(l));
+		movingListeners.forEach((l) -> controller.addConceptMovingListener(l));
+		deletedListeners.forEach((l) -> controller.addConceptDeletedListener(l));
+	}
+
+	public ConceptViewBuilder withEditRequestedListener(ConceptEditRequestedListener l) {
+		editListeners.add(l);
+		return this;
+	}
+
+	public ConceptViewBuilder withMovedListener(ConceptMovedListener l) {
+		movedListeners.add(l);
+		return this;
+	}
+
 	public ConceptViewBuilder withMovingListener(ConceptMovingListener l) {
-		controller.addConceptMovingListener(l);
+		movingListeners.add(l);
 		return this;
 	}
 
 	public ConceptViewBuilder withDeletedListener(ConceptDeletedListener l) {
-		controller.addConceptDeletedListener(l);
+		deletedListeners.add(l);
 		return this;
 	}
 
-	public ConceptViewBuilder withConceptEmptyListener(ConceptContentChangeListener usersController) {
-		controller.addConceptEmptyListener(usersController);
+	public ConceptViewBuilder withConceptEmptyListener(ConceptContentChangeListener l) {
+		controller.addConceptEmptyListener(l);
 		return this;
 
 	}

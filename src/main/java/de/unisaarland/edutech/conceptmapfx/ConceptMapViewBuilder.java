@@ -26,6 +26,7 @@ public class ConceptMapViewBuilder {
 
 	private Scene scene;
 	private ConceptMap conceptMap;
+	private ConceptViewBuilder conceptViewBuilder;
 
 	public ConceptMapViewBuilder() {
 		try {
@@ -83,7 +84,10 @@ public class ConceptMapViewBuilder {
 	}
 
 	public ConceptMapViewBuilder withConceptViewBuilder(ConceptViewBuilder builder) {
+		this.conceptViewBuilder = builder;
+		builder.withMovedListener(controller).withMovingListener(controller).withDeletedListener(controller);
 		controller.setConceptViewBuilder(builder);
+
 		return this;
 	}
 
@@ -162,6 +166,9 @@ public class ConceptMapViewBuilder {
 		conceptMapView.add(inputView);
 		inputController.addNewConceptListener(controller);
 		controller.addInputViewController(inputController);
+
+		conceptViewBuilder.withEditRequestedListener(inputController);
+		conceptViewBuilder.withDeletedListener(inputController);
 		return inputView;
 	}
 
