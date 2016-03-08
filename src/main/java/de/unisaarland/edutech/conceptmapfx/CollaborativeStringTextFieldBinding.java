@@ -9,7 +9,7 @@ public class CollaborativeStringTextFieldBinding {
 	private StringProperty caption;
 	private CollaborativeString collaborativeString;
 
-	public CollaborativeStringTextFieldBinding(CollaborativeString string, StringProperty caption) {
+	private CollaborativeStringTextFieldBinding(CollaborativeString string, StringProperty caption) {
 		this.caption = caption;
 		this.collaborativeString = string;
 		this.caption.set(collaborativeString.getContent());
@@ -29,6 +29,10 @@ public class CollaborativeStringTextFieldBinding {
 
 	private void update() {
 		caption.set(collaborativeString.getContent());
+	}
+
+	public static CollaborativeStringTextFieldBinding createBinding(CollaborativeString source, StringProperty dest) {
+		return new CollaborativeStringTextFieldBinding(source, dest);
 	}
 
 }

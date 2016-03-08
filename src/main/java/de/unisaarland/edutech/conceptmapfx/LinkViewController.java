@@ -61,7 +61,8 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 	private double rotateTreshold = 0;
 
-	public LinkViewController(List<User> participants, ConceptMapView cmv, ConceptViewController cv1, ConceptViewController cv2) {
+	public LinkViewController(List<User> participants, ConceptMapView cmv, ConceptViewController cv1,
+			ConceptViewController cv2) {
 
 		this.cmv = cmv;
 		this.cv1 = cv1;
@@ -135,7 +136,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		int aStartIndex = workingCollection.indexOf(aStart);
 		int end = workingCollection.size();
-	
+
 		Collections.rotate(workingCollection.subList(aStartIndex, end), -1);
 		cmv.getChildren().setAll(workingCollection);
 
@@ -143,12 +144,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 		Collections.rotate(workingCollection.subList(aEndIndex, end), -1);
 		cmv.getChildren().setAll(workingCollection);
-		
+
 	}
 
-
-
-	
 	private void onRotate(Double rotate) {
 		rotateTreshold += rotate;
 		if (Math.abs(rotateTreshold) < 70)
@@ -172,7 +170,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 			this.linkCaption = loader.load();
 
-			this.editable = new CollaborativeStringTextFieldBinding(this.link.getCaption(),
+			this.editable = CollaborativeStringTextFieldBinding.createBinding(this.link.getCaption(),
 					this.linkCaption.textProperty());
 
 			linkCaption.setTopToggleText(participants.get(0).getName());

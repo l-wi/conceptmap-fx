@@ -88,7 +88,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.setOnMoved(() -> this.fireConceptMoved());
 
 		conceptCaption.setOnDoubleTapped(() -> fireConceptDeleted(getActiveUser()));
-		
+
 		conceptCaption.textProperty().addListener((c, o, n) ->
 
 		{
@@ -191,7 +191,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
-		this.colBinding = new CollaborativeStringTextFieldBinding(concept.getName(), conceptCaption.textProperty());
+		this.colBinding = CollaborativeStringTextFieldBinding.createBinding(concept.getName(),
+				conceptCaption.textProperty());
 
 		int index = participants.indexOf(concept.getOwner());
 		String result = getCSSClassForIndex(index);
@@ -221,7 +222,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
-		
+
 		conceptCaption.selectionChangedProperty().addListener((l, o, n) -> {
 			if (n.isSelected) {
 				this.fireEditRequested(participants.get(n.index));
