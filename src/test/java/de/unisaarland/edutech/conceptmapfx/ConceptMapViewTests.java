@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
+import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.AnchorAlteredListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;

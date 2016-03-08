@@ -2,9 +2,9 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 <?import java.net.*?>
-<?import  de.unisaarland.edutech.conceptmapfx.ConceptMapView ?>
+<?import  de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView ?>
 
-<ConceptMapView styleClass="root" fx:id="conceptMapPane" fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptMapViewController" xmlns:fx="http://javafx.com/fxml/1">
+<ConceptMapView styleClass="root" fx:id="conceptMapPane" fx:controller="de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewController" xmlns:fx="http://javafx.com/fxml/1">
 	<!-- TODO Add Nodes -->
 	
 	

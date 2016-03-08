@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.conceptmap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +7,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.ConceptViewBuilder;
+import de.unisaarland.edutech.conceptmapfx.ConceptViewController;
+import de.unisaarland.edutech.conceptmapfx.InputViewController;
+import de.unisaarland.edutech.conceptmapfx.LinkViewBuilder;
+import de.unisaarland.edutech.conceptmapfx.LinkViewController;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;

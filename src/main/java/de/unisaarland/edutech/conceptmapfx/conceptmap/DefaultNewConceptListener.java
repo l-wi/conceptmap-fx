@@ -1,5 +1,8 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.conceptmap;
 
+import de.unisaarland.edutech.conceptmapfx.ConceptViewBuilder;
+import de.unisaarland.edutech.conceptmapfx.ConceptViewController;
+import de.unisaarland.edutech.conceptmapfx.InputViewController;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
 import de.unisaarland.edutech.conceptmapping.User;
 

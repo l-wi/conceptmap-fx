@@ -1,9 +1,14 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.conceptmap;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import de.unisaarland.edutech.conceptmapfx.ConceptViewBuilder;
+import de.unisaarland.edutech.conceptmapfx.InputViewController;
+import de.unisaarland.edutech.conceptmapfx.Main;
+import de.unisaarland.edutech.conceptmapfx.SessionSaver;
+import de.unisaarland.edutech.conceptmapfx.UndoHistory;
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.observablemap.Observable;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableCollaborativeString;

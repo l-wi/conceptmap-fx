@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
+import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
