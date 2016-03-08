@@ -200,7 +200,8 @@ public class LowLevelInteractionListener {
 			initiateSingeClickEvent(delta, state);
 		}
 
-		this.moved();
+		if(state == State.MOVING)
+			this.moved();
 
 	}
 
@@ -235,6 +236,7 @@ public class LowLevelInteractionListener {
 	}
 
 	private void moved() {
+		fourUserTouchEditable.toUnselectedState();
 		if (movedFunction != null)
 			movedFunction.apply();
 	}
