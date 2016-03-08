@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.beans.property.SimpleStringProperty;

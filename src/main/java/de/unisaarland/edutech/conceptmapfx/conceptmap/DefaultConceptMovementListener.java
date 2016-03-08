@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.ScaleTransition;
 import javafx.util.Duration;

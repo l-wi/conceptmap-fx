@@ -2,9 +2,9 @@ package de.unisaarland.edutech.conceptmapfx.conceptmap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;

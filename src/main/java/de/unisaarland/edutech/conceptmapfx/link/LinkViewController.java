@@ -8,8 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.CollaborativeStringTextFieldBinding;
-import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.AnchorAlteredListener;
@@ -18,6 +16,8 @@ import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener.Direction;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;

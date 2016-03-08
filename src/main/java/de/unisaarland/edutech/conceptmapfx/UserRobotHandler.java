@@ -2,6 +2,7 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import org.comtel2000.keyboard.robot.IRobot;
 
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
 import de.unisaarland.edutech.conceptmapping.User;
 
 public class UserRobotHandler implements IRobot {

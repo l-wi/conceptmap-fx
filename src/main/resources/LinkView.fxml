@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Label?>
-<?import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable?>
+<?import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable?>
 
 <FourUserTouchEditable xmlns:fx="http://javafx.com/fxml/1"
 	stylesheets="@/css/link.css" styleClass="link" id="linkCaption">

@@ -6,14 +6,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.CollaborativeStringTextFieldBinding;
-import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXML;

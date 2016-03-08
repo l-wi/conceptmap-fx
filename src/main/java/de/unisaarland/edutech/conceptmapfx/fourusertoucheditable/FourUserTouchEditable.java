@@ -1,12 +1,12 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.fourusertoucheditable;
 
 import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.OnMovingInterface;
-import de.unisaarland.edutech.conceptmapfx.LowLevelInteractionListener.VoidFunction;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.LowLevelInteractionListener.OnMovingInterface;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.LowLevelInteractionListener.VoidFunction;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;

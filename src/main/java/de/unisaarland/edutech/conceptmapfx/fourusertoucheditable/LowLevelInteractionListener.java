@@ -1,9 +1,9 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.fourusertoucheditable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable.State;
 import javafx.animation.Animation.Status;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;

@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.fourusertoucheditable;
 
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.User;
