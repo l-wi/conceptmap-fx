@@ -62,7 +62,7 @@ public class ExperimentCreateController {
 			FocusQuestion q = updateQuestionList(currentQuestion);
 
 			rewriteQuestionList();
-
+		
 			next.accept(new Experiment(researcher, q));
 
 		});
@@ -106,6 +106,7 @@ public class ExperimentCreateController {
 	}
 
 	private void initCmbFocusQuestion() {
+		
 		List<String> questionStrings = available.stream().map((f) -> f.getQuestion()).collect(Collectors.toList());
 		cmbFocusQuestion.getItems().addAll(questionStrings);
 		cmbFocusQuestion.getSelectionModel().select(0);
@@ -115,12 +116,15 @@ public class ExperimentCreateController {
 		});
 		cmbFocusQuestion.getEditor().textProperty().addListener((c, o, n) -> btnRun.setDisable(n.trim().isEmpty()));
 
+		cmbFocusQuestion.getSelectionModel().clearSelection();
+		cmbFocusQuestion.setFocusTraversable(false);
 	}
 
 	private void initKeyboard() {
 		keyboard.setKeyBoardStyle(getClass().getResource("/input.css").toString());
 		keyboard.setSpaceKeyMove(false);
 		keyboard.setLayerPath(new File("./keyboardLayout").toPath());
+
 		try {
 			keyboard.load();
 		} catch (Exception e) {
