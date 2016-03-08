@@ -3,8 +3,8 @@ package de.unisaarland.edutech.conceptmapfx.conceptmap;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.unisaarland.edutech.conceptmapfx.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.LinkViewController;
+import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;

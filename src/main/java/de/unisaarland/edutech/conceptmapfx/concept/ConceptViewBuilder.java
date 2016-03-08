@@ -1,9 +1,10 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.concept;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.unisaarland.edutech.conceptmapfx.InputViewController;
 import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;

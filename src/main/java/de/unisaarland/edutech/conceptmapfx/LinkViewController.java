@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.AnchorAlteredListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;

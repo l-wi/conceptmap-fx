@@ -10,7 +10,7 @@
 <?import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable?>
 
 <FourUserTouchEditable 
-	fx:controller="de.unisaarland.edutech.conceptmapfx.ConceptViewController"
+	fx:controller="de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController"
 	xmlns:fx="http://javafx.com/fxml/1" fx:id="conceptCaption"
 	rotationStrokeSize="5" 	stylesheets="@/css/concept.css, @/css/user.css" styleClass="concept" id="conceptCaption"
 >

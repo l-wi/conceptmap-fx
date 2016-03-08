@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable.State;
+import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
