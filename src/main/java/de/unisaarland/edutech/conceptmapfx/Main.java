@@ -129,14 +129,14 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-	// TODO Frontend ( Show Focus Question shortly in BIG)
-	// TODO close keyboard and undo causes somehow bug !
+
 	// TODO test the damn thing to death
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO parallel keyboard input (Bug?)
 	// TODO Rotate Translate Group
-
+	// TODO Frontend ( Show Focus Question shortly in BIG)
+	
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
 

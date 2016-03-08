@@ -7,7 +7,6 @@ import java.util.Stack;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ConceptMapObserver;
 import de.unisaarland.edutech.conceptmapfx.observablemap.Observable;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
-import javafx.application.Platform;
 import javafx.scene.control.Button;
 
 public class UndoHistory implements ConceptMapObserver, Observable {
@@ -36,7 +35,9 @@ public class UndoHistory implements ConceptMapObserver, Observable {
 	}
 
 	private void updateButtonStates() {
-		btnUndos.forEach((b) -> b.setDisable(states.isEmpty()));
+		btnUndos.forEach((b) -> {
+			b.setDisable(states.isEmpty());
+		});
 	}
 
 	@Override
@@ -53,23 +54,21 @@ public class UndoHistory implements ConceptMapObserver, Observable {
 	}
 
 	public void undo() {
-		Platform.runLater(() -> {
-			isRestoringState = true;
-			if (states.isEmpty())
-				return;
+		isRestoringState = true;
+		if (states.isEmpty())
+			return;
 
-			listeners.forEach((l) -> l.beforeChange());
+		listeners.forEach((l) -> l.beforeChange());
 
-			conceptMap = states.pop();
-			controller.setConceptMap(conceptMap);
-			controller.layout();
+		conceptMap = states.pop();
+		controller.setConceptMap(conceptMap);
+		controller.layout();
 
-			updateButtonStates();
+		updateButtonStates();
 
-			listeners.forEach((l) -> l.afterChange());
+		listeners.forEach((l) -> l.afterChange());
 
-			isRestoringState = false;
-		});
+		isRestoringState = false;
 	}
 
 	public boolean isEmpty() {

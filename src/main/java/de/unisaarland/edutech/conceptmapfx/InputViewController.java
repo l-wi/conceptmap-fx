@@ -102,16 +102,17 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	public void onCloseAction() {
 
+		hideInput();
+
+		releaseInput();
+	}
+
+	private void hideInput() {
 		Set<Node> toHide = inputControls.lookupAll(".hideable");
 
 		for (Node n : toHide) {
-			FadeTransition ft = new FadeTransition(Duration.millis(300), n);
-			ft.setFromValue(1.0);
-			ft.setToValue(0.0);
-			ft.play();
+			n.setVisible(false);
 		}
-
-		releaseInput();
 	}
 
 	@FXML
@@ -176,12 +177,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private void unhideInputControl(Set<Node> hiddenNodes) {
 		for (Node n : hiddenNodes) {
-			if (n.getOpacity() == 0) {
-				FadeTransition ft = new FadeTransition(Duration.millis(300), n);
-				ft.setFromValue(0.0);
-				ft.setToValue(1.0);
-				ft.play();
-			}
+			n.setVisible(true);
 		}
 	}
 
