@@ -133,53 +133,75 @@ public class ConceptMapViewController implements LinkDeletedListener, LinkDirect
 
 	private void loadMap() {
 
-		boolean first = true;
-		ArrayList<ConceptViewController> tempList = new ArrayList<ConceptViewController>();
+		boolean isConceptCreationPhase = true;
+		ArrayList<ConceptViewController> existingConceptViewAccumulator = new ArrayList<ConceptViewController>();
 
-		for (int i = 0; i < conceptMap.getConceptCount(); i++) {
+		int conceptCount = conceptMap.getConceptCount();
 
-			for (int j = 0; j < conceptMap.getConceptCount(); j++) {
-				if (first) {
-					Concept c = conceptMap.getConcept(j);
+		for (int i = 0; i < conceptCount; i++) {
+			for (int j = 0; j < conceptCount; j++) {
 
-					conceptViewBuilder.forConcept(c);
+				if (isConceptCreationPhase)
+					loadConceptView(existingConceptViewAccumulator, j);
 
-					InputViewController ownerController = inputControllers.stream()
-							.filter((in) -> in.getUser().equals(c.getOwner())).findFirst().get();
+				Direction linkDirection = null;
 
-					conceptViewBuilder.withConceptEmptyListener(ownerController);
+				if (conceptMap.isLinkedDirectedStartToEnd(i, j))
+					linkDirection = Direction.START_TO_END;
+				else if (conceptMap.isLinkedUndirected(i, j) && i < j)
+					linkDirection = Direction.NOT_DIRECTED;
 
-					ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(this.conceptMapPane);
-					this.conceptControllers.add(cv);
-					tempList.add(cv);
-				}
-
-				LinkViewController lvc = null;
-				LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, tempList.get(i),
-						tempList.get(j));
-				builder.withDirectionListener(this).withDeletedListener(this);
-
-				inputControllers.forEach((l) -> {
-					builder.withEditListener(l);
-					builder.withDeletedListener(l);
-				});
-
-				if (conceptMap.isLinkedDirectedStartToEnd(i, j)) {
-					lvc = builder.withLink(conceptMap.getLink(i, j)).buildWithDirectionAndAdd(Direction.START_TO_END);
-
-				} else if (conceptMap.isLinkedUndirected(i, j) && i < j) {
-					lvc = builder.withLink(conceptMap.getLink(i, j)).buildWithDirectionAndAdd(Direction.NOT_DIRECTED);
-				}
-
-				if (lvc != null) {
+				if (linkDirection != null) {
+					LinkViewBuilder builder = prepareLinkViewBuilder(existingConceptViewAccumulator, i, j);
+					LinkViewController lvc = builder.buildWithDirectionAndAdd(linkDirection);
 					linkControllers.add(lvc);
 				}
-
 			}
 
-			first = false;
+			isConceptCreationPhase = false;
 		}
 
+	}
+
+	private void loadConceptView(ArrayList<ConceptViewController> existingConcepts, int j) {
+		Concept c = conceptMap.getConcept(j);
+		ConceptViewController cv = createConceptView(c);
+		this.conceptControllers.add(cv);
+		existingConcepts.add(cv);
+	}
+
+	private LinkViewBuilder prepareLinkViewBuilder(ArrayList<ConceptViewController> existingConcepts, int i, int j) {
+		ConceptViewController conceptView1 = existingConcepts.get(i);
+		ConceptViewController conceptView2 = existingConcepts.get(j);
+
+		LinkViewBuilder builder = initLinkViewBuilderWithListeners(conceptView1, conceptView2);
+
+		builder.withLink(conceptMap.getLink(i, j));
+		return builder;
+	}
+
+	private LinkViewBuilder initLinkViewBuilderWithListeners(ConceptViewController conceptView1,
+			ConceptViewController conceptView2) {
+		LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, conceptView1, conceptView2);
+		builder.withDirectionListener(this).withDeletedListener(this);
+
+		inputControllers.forEach((l) -> {
+			builder.withEditListener(l);
+			builder.withDeletedListener(l);
+		});
+		return builder;
+	}
+
+	private ConceptViewController createConceptView(Concept c) {
+		conceptViewBuilder.forConcept(c);
+
+		InputViewController ownerController = inputControllers.stream()
+				.filter((in) -> in.getUser().equals(c.getOwner())).findFirst().get();
+
+		conceptViewBuilder.withConceptEmptyListener(ownerController);
+
+		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(this.conceptMapPane);
+		return cv;
 	}
 
 	public void layout() {
