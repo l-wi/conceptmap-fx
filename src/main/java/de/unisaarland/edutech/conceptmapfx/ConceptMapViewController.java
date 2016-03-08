@@ -32,7 +32,6 @@ import javafx.util.Duration;
 public class ConceptMapViewController implements NewLinkListener, NewConceptListener, LinkDeletedListener,
 		ConceptDeletedListener, ConceptMovedListener, LinkDirectionUpdatedListener, ConceptMovingListener {
 
-	private static final String DROP_TARGET_STYLE = "dropTarget";
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
