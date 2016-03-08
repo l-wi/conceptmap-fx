@@ -86,8 +86,9 @@ public class ConceptMapViewBuilder {
 	public ConceptMapViewBuilder withConceptViewBuilder(ConceptViewBuilder builder) {
 		this.conceptViewBuilder = builder;
 		DefaultConceptDeletedListener conceptDeletedListener = new DefaultConceptDeletedListener(controller);
-
-		builder.withMovedListener(controller).withMovingListener(controller)
+		DefaultConceptMovementListener conceptMovementListener = new DefaultConceptMovementListener(controller);
+		
+		builder.withMovedListener(conceptMovementListener).withMovingListener(conceptMovementListener)
 				.withDeletedListener(conceptDeletedListener);
 		controller.setConceptViewBuilder(builder);
 

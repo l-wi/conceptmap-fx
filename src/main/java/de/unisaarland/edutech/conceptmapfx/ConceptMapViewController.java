@@ -1,35 +1,27 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
-import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
-import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDirectionUpdatedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.animation.ScaleTransition;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.util.Duration;
 
 //TODO Refactor: extract some listeners into separate classes
-public class ConceptMapViewController implements NewLinkListener, LinkDeletedListener, ConceptMovedListener,
-		LinkDirectionUpdatedListener, ConceptMovingListener {
+public class ConceptMapViewController implements NewLinkListener, LinkDeletedListener, LinkDirectionUpdatedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
@@ -47,8 +39,6 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 
 	private DoubleProperty sceneWidth = new SimpleDoubleProperty(0);
 	private DoubleProperty sceneHeight = new SimpleDoubleProperty(0);
-
-	private Map<ConceptViewController, List<ConceptViewController>> conceptToIntersectedConcepts = new HashMap<>();
 
 	private ConceptViewBuilder conceptViewBuilder;
 
@@ -190,10 +180,6 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 
 		conceptViewBuilder.withMap(conceptMap);
 
-		// for (User u : conceptMap.getExperiment().getParticipants())
-		// userToConceptViewControllers.put(u, new
-		// ArrayList<ConceptViewController>());
-
 		loadMap();
 
 	}
@@ -284,46 +270,8 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 		this.conceptMapPane.layout();
 	}
 
-	@Override
-	public void conceptMoved(ConceptViewController cv) {
-		List<ConceptViewController> intersections = findIntersections(cv);
-
-		FourUserTouchEditable view = cv.getView();
-
-		double x = (view.getOrigin().getX() / sceneWidth.doubleValue());
-		double y = (view.getOrigin().getY() / sceneHeight.doubleValue());
-		double r = view.getRotate();
-
-		cv.getConcept().setPosition(x, y, r);
-
-		for (ConceptViewController intersected : intersections) {
-			fireNewLinkListener(cv, intersected);
-		}
-
-		conceptToIntersectedConcepts.getOrDefault(cv, Collections.emptyList()).forEach((e) -> {
-			// e.getView().getStyleClass().remove(DROP_TARGET_STYLE);
-			scaleDown(e);
-		});
-
-		scaleDown(cv);
-
-		conceptToIntersectedConcepts.remove(cv);
-	}
-
-	private void fireNewLinkListener(ConceptViewController cv, ConceptViewController intersected) {
+	public void fireNewLinkListener(ConceptViewController cv, ConceptViewController intersected) {
 		newLinkListeners.forEach(l -> l.newLink(cv, intersected));
-	}
-
-	private List<ConceptViewController> findIntersections(ConceptViewController cv) {
-		List<ConceptViewController> result = new ArrayList<>();
-
-		for (ConceptViewController controller : conceptControllers) {
-			if (!cv.equals(controller) && cv.intersects(controller)) {
-				result.add(controller);
-			}
-
-		}
-		return result;
 	}
 
 	@Override
@@ -335,64 +283,6 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 			conceptMap.removeDirectedLink(lv.getStart(), lv.getEnd());
 		else
 			conceptMap.setDirectedRelationToUndirected(lv.getStart(), lv.getEnd());
-	}
-
-	@Override
-	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
-		List<ConceptViewController> intersectedCVs = findIntersections(cv);
-
-		removeHighlightingForLinking(cv, intersectedCVs);
-
-		addHighlightingForLinking(cv, intersectedCVs);
-
-	}
-
-	private void removeHighlightingForLinking(ConceptViewController cv, List<ConceptViewController> intersectedCVs) {
-
-		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv,
-				Collections.emptyList());
-
-		ArrayList<ConceptViewController> difference = new ArrayList<>(formerIntersected);
-		difference.removeAll(intersectedCVs);
-
-		difference.forEach((e) -> {
-			scaleDown(e);
-		});
-
-		if (intersectedCVs.size() == 0)
-			scaleDown(cv);
-
-	}
-
-	private void addHighlightingForLinking(ConceptViewController cv, List<ConceptViewController> intersectedCVs) {
-		List<ConceptViewController> formerIntersected = conceptToIntersectedConcepts.getOrDefault(cv,
-				Collections.emptyList());
-
-		ArrayList<ConceptViewController> difference = new ArrayList<>(intersectedCVs);
-		difference.removeAll(formerIntersected);
-
-		difference.forEach((e) -> {
-			scaleUp(e);
-		});
-
-		if (intersectedCVs.size() > 0)
-			scaleUp(cv);
-
-		conceptToIntersectedConcepts.put(cv, intersectedCVs);
-	}
-
-	private void scaleUp(ConceptViewController e) {
-		ScaleTransition st = new ScaleTransition(Duration.millis(300), e.getView());
-		st.setToX(1.2);
-		st.setToY(1.2);
-		st.play();
-	}
-
-	private void scaleDown(ConceptViewController e) {
-		ScaleTransition st = new ScaleTransition(Duration.millis(300), e.getView());
-		st.setToX(1);
-		st.setToY(1);
-		st.play();
 	}
 
 	public DoubleProperty getWidth() {
