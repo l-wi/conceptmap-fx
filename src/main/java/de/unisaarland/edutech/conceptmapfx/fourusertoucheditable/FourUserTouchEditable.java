@@ -519,7 +519,7 @@ public class FourUserTouchEditable extends BorderPane {
 		return selectionChangedProperty;
 	}
 
-	private String getCSSClassForIndex(int index) {
+	public String getCSSClassForIndex(int index) {
 		String result = "belongsTo";
 
 		switch (index) {

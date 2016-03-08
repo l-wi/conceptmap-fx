@@ -197,30 +197,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 				conceptCaption.textProperty());
 
 		int index = participants.indexOf(concept.getOwner());
-		String result = getCSSClassForIndex(index);
+		String result = conceptCaption.getCSSClassForIndex(index);
 
 		this.getView().lookup("#captionPane").getStyleClass().add(result);
 	}
 
-	private String getCSSClassForIndex(int index) {
-		String result = "belongsTo";
 
-		switch (index) {
-		case 0:
-			result += "Top";
-			break;
-		case 1:
-			result += "Left";
-			break;
-		case 2:
-			result += "Bottom";
-			break;
-		case 3:
-			result += "Right";
-			break;
-		}
-		return result;
-	}
 
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;

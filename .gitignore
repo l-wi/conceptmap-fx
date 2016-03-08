@@ -10,3 +10,4 @@ buildNumber.properties
 .class
 
 /session/[0-9]*
+/reports/
