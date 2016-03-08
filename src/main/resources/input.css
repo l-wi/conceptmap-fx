@@ -85,7 +85,7 @@
 	-fx-background-radius: 30 30 0 0;
 	-fx-background-color: #3c4250;
 	-fx-text-fill: white;
-	-fx-background-image: url("close.png");
+	-fx-background-image: url("gfx/close.png");
 	-fx-background-repeat: stretch;
 	-fx-background-size: 50 50;
 	-fx-background-position: center center;
@@ -96,7 +96,7 @@
 	-fx-background-color: #3c4250;
 	-fx-border-width: 5 5 0 0;
 	-fx-border-color: #222222;
-	-fx-background-image: url("voiceWhite.png");
+	-fx-background-image: url("gfx/voiceWhite.png");
 	-fx-background-repeat: stretch;
 	-fx-background-size: 30 30;
 	-fx-background-position: center center;
