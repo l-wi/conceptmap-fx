@@ -30,7 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
-public class ConceptMapViewTests extends ApplicationTest {
+public class ConceptMapViewControllerTests extends ApplicationTest {
 
 	private static final String THIRD_CONCEPT = "hamster";
 	private static final String FIRST_CONCEPT = "Dog";
