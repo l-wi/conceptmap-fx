@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.link;
 
 import de.unisaarland.edutech.conceptmapfx.event.AnchorAlteredListener;
 import javafx.event.EventHandler;

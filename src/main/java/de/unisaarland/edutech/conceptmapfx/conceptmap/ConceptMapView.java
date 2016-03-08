@@ -1,7 +1,7 @@
 package de.unisaarland.edutech.conceptmapfx.conceptmap;
 
-import de.unisaarland.edutech.conceptmapfx.AnchorView;
 import de.unisaarland.edutech.conceptmapfx.FourUserTouchEditable;
+import de.unisaarland.edutech.conceptmapfx.link.AnchorView;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;

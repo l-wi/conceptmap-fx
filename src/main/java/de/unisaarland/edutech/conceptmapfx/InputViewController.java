@@ -20,6 +20,7 @@ import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
+import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.collections.ObservableList;

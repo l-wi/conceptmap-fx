@@ -1,6 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx.event;
 
-import de.unisaarland.edutech.conceptmapfx.AnchorView;
+import de.unisaarland.edutech.conceptmapfx.link.AnchorView;
 
 public interface AnchorAlteredListener {
 

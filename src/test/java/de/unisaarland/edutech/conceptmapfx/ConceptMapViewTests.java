@@ -10,6 +10,7 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.AnchorAlteredListener;
+import de.unisaarland.edutech.conceptmapfx.link.AnchorView;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
