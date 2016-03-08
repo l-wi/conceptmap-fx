@@ -1,6 +1,7 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,11 +18,10 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 
 //TODO Refactor: extract some listeners into separate classes
-public class ConceptMapViewController implements NewLinkListener, LinkDeletedListener, LinkDirectionUpdatedListener {
+public class ConceptMapViewController implements LinkDeletedListener, LinkDirectionUpdatedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
 
@@ -80,75 +80,7 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 		this.conceptViewBuilder = builder;
 	}
 
-	public void newLink(ConceptViewController cv1, ConceptViewController cv2) {
-		moveToFreeSpot(cv1, cv2);
-
-		if (conceptMap.isAnyLinkExisting(cv1.getConcept(), cv2.getConcept())) {
-			LOG.warn("there is already a link between:" + cv1.getConcept() + " and " + cv2.getConcept());
-			return;
-		}
-
-		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
-				+ cv2.getConcept().getName().getContent());
-
-		LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, cv1, cv2);
-		builder.withDirectionListener(this).forNewLink().withDeletedListener(this);
-		inputControllers.forEach((l) -> {
-			builder.withEditListener(l);
-			builder.withDeletedListener(l);
-		});
-		LinkViewController lvc = builder.buildUndirectedAndAdd();
-		linkControllers.add(lvc);
-
-	}
-
-	private void moveToFreeSpot(ConceptViewController cvToMove, ConceptViewController cvResting) {
-		FourUserTouchEditable viewToMove = cvToMove.getView();
-		double widthToMove = viewToMove.getWidth();
-		double heightToMove = viewToMove.getHeight();
-		double xToMove = viewToMove.getLayoutX() + viewToMove.getTranslateX() + widthToMove / 2;
-		double yToMove = viewToMove.getLayoutY() + viewToMove.getTranslateY() + heightToMove / 2;
-		Point2D pMove = new Point2D(xToMove, yToMove);
-
-		FourUserTouchEditable viewResting = cvResting.getView();
-		double widthResting = viewResting.getWidth();
-		double heightResting = viewResting.getHeight();
-		double xResting = viewResting.getLayoutX() + viewResting.getTranslateX() + widthResting / 2;
-		double yResting = viewResting.getLayoutY() + viewResting.getTranslateY() + heightResting / 2;
-
-		Point2D pResting = new Point2D(xResting, yResting);
-
-		Point2D pDelta = pMove.subtract(pResting).normalize();
-
-		double translateX = viewToMove.getTranslateX();
-		double translateY = viewToMove.getTranslateY();
-
-		for (double r = heightResting; r < 20 * heightResting; r++) {
-			for (double i = 0; i < 300; i++) {
-
-				double angle = 2 * Math.PI * i / 300;
-
-				double x = pDelta.getX() * Math.cos(angle) - pDelta.getY() * Math.sin(angle);
-				double y = pDelta.getX() * Math.sin(angle) + pDelta.getY() * Math.cos(angle);
-
-				x = x * r;
-				y = y * r;
-
-				viewToMove.setTranslateX(translateX + x);
-				viewToMove.setTranslateY(translateY + y);
-
-				if (!hasIntersections(viewToMove)) {
-					linkControllers.forEach((l) -> l.layout());
-					return;
-				}
-
-			}
-		}
-
-		LOG.warn("found no non-overlaping spot for node!");
-	}
-
-	private boolean hasIntersections(Node conceptView) {
+	public boolean hasIntersections(Node conceptView) {
 
 		Bounds bounds = conceptView.getBoundsInParent();
 
@@ -310,10 +242,18 @@ public class ConceptMapViewController implements NewLinkListener, LinkDeletedLis
 	}
 
 	public List<LinkViewController> getLinkControllers() {
-		return linkControllers;
+		return Collections.unmodifiableList(linkControllers);
 	}
 
 	public List<ConceptViewController> getConceptViewControllers() {
-		return conceptControllers;
+		return Collections.unmodifiableList(conceptControllers);
+	}
+
+	public List<InputViewController> getInputControllers() {
+		return Collections.unmodifiableList(inputControllers);
+	}
+
+	public void addLinkController(LinkViewController lvc) {
+		this.linkControllers.add(lvc);
 	}
 }

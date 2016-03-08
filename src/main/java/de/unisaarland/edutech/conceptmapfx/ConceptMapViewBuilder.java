@@ -35,7 +35,9 @@ public class ConceptMapViewBuilder {
 			conceptMapView = conceptMapLoader.load();
 			controller = conceptMapLoader.getController();
 			scene = new Scene(conceptMapView);
-			controller.addNewLinkListener(controller);
+			DefaultNewLinkListener newLinkListener = new DefaultNewLinkListener(controller);
+
+			controller.addNewLinkListener(newLinkListener);
 
 			controller.sceneWidthProperty().bind(scene.widthProperty());
 			controller.sceneHeightProperty().bind(scene.heightProperty());
@@ -87,7 +89,7 @@ public class ConceptMapViewBuilder {
 		this.conceptViewBuilder = builder;
 		DefaultConceptDeletedListener conceptDeletedListener = new DefaultConceptDeletedListener(controller);
 		DefaultConceptMovementListener conceptMovementListener = new DefaultConceptMovementListener(controller);
-		
+
 		builder.withMovedListener(conceptMovementListener).withMovingListener(conceptMovementListener)
 				.withDeletedListener(conceptDeletedListener);
 		controller.setConceptViewBuilder(builder);
