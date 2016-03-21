@@ -117,7 +117,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			}
 		});
 
-		linkCaption.setPrefHeight(20);
+//		linkCaption.setPrefHeight(20);
 		linkingPath.setCache(true);
 
 		layout();
@@ -177,11 +177,6 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 
 			this.editable = CollaborativeStringTextFieldBinding.createBinding(this.link.getCaption(),
 					this.linkCaption.textProperty());
-
-			linkCaption.setTopToggleText(participants.get(0).getName());
-			linkCaption.setLeftToggleText(participants.get(1).getName());
-			linkCaption.setBottomToggleText(participants.get(2).getName());
-			linkCaption.setRightToggleText(participants.get(3).getName());
 
 			linkCaption.selectionChangedProperty().addListener((l, o, n) -> {
 				if (n.isSelected)

@@ -133,7 +133,7 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-
+	// TODO add @ on keyboard for email
 	// TODO test the damn thing to death
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
