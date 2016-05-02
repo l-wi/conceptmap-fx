@@ -134,10 +134,10 @@ public class Main extends Application {
 	}
 
 	// TODO add @ on keyboard for email
+	// TODO keyboard feedback / longpress when moving
 	// TODO test the damn thing to death
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
-	// TODO parallel keyboard input (Bug?)
 	// TODO Rotate Translate Group
 	// TODO Frontend ( Show Focus Question shortly in BIG)
 	

@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.comtel2000.keyboard.control.KeyButton;
 import org.comtel2000.keyboard.control.KeyboardPane;
+import org.comtel2000.keyboard.control.KeyboardType;
+import org.comtel2000.keyboard.event.KeyButtonEvent;
 import org.comtel2000.keyboard.robot.IRobot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -84,6 +88,19 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			keyboard.setLayerPath(new File("./keyboardLayout").toPath());
 			keyboard.load();
 
+		
+			
+			/*
+			 * FIXME: Workaround to allow multitouch input while moving an
+			 * element: - this only works for short press events, it does not
+			 * work for long press (e.g. Ä)
+			 */
+			addTouchListenerToKeyboard();
+			keyboard.setKeyboardType(KeyboardType.TEXT_SHIFT);
+			addTouchListenerToKeyboard();
+			keyboard.setKeyboardType(KeyboardType.TEXT);
+			
+
 			// remove the default handler
 			IRobot defaultHandler = keyboard.getRobotHandler().get(0);
 			keyboard.removeRobotHandler(defaultHandler);
@@ -98,6 +115,18 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			LOG.error("Program cannot run!", e);
 			throw new RuntimeException("Program cannot run!", e);
 		}
+	}
+
+	private void addTouchListenerToKeyboard() {
+		Set<Node> keys = keyboard.lookupAll(".key-button");
+
+		keys.forEach(n -> {
+			KeyButton key = (KeyButton) n;
+			key.setOnTouchPressed(e -> {
+				if (e.getTouchCount() > 1)
+					key.fireEvent(new KeyButtonEvent(KeyButtonEvent.SHORT_PRESSED));
+			});
+		});
 	}
 
 	@FXML
