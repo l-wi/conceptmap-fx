@@ -13,21 +13,28 @@ import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
 public class LowLevelInteractionListener {
+
+	private static final int ROTATE_DINSTANCE_TO_NODES_CENTER = 100;
 
 	private static final int DOUBLE_CLICK_PENDING_TIME = 200;
 
 	private static final int ENTER_ROTATE_STATE_TIME = 1500;
 
-	private static final int JITTER_THRESHOLD = 10;
+	private static final int JITTER_THRESHOLD = 30;
 
 	private static final Logger LOG = LoggerFactory.getLogger(LowLevelInteractionListener.class);
 
 	private double dragX;
 
 	private double dragY;
+
+	private double rotateX;
+
+	private double rotateY;
 
 	private boolean isPressed;
 
@@ -64,6 +71,7 @@ public class LowLevelInteractionListener {
 		showRotateTransition.setOnFinished((l) -> {
 			fourUserTouchEditable.toRotateState();
 		});
+		
 	}
 
 	public void setOnMoved(VoidFunction moved) {
@@ -78,16 +86,16 @@ public class LowLevelInteractionListener {
 	public void onMousePressed(MouseEvent evt) {
 
 		if (!evt.isSynthesized())
-			onPressed(evt.getX(), evt.getY());
+			onPressed(evt.getX(), evt.getY(), false);
 	}
 
 	@FXML
 	public void onTouchPressed(TouchEvent evt) {
 
-		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY());
+		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY(), true);
 	}
 
-	private void onPressed(double x, double y) {
+	private void onPressed(double x, double y, boolean isTouch) {
 		touchEventsActive++;
 		if (touchEventsActive != 1)
 			return;
@@ -96,7 +104,8 @@ public class LowLevelInteractionListener {
 			return;
 		//
 
-		showRotateTransition.play();
+		if (!isTouch)
+			showRotateTransition.play();
 
 		clickInTime = System.currentTimeMillis();
 
@@ -123,7 +132,30 @@ public class LowLevelInteractionListener {
 
 	@FXML
 	public void onTouchRotate(RotateEvent e) {
+		Point2D outer = new Point2D(e.getSceneX(), e.getSceneY());
+		Point2D inner = fourUserTouchEditable.getCenterAsSceneCoordinates();
+
+		double d = inner.distance(outer);
+		if (d > ROTATE_DINSTANCE_TO_NODES_CENTER)
+			return;
+
+		fourUserTouchEditable.toRotateState();
+
 		onRotate(e.getAngle());
+
+		e.consume();
+	}
+
+	public void onRotationStarted(RotateEvent e) {
+
+		rotateY = e.getSceneY();
+		rotateX = e.getSceneX();
+		e.consume();
+	}
+
+	public void onRotationFinished(RotateEvent e) {
+		fourUserTouchEditable.toMovingState();
+		e.consume();
 	}
 
 	private void onRotate(double rotation) {
@@ -152,7 +184,7 @@ public class LowLevelInteractionListener {
 			return;
 
 		showRotateTransition.stop();
-		
+
 		if (showSelectedTransition != null)
 			showSelectedTransition.stop();
 
@@ -200,7 +232,7 @@ public class LowLevelInteractionListener {
 			initiateSingeClickEvent(delta, state);
 		}
 
-		if(state == State.MOVING)
+		if (state == State.MOVING)
 			this.moved();
 
 	}
