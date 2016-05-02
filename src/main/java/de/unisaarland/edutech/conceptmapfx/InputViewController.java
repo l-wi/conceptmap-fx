@@ -90,8 +90,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			keyboard.setLayerPath(new File("./keyboardLayout").toPath());
 			keyboard.load();
 
-		
-			
 			/*
 			 * FIXME: Workaround to allow multitouch input while moving an
 			 * element: - this only works for short press events, it does not
@@ -101,7 +99,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			keyboard.setKeyboardType(KeyboardType.TEXT_SHIFT);
 			addTouchListenerToKeyboard();
 			keyboard.setKeyboardType(KeyboardType.TEXT);
-			
 
 			// remove the default handler
 			IRobot defaultHandler = keyboard.getRobotHandler().get(0);
@@ -139,6 +136,12 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		releaseInput();
 	}
 
+	@FXML
+	public void onCloseTouchPressed(TouchEvent e) {
+		if (e.getTouchCount() > 1)
+			onCloseAction();
+	}
+
 	private void hideInput() {
 		Set<Node> toHide = inputControls.lookupAll(".hideable");
 
@@ -153,12 +156,12 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		emptyConceptCount++;
 		fireNew();
 	}
-	
+
 	@FXML
-	public void onNewTouchPressed(TouchEvent e){
-			if(e.getTouchCount() > 1)
-				onNewAction();
-			
+	public void onNewTouchPressed(TouchEvent e) {
+		if (e.getTouchCount() > 1)
+			onNewAction();
+
 	}
 
 	public void addNewConceptListener(NewConceptListener l) {

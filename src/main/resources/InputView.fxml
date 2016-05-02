@@ -24,7 +24,7 @@
 			<VBox fx:id="inputControls">
 				<children>
 					<HBox>
-						<Button styleClass="hideable" id="btnClose" fx:id="btnClose"
+						<Button styleClass="hideable" id="btnClose" fx:id="btnClose" onTouchPressed="#onCloseTouchPressed"
 							mnemonicParsing="false" onAction="#onCloseAction" prefHeight="80.0"
 							prefWidth="80.0" text="" />
 
