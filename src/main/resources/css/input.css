@@ -64,6 +64,13 @@
 	
 }
 
+.letter{
+	-fx-font-size:1.8em;
+	-fx-text-fill:white;
+	 -fx-stroke: black;
+    -fx-stroke-width: 3px;
+}
+
 #question{
 	-fx-font-size:1.1em;
 	-fx-text-fill:white;

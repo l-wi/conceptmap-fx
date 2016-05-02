@@ -213,6 +213,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 			}
 		});
+		
+		conceptCaption.setTopToggleText(String.valueOf(participants.get(0).getName().charAt(0)));
+		conceptCaption.setLeftToggleText(String.valueOf(participants.get(1).getName().charAt(0)));
+		conceptCaption.setBottomToggleText(String.valueOf(participants.get(2).getName().charAt(0)));
+		conceptCaption.setRightToggleText(String.valueOf(participants.get(3).getName().charAt(0)));
+
 
 	}
 

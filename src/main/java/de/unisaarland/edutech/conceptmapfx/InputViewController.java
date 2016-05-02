@@ -1,6 +1,5 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import java.awt.Event;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -35,9 +34,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -68,7 +67,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	private Label owner;
 	@FXML
-	private AnchorPane ownerIcon;
+	private Pane ownerIcon;
 	@FXML
 	private Label question;
 
@@ -286,6 +285,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private void adjustIcon() {
 		ObservableList<String> styleClasses = ownerIcon.getStyleClass();
+		
+		((Label) ownerIcon.lookup(".letter")).setText(user.getName().subSequence(0, 1).toString());
+		
 		String css = "background-";
 		switch (position) {
 		case BOTTOM:

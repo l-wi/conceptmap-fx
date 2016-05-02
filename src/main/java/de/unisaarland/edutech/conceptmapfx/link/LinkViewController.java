@@ -120,6 +120,12 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 //		linkCaption.setPrefHeight(20);
 		linkingPath.setCache(true);
 
+		linkCaption.setTopToggleText(String.valueOf(participants.get(0).getName().charAt(0)));
+		linkCaption.setLeftToggleText(String.valueOf(participants.get(1).getName().charAt(0)));
+		linkCaption.setBottomToggleText(String.valueOf(participants.get(2).getName().charAt(0)));
+		linkCaption.setRightToggleText(String.valueOf(participants.get(3).getName().charAt(0)));
+
+
 		layout();
 	}
 
