@@ -409,4 +409,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		else
 			return participants.get(index);
 	}
+	
+	public void rotateAbsolute(int r) {		
+	
+		this.linkCaption.setRotate(r);
+		
+	}
 }

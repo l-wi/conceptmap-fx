@@ -170,7 +170,6 @@ public class Main extends Application {
 	// TODO Export into CXL
 	// TODO import into CXL
 	// TODO test the damn thing to death
-	// TODO Rotate Translate Group
 	// TODO instruction component
 	// TODO awareness component
 	// TODO feedback when pressing buttons
@@ -180,6 +179,7 @@ public class Main extends Application {
 	// TODO Frontend ( Show Focus Question shortly in BIG)
 	// TODO keyboard feedback / longpress when moving
 	// TODO add @ on keyboard for email
+	// TODO talk button
 	// TODO moving the control elements (e.g. keyboards)
 
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {

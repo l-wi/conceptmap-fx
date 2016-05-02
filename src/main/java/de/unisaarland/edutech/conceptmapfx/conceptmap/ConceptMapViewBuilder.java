@@ -189,6 +189,7 @@ public class ConceptMapViewBuilder {
 		InputViewController inputController = inputLoader.getController();
 		inputController.setUser(u);
 		inputController.setPosition(p);
+		inputController.setAlignListener(new DefaultAlignListener(controller));
 		inputController.setFocusQuestion(conceptMap.getExperiment().getFocusQuestion().getQuestion());
 		if (history.isPresent())
 			inputController.setUndoHistory(history.get());
