@@ -1,5 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import java.awt.Event;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -35,6 +36,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -150,6 +152,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		btnNewConcept.setDisable(true);
 		emptyConceptCount++;
 		fireNew();
+	}
+	
+	@FXML
+	public void onNewTouchPressed(TouchEvent e){
+			if(e.getTouchCount() > 1)
+				onNewAction();
+			
 	}
 
 	public void addNewConceptListener(NewConceptListener l) {
