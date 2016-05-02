@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
+import de.unisaarland.edutech.conceptmapfx.event.AlignListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
@@ -70,6 +71,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private Pane ownerIcon;
 	@FXML
 	private Label question;
+	@FXML
+	private Button btnAlign;
 
 	private Position position;
 
@@ -80,6 +83,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private int emptyConceptCount = 0;
 
 	private UndoHistory undoHistory;
+
+	private AlignListener alignListener;
 
 	@FXML
 	public void initialize() {
@@ -285,9 +290,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private void adjustIcon() {
 		ObservableList<String> styleClasses = ownerIcon.getStyleClass();
-		
+
 		((Label) ownerIcon.lookup(".letter")).setText(user.getName().subSequence(0, 1).toString());
-		
+
 		String css = "background-";
 		switch (position) {
 		case BOTTOM:
@@ -351,7 +356,15 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			btnUndo.setDisable(true);
 		}
 	}
+	
+	@FXML void onAlignAction(){
+		alignListener.align();
+	}
 
+	public void setAlignListener(AlignListener l){
+		this.alignListener = l;
+	}
+	
 	public void setUndoHistory(UndoHistory undo) {
 		this.undoHistory = undo;
 		this.undoHistory.addUndoButton(btnUndo);

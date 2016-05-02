@@ -266,4 +266,12 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public void addConceptEmptyListener(ConceptContentChangeListener usersController) {
 		this.conceptContentChangedListeners.add(usersController);
 	}
+
+	public void rotateAbsolute(int r) {
+		Concept c = this.getConcept();
+		
+		c.setPosition(c.getX(), c.getY(), r);
+		this.getView().setRotate(r);
+		
+	}
 }
