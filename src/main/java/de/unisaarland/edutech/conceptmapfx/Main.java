@@ -13,6 +13,7 @@ import de.unisaarland.edutech.conceptmapfx.preparation.LoginController;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -26,6 +27,17 @@ public class Main extends Application {
 	private SessionRestoreState restorer;
 	private Experiment experiment;
 	private ObservableConceptMap conceptMap;
+	
+	public static final int TOP_USER = 0;
+
+	public static final int BOTTOM_USER = 1;
+
+	public static final int LEFT_USER = 2;
+
+	public static final int RIGHT_USER = 3;
+	
+	public static final int[] USERS_IN_ORDER ={TOP_USER, BOTTOM_USER, LEFT_USER, RIGHT_USER};
+	
 
 	public LoginController initUserLoginView() {
 
@@ -104,43 +116,63 @@ public class Main extends Application {
 
 		experimentController.setNext((e) -> {
 			this.experiment = e;
+
+
+			userTopController.setNext((u) -> {
+				this.experiment.addParticipant(u);
+				showScene(primaryStage, userBottomController.getView());
+			});
+			
+
+			userLeftController.setNext((u) -> {
+				this.experiment.addParticipant(u);
+				showScene(primaryStage, userRightController.getView());
+			});
+
+			userBottomController.setNext((u) -> {
+				this.experiment.addParticipant(u);
+				showScene(primaryStage, userLeftController.getView());
+			});
+
+			userRightController.setNext((u) -> {
+				this.experiment.addParticipant(u);
+				toConceptMapStage(primaryStage, this.experiment);
+
+			});
+			
+			if(e.USER_COUNT == 2)
+			{
+				userBottomController.setNext((u) -> {
+					this.experiment.addParticipant(u);
+					toConceptMapStage(primaryStage, this.experiment);
+				});
+			}
+			
+			if(e.USER_COUNT == 3){
+				userLeftController.setNext((u) -> {
+					this.experiment.addParticipant(u);
+					toConceptMapStage(primaryStage, this.experiment);
+				});
+
+			}
+			
+
 			showScene(primaryStage, userTopController.getView());
 		});
 
-		userTopController.setNext((u) -> {
-			this.experiment.addParticipant(u);
-			showScene(primaryStage, userLeftController.getView());
-		});
-
-		userLeftController.setNext((u) -> {
-			this.experiment.addParticipant(u);
-			showScene(primaryStage, userBottomController.getView());
-		});
-
-		userBottomController.setNext((u) -> {
-			this.experiment.addParticipant(u);
-			showScene(primaryStage, userRightController.getView());
-		});
-
-		userRightController.setNext((u) -> {
-			this.experiment.addParticipant(u);
-			toConceptMapStage(primaryStage, this.experiment);
-
-		});
+		
 
 		primaryStage.setScene(new Scene(examinerController.getView()));
 		primaryStage.setMaximized(true);
 		primaryStage.show();
 	}
 
-	// TODO instruction component
-	// TODO awareness component
-	// TODO moving the control elements (e.g. keyboards)
-	// TODO Export into CXL 
+	// TODO Export into CXL
 	// TODO import into CXL
 	// TODO test the damn thing to death
 	// TODO Rotate Translate Group
-	// TODO different number of users
+	// TODO instruction component
+	// TODO awareness component
 	// TODO feedback when pressing buttons
 	// TODO animate focus question at beginning
 	// TODO selected eintippen geht nicht (Bug?)
@@ -148,9 +180,8 @@ public class Main extends Application {
 	// TODO Frontend ( Show Focus Question shortly in BIG)
 	// TODO keyboard feedback / longpress when moving
 	// TODO add @ on keyboard for email
+	// TODO moving the control elements (e.g. keyboards)
 
-
-	
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
 

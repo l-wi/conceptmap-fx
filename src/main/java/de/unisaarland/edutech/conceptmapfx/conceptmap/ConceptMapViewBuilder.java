@@ -104,7 +104,7 @@ public class ConceptMapViewBuilder {
 
 	private ConceptMapViewBuilder withParticipants(List<User> participants) {
 		try {
-			setInputPositions(participants.get(0), participants.get(1), participants.get(2), participants.get(3));
+			setInputPositions(participants);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -113,37 +113,22 @@ public class ConceptMapViewBuilder {
 
 	}
 
-	private void setInputPositions(User u1, User u2, User u3, User u4) throws IOException {
+	private void setInputPositions(List<User> u) throws IOException {
 		// north
-		final Pane v1 = initInputController(Position.TOP, u1);
-		v1.setRotate(180);
-		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
-			v1.setLayoutX(newVal.doubleValue() * 0.6 - v1.getWidth() / 2);
-		});
 
-		// west
-		final Pane v2 = initInputController(Position.LEFT, u2);
-		v2.setRotate(90);
+		setPositionTop(u.get(0));
 
-		// as we rotate around center, we need to readjust on screen
-		scene.widthProperty().addListener(c -> {
-			v2.setTranslateX(-(v2.getWidth() / 2 - v2.getHeight() / 2));
-		});
+		setPositionBottom(u.get(1));
 
-		scene.heightProperty().addListener((observeable, oldVal, newVal) -> {
-			v2.setLayoutY(newVal.doubleValue() * 0.5);
-		});
+		if (u.size() > 2)
+			setPositionLeft(u.get(2));
 
-		// south
-		final Pane v3 = initInputController(Position.BOTTOM, u3);
-		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
-			v3.setLayoutX(newVal.doubleValue() * 0.5 - (v3.getWidth() / 2));
-		});
+		if (u.size() > 3)
+			setPositionRight(u.get(3));
 
-		scene.heightProperty().addListener((observeable, oldVal, newVal) -> {
-			v3.setLayoutY(newVal.doubleValue() - v3.getHeight());
-		});
+	}
 
+	private void setPositionRight(User u4) throws IOException {
 		// east
 		final Pane v4 = initInputController(Position.RIGHT, u4);
 		v4.setRotate(270);
@@ -159,7 +144,41 @@ public class ConceptMapViewBuilder {
 		scene.heightProperty().addListener((observeable, oldVal, newVal) -> {
 			v4.setLayoutY(newVal.doubleValue() * 0.5);
 		});
+	}
 
+	private void setPositionBottom(User u3) throws IOException {
+		// south
+		final Pane v3 = initInputController(Position.BOTTOM, u3);
+		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
+			v3.setLayoutX(newVal.doubleValue() * 0.5 - (v3.getWidth() / 2));
+		});
+
+		scene.heightProperty().addListener((observeable, oldVal, newVal) -> {
+			v3.setLayoutY(newVal.doubleValue() - v3.getHeight());
+		});
+	}
+
+	private void setPositionLeft(User u2) throws IOException {
+		// west
+		final Pane v2 = initInputController(Position.LEFT, u2);
+		v2.setRotate(90);
+
+		// as we rotate around center, we need to readjust on screen
+		scene.widthProperty().addListener(c -> {
+			v2.setTranslateX(-(v2.getWidth() / 2 - v2.getHeight() / 2));
+		});
+
+		scene.heightProperty().addListener((observeable, oldVal, newVal) -> {
+			v2.setLayoutY(newVal.doubleValue() * 0.5);
+		});
+	}
+
+	private void setPositionTop(User u1) throws IOException {
+		final Pane v1 = initInputController(Position.TOP, u1);
+		v1.setRotate(180);
+		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
+			v1.setLayoutX(newVal.doubleValue() * 0.6 - v1.getWidth() / 2);
+		});
 	}
 
 	private Pane initInputController(InputViewController.Position p, User u) throws IOException {

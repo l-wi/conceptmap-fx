@@ -39,6 +39,10 @@ public class ExperimentCreateController {
 	private KeyboardPane keyboard;
 	@FXML
 	private ComboBox<String> cmbFocusQuestion;
+	
+	@FXML
+	private ComboBox<String> userPicker;
+	
 	@FXML
 	private Button btnRun;
 
@@ -63,7 +67,9 @@ public class ExperimentCreateController {
 
 			rewriteQuestionList();
 		
-			next.accept(new Experiment(researcher, q));
+			Integer userCount = Integer.valueOf(userPicker.getValue());
+			
+			next.accept(new Experiment(researcher, q,userCount));
 
 		});
 	}
@@ -132,6 +138,7 @@ public class ExperimentCreateController {
 		}
 	}
 
+	
 	public void setNext(Consumer<Experiment> next) {
 		this.next = next;
 	}

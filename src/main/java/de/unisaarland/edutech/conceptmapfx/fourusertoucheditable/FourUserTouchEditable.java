@@ -37,8 +37,8 @@ import javafx.util.Duration;
 public class FourUserTouchEditable extends BorderPane {
 
 	private static final int RIGHT_TOGGLE_INDEX = 3;
-	private static final int BOTTOM_TOGGLE_INDEX = 2;
-	private static final int LEFT_TOGGLE_INDEX = 1;
+	private static final int BOTTOM_TOGGLE_INDEX = 1;
+	private static final int LEFT_TOGGLE_INDEX = 2;
 	private static final int TOP_TOGGLE_INDEX = 0;
 
 	private static final Logger LOG = LoggerFactory.getLogger(FourUserTouchEditable.class);
@@ -69,7 +69,7 @@ public class FourUserTouchEditable extends BorderPane {
 	private ToggleButton bottomToggle;
 	@FXML
 	private Label caption;
-	
+
 	@FXML
 	private Node captionPane;
 
@@ -86,6 +86,7 @@ public class FourUserTouchEditable extends BorderPane {
 	private boolean underlineOnEditToggle = true;
 
 	private Timeline underlineAnimation;
+	private int userCount = 4;
 
 	public FourUserTouchEditable() {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/FourUserTouchEditable.fxml"));
@@ -112,14 +113,14 @@ public class FourUserTouchEditable extends BorderPane {
 		initChangeIfEmpty();
 
 		toUnselectedState();
-		
+
 		initInputHighlighting();
 
 	}
 
 	private void initInputHighlighting() {
 
-		this.selectionChangedProperty.addListener((c,o,n) -> {
+		this.selectionChangedProperty.addListener((c, o, n) -> {
 			this.highlightInput(n.index, n.isSelected);
 		});
 	}
@@ -208,9 +209,15 @@ public class FourUserTouchEditable extends BorderPane {
 		double height = topToggle.getHeight();
 
 		if (newState == State.SELECTED) {
-			translateRelative(-width, -height);
+			if (userCount == 2)
+				translateRelative(0, -height);
+			else
+				translateRelative(-width, -height);
 		} else if (oldState == State.SELECTED) {
-			translateRelative(width, height);
+			if (userCount == 2)
+				translateRelative(0, height);
+			else
+				translateRelative(width, height);
 		}
 
 	}
@@ -322,9 +329,11 @@ public class FourUserTouchEditable extends BorderPane {
 
 	private void setDisableAndHiddenToToggles(boolean b) {
 		setDisabledAndHidden(b, topToggle);
-		setDisabledAndHidden(b, leftToggle);
-		setDisabledAndHidden(b, rightToggle);
 		setDisabledAndHidden(b, bottomToggle);
+
+		 setDisabledAndHidden(b, leftToggle);
+		 setDisabledAndHidden(b, rightToggle);
+
 	}
 
 	private void setDisabledAndHidden(boolean b, ToggleButton t) {
@@ -509,7 +518,6 @@ public class FourUserTouchEditable extends BorderPane {
 		this.lowLevelInteractionListener.setOnMoved(moved);
 	}
 
-	
 	public void setOnDoubleTapped(VoidFunction tap) {
 		this.lowLevelInteractionListener.setOnDoubleTapped(tap);
 	}
@@ -526,27 +534,27 @@ public class FourUserTouchEditable extends BorderPane {
 		String result = "belongsTo";
 
 		switch (index) {
-		case 0:
+		case TOP_TOGGLE_INDEX:
 			result += "Top";
 			break;
-		case 1:
+		case LEFT_TOGGLE_INDEX:
 			result += "Left";
 			break;
-		case 2:
+		case BOTTOM_TOGGLE_INDEX:
 			result += "Bottom";
 			break;
-		case 3:
+		case RIGHT_TOGGLE_INDEX:
 			result += "Right";
 			break;
 		}
 		return result;
 	}
-	
+
 	private void highlightInput(int index, boolean inputEnabled) {
 		final String cssClass = getCSSClassForIndex(index) + "Underline";
 
 		Node caption = this.lookup("#caption");
-		
+
 		if (inputEnabled) {
 			underlineOnEditToggle = true;
 			removeUnderlineTimeline(cssClass, caption);
@@ -572,8 +580,19 @@ public class FourUserTouchEditable extends BorderPane {
 		}
 	}
 
+	public void setUserCount(int count) {
+		this.userCount = count;
+		if (count == 2) {
+			this.getChildren().remove(leftToggle);
+			this.getChildren().remove(rightToggle);
+
+		} else if (count == 3)
+			this.getChildren().remove(rightToggle);
+
+	}
+
 	private void removeUnderlineTimeline(final String cssClass, Node caption) {
-		if(underlineAnimation == null)
+		if (underlineAnimation == null)
 			return;
 		underlineAnimation.stop();
 		caption.getStyleClass().remove(cssClass);

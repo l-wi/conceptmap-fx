@@ -202,8 +202,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		this.getView().lookup("#captionPane").getStyleClass().add(result);
 	}
 
-
-
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
 
@@ -213,13 +211,22 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 			}
 		});
-		
+
+		initToggleTexts(participants);
+
+		conceptCaption.setUserCount(participants.size());
+	}
+
+	private void initToggleTexts(List<User> participants) {
 		conceptCaption.setTopToggleText(String.valueOf(participants.get(0).getName().charAt(0)));
-		conceptCaption.setLeftToggleText(String.valueOf(participants.get(1).getName().charAt(0)));
-		conceptCaption.setBottomToggleText(String.valueOf(participants.get(2).getName().charAt(0)));
-		conceptCaption.setRightToggleText(String.valueOf(participants.get(3).getName().charAt(0)));
+		conceptCaption.setBottomToggleText(String.valueOf(participants.get(1).getName().charAt(0)));
 
+	
 
+		if (participants.size() > 2)
+			conceptCaption.setLeftToggleText(String.valueOf(participants.get(2).getName().charAt(0)));
+		if (participants.size() > 3)
+			conceptCaption.setRightToggleText(String.valueOf(participants.get(3).getName().charAt(0)));
 	}
 
 	public void setUserEnabled(User owner, boolean b) {

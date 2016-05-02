@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -9,22 +10,40 @@
 <?import javafx.scene.control.Label?>
 <?import org.comtel2000.keyboard.control.*?>
 <?import java.net.* ?>
+<?import javafx.collections.*?>
 
 
-<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.40"
+	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="de.unisaarland.edutech.conceptmapfx.preparation.ExperimentCreateController">
 	<center>
 		<VBox alignment="CENTER">
 			<children>
 				<HBox alignment="CENTER">
 					<children>
-						<VBox alignment="CENTER" 
-
-							spacing="10.0">
+						<VBox alignment="CENTER" spacing="10.0">
 							<children>
 								<Label text="Focus Question" />
-								<ComboBox fx:id="cmbFocusQuestion" editable="true"
-									prefHeight="26.0" prefWidth="625.0" promptText="input or select focus question" />
+								<HBox>
+									<children>
+										<ComboBox fx:id="cmbFocusQuestion" editable="true"
+											prefHeight="26.0" prefWidth="625.0" promptText="input or select focus question" />
+										<ComboBox fx:id="userPicker" prefWidth="150.0">
+											<items>
+												<FXCollections fx:factory="observableArrayList">
+													<String fx:value="2" />
+													<String fx:value="3" />
+													<String fx:value="4" />
+												</FXCollections>
+
+											</items>
+											<value>
+												<String fx:value="4" />
+											</value>
+										</ComboBox>
+
+									</children>
+								</HBox>
 								<Separator prefWidth="200.0" />
 								<HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
 									<children>
@@ -44,7 +63,8 @@
 									</children>
 								</HBox>
 								<Separator prefWidth="200.0" />
-								<Button fx:id="btnRun" styleClass="btn" mnemonicParsing="false" text="Run" />
+								<Button fx:id="btnRun" mnemonicParsing="false"
+									styleClass="btn" text="Run" />
 							</children>
 						</VBox>
 					</children>
@@ -60,7 +80,7 @@
 			</children>
 		</HBox>
 	</bottom>
-		<stylesheets>
+	<stylesheets>
 		<URL value="@/css/setup.css" />
 	</stylesheets>
 </BorderPane>

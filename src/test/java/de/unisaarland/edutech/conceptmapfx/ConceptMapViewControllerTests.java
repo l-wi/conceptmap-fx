@@ -61,7 +61,7 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		p.add(u3);
 		p.add(u4);
 
-		Experiment experiment = new Experiment(u1, new FocusQuestion("How dare you?", u1));
+		Experiment experiment = new Experiment(u1, new FocusQuestion("How dare you?", u1), 4);
 		experiment.addParticipant(u1);
 		experiment.addParticipant(u2);
 		experiment.addParticipant(u3);
