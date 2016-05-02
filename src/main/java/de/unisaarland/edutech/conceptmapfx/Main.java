@@ -133,13 +133,23 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-	// TODO add @ on keyboard for email
-	// TODO keyboard feedback / longpress when moving
+	// TODO instruction component
+	// TODO awareness component
+	// TODO moving the control elements (e.g. keyboards)
+	// TODO Export into CXL 
+	// TODO import into CXL
 	// TODO test the damn thing to death
+	// TODO Rotate Translate Group
+	// TODO different number of users
+	// TODO feedback when pressing buttons
+	// TODO animate focus question at beginning
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
-	// TODO Rotate Translate Group
 	// TODO Frontend ( Show Focus Question shortly in BIG)
+	// TODO keyboard feedback / longpress when moving
+	// TODO add @ on keyboard for email
+
+
 	
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
