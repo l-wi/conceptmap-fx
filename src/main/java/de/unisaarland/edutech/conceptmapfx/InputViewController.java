@@ -114,6 +114,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			btnNewConcept.setMaxHeight(Double.MAX_VALUE);
 			VBox.setVgrow(btnNewConcept, Priority.ALWAYS);
 
+			hideInput();
 		} catch (IOException | URISyntaxException e) {
 			LOG.error("Program cannot run!", e);
 			throw new RuntimeException("Program cannot run!", e);
