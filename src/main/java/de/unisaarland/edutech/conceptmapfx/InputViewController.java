@@ -28,6 +28,7 @@ import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeSt
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.RotateTransition;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -40,6 +41,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
 		LinkDeletedListener, ConceptDeletedListener, ConceptContentChangeListener {
@@ -110,15 +112,39 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 			keyboard.setDisable(true);
 
-			question.setWrapText(true);
-			btnNewConcept.setMaxHeight(Double.MAX_VALUE);
-			VBox.setVgrow(btnNewConcept, Priority.ALWAYS);
+			initQuestion();
 
 			hideInput();
+
 		} catch (IOException | URISyntaxException e) {
 			LOG.error("Program cannot run!", e);
 			throw new RuntimeException("Program cannot run!", e);
 		}
+	}
+
+	private void initQuestion() {
+		question.setWrapText(true);
+		question.widthProperty().addListener((c, o, n) -> {
+			double rotate = question.getRotate();
+			int cycleCount = 4;
+			double timeframe = 700;
+			float angle = 3f;
+			
+			RotateTransition rotateTransition = new RotateTransition(Duration.millis(timeframe / cycleCount),
+					question);
+
+			rotateTransition.setFromAngle(-angle);
+			rotateTransition.setToAngle(angle);
+
+			rotateTransition.setCycleCount(cycleCount);
+			rotateTransition.setAutoReverse(true);
+			rotateTransition.setDelay(Duration.seconds(4));
+			rotateTransition.setOnFinished((e) -> question.setRotate(rotate));
+			rotateTransition.play();
+		});
+
+		btnNewConcept.setMaxHeight(Double.MAX_VALUE);
+		VBox.setVgrow(btnNewConcept, Priority.ALWAYS);
 	}
 
 	private void addTouchListenerToKeyboard() {
@@ -357,15 +383,16 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			btnUndo.setDisable(true);
 		}
 	}
-	
-	@FXML void onAlignAction(){
+
+	@FXML
+	void onAlignAction() {
 		alignListener.align();
 	}
 
-	public void setAlignListener(AlignListener l){
+	public void setAlignListener(AlignListener l) {
 		this.alignListener = l;
 	}
-	
+
 	public void setUndoHistory(UndoHistory undo) {
 		this.undoHistory = undo;
 		this.undoHistory.addUndoButton(btnUndo);

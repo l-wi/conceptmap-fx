@@ -167,20 +167,22 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-	// TODO Export into CXL
-	// TODO import into CXL
-	// TODO test the damn thing to death
-	// TODO instruction component
-	// TODO awareness component
+
 	// TODO feedback when pressing buttons
-	// TODO animate focus question at beginning
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
+	// TODO when displaying the concept view we have a graphic error (Bug)
 	// TODO Frontend ( Show Focus Question shortly in BIG)
 	// TODO keyboard feedback / longpress when moving
 	// TODO add @ on keyboard for email
+	// TODO Export into CXL
+	// TODO import into CXL
+	// TODO instruction component
+	// TODO awareness component
 	// TODO talk button
 	// TODO moving the control elements (e.g. keyboards)
+	// TODO test the damn thing to death
+
 
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
