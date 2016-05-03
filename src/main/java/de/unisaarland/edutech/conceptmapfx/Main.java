@@ -171,8 +171,6 @@ public class Main extends Application {
 	// TODO feedback when pressing buttons
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
-	// TODO when displaying the concept view we have a graphic error (Bug)
-	// TODO Frontend ( Show Focus Question shortly in BIG)
 	// TODO keyboard feedback / longpress when moving
 	// TODO add @ on keyboard for email
 	// TODO Export into CXL
@@ -213,7 +211,8 @@ public class Main extends Application {
 		});
 
 		primaryStage.setScene(scene);
-
+		primaryStage.setFullScreen(true);
+		
 		Optional<SessionSaver> sessionSaverOptional = conceptMapViewBuilder.getSessionSaver();
 
 		if (sessionSaverOptional.isPresent()) {
