@@ -2,6 +2,7 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeSt
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -91,27 +93,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	public void initialize() {
 		try {
-			keyboard.setKeyBoardStyle(getClass().getResource("/css/input.css").toString());
-			keyboard.setSpaceKeyMove(false);
-			keyboard.setLayerPath(new File("./keyboardLayout").toPath());
-			keyboard.load();
-
-			/*
-			 * FIXME: Workaround to allow multitouch input while moving an
-			 * element: - this only works for short press events, it does not
-			 * work for long press (e.g. Ä)
-			 */
-			addTouchListenerToKeyboard();
-			keyboard.setKeyboardType(KeyboardType.TEXT_SHIFT);
-			addTouchListenerToKeyboard();
-			keyboard.setKeyboardType(KeyboardType.TEXT);
-
-			// remove the default handler
-			IRobot defaultHandler = keyboard.getRobotHandler().get(0);
-			keyboard.removeRobotHandler(defaultHandler);
-
-			keyboard.setDisable(true);
-
+			initKeyboard();
+			initButtons();
 			initQuestion();
 
 			hideInput();
@@ -122,6 +105,39 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		}
 	}
 
+	private void initButtons() {
+
+		btnAlign.setOnTouchPressed(e -> setTouchHighlight(btnAlign));
+		btnUndo.setOnTouchPressed(e -> setTouchHighlight(btnUndo));
+
+		btnAlign.setOnTouchReleased(e ->  removeTouchHighlight(btnAlign) );
+		btnUndo.setOnTouchReleased(e ->removeTouchHighlight(btnUndo) );
+
+
+	}
+
+	private void initKeyboard() throws MalformedURLException, IOException, URISyntaxException {
+		keyboard.setKeyBoardStyle(getClass().getResource("/css/input.css").toString());
+		keyboard.setSpaceKeyMove(false);
+		keyboard.setLayerPath(new File("./keyboardLayout").toPath());
+		keyboard.load();
+
+		/*
+		 * FIXME: Workaround to allow multitouch input while moving an element:
+		 * - this only works for short press events, it does not work for long
+		 * press (e.g. Ä)
+		 */
+		addTouchListenerToKeyboard();
+		keyboard.setKeyboardType(KeyboardType.TEXT_SHIFT);
+		addTouchListenerToKeyboard();
+		keyboard.setKeyboardType(KeyboardType.TEXT);
+
+		// remove the default handler
+		IRobot defaultHandler = keyboard.getRobotHandler().get(0);
+		keyboard.removeRobotHandler(defaultHandler);
+		keyboard.setDisable(true);
+	}
+
 	private void initQuestion() {
 		question.setWrapText(true);
 		question.widthProperty().addListener((c, o, n) -> {
@@ -129,9 +145,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			int cycleCount = 4;
 			double timeframe = 700;
 			float angle = 3f;
-			
-			RotateTransition rotateTransition = new RotateTransition(Duration.millis(timeframe / cycleCount),
-					question);
+
+			RotateTransition rotateTransition = new RotateTransition(Duration.millis(timeframe / cycleCount), question);
 
 			rotateTransition.setFromAngle(-angle);
 			rotateTransition.setToAngle(angle);
@@ -153,10 +168,26 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		keys.forEach(n -> {
 			KeyButton key = (KeyButton) n;
 			key.setOnTouchPressed(e -> {
-				if (e.getTouchCount() > 1)
+				if (e.getTouchCount() > 1) {
 					key.fireEvent(new KeyButtonEvent(KeyButtonEvent.SHORT_PRESSED));
+					setTouchHighlight(key);
+				}
+
 			});
+			key.setOnTouchReleased(e ->  removeTouchHighlight(key) );
 		});
+	}
+
+	private void setTouchHighlight(Button b){
+		b.setStyle("-fx-background-color: #dcdcdc");
+	}
+	
+	private void removeTouchHighlight(Button b) {
+		PauseTransition wait = new PauseTransition(Duration.millis(300));
+		wait.setOnFinished((e) -> {
+			b.setStyle("-fx-background-color: #3c4250");
+		});
+		wait.play();
 	}
 
 	@FXML

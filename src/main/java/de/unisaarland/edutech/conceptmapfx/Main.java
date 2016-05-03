@@ -172,10 +172,10 @@ public class Main extends Application {
 	}
 
 
-	// TODO feedback when pressing buttons
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
-	// TODO keyboard feedback / longpress when moving
+	// TODO undo buggy
+	// TODO longpress when moving
 	// TODO add @ on keyboard for email
 	// TODO Export into CXL
 	// TODO import into CXL
