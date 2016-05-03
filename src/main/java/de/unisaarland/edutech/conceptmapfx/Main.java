@@ -1,7 +1,9 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+
 
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewBuilder;
@@ -16,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -36,7 +39,6 @@ public class Main extends Application {
 
 	public static final int RIGHT_USER = 3;
 	
-	public static final int[] USERS_IN_ORDER ={TOP_USER, BOTTOM_USER, LEFT_USER, RIGHT_USER};
 	
 
 	public LoginController initUserLoginView() {
@@ -73,6 +75,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
+		showOnfirstOrPrimaryDisplay(primaryStage);
+		
 		restorer = new SessionRestoreState();
 
 		Optional<ObservableConceptMap> restoredMap = restorer.restoreSessionIfNeeded();
@@ -181,6 +185,17 @@ public class Main extends Application {
 	// TODO moving the control elements (e.g. keyboards)
 	// TODO test the damn thing to death
 
+
+	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
+		List<Screen> screens = Screen.getScreens();
+		if(screens.size() == 2) {
+			javafx.stage.Screen secondary = screens.get(1);
+			primaryStage.setX(secondary.getBounds().getMinX());
+			primaryStage.setY(secondary.getBounds().getMinY());
+		}
+			
+		
+	}
 
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
