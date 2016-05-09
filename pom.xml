@@ -39,6 +39,11 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>de.unisaarland.edutech.nuanceclient</groupId>
+			<artifactId>nuance-client</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.comtel2000</groupId>
 			<artifactId>fx-onscreen-keyboard</artifactId>
 			<version>8.2.4-SNAPSHOT</version>

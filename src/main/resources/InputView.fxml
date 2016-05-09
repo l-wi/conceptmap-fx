@@ -74,7 +74,7 @@
 										
 									<ToggleButton styleClass="hideable" id="voice"
 										fx:id="btnSpeak" mnemonicParsing="false" prefWidth="100.0"
-										prefHeight="50.0" />
+										prefHeight="50.0" onAction="#onSpeechAction" />
 
 									<Button fx:id="btnNewConcept" text="+" onAction="#onNewAction"
 										onTouchPressed="#onNewTouchPressed" BorderPane.alignment="CENTER"

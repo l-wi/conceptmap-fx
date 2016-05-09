@@ -1,6 +1,8 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -25,12 +27,19 @@ import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
+import de.unisaarland.edutech.conceptmapfx.event.SpeechRecognitionListner;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
+import de.unisaarland.edutech.nuanceclient.AudioRecorder;
+import de.unisaarland.edutech.nuanceclient.NuanceClient;
+import de.unisaarland.edutech.nuanceclient.NuanceClient.Result;
+import de.unisaarland.edutech.nuanceclient.NuanceCredentials;
+import de.unisaarland.edutech.nuanceclient.RecordingException;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -38,6 +47,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -46,14 +56,19 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
-		LinkDeletedListener, ConceptDeletedListener, ConceptContentChangeListener {
+		LinkDeletedListener, ConceptDeletedListener, ConceptContentChangeListener, SpeechRecognitionListner {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
 
 	private User user;
 
+	private static final String CODEC = "audio/x-wav;codec=pcm;bit=16;rate=16000";
+
 	private InputClosedListener closedListener;
 	private List<NewConceptListener> conceptListners = new ArrayList<NewConceptListener>();
+	private List<SpeechRecognitionListner> speechListeners = new ArrayList<SpeechRecognitionListner>();
+
+	File recording;
 
 	public enum Position {
 		TOP, BOTTOM, RIGHT, LEFT
@@ -77,6 +92,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private Label question;
 	@FXML
 	private Button btnAlign;
+	@FXML
+	private ToggleButton btnSpeak;
 
 	private Position position;
 
@@ -90,13 +107,17 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private AlignListener alignListener;
 
+	private AudioRecorder recorder = new AudioRecorder();
+
+	private NuanceClient nuanceClient;
+
 	@FXML
 	public void initialize() {
 		try {
 			initKeyboard();
 			initButtons();
 			initQuestion();
-
+			initSpeech();
 			hideInput();
 
 		} catch (IOException | URISyntaxException e) {
@@ -105,14 +126,24 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		}
 	}
 
+	private void initSpeech() {
+		try {
+			NuanceCredentials creds = NuanceCredentials.construct();
+			nuanceClient = new NuanceClient(creds);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private void initButtons() {
 
 		btnAlign.setOnTouchPressed(e -> setTouchHighlight(btnAlign));
 		btnUndo.setOnTouchPressed(e -> setTouchHighlight(btnUndo));
 
-		btnAlign.setOnTouchReleased(e ->  removeTouchHighlight(btnAlign) );
-		btnUndo.setOnTouchReleased(e ->removeTouchHighlight(btnUndo) );
-
+		btnAlign.setOnTouchReleased(e -> removeTouchHighlight(btnAlign));
+		btnUndo.setOnTouchReleased(e -> removeTouchHighlight(btnUndo));
 
 	}
 
@@ -174,14 +205,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 				}
 
 			});
-			key.setOnTouchReleased(e ->  removeTouchHighlight(key) );
+			key.setOnTouchReleased(e -> removeTouchHighlight(key));
 		});
 	}
 
-	private void setTouchHighlight(Button b){
+	private void setTouchHighlight(Button b) {
 		b.setStyle("-fx-background-color: #dcdcdc");
 	}
-	
+
 	private void removeTouchHighlight(Button b) {
 		PauseTransition wait = new PauseTransition(Duration.millis(300));
 		wait.setOnFinished((e) -> {
@@ -228,6 +259,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void addNewConceptListener(NewConceptListener l) {
 		conceptListners.add(l);
+	}
+
+	public void addSpeechListener(SpeechRecognitionListner l) {
+		speechListeners.add(l);
 	}
 
 	private void fireNew() {
@@ -431,5 +466,84 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void setFocusQuestion(String question) {
 		this.question.setText(question);
+	}
+
+	@FXML
+	public void onSpeechAction() {
+		if (btnSpeak.isSelected())
+			fireSpeechRecognitionStarted();
+		else
+			fireSpeechRecognitionEnded();
+	}
+
+	private void fireSpeechRecognitionStarted() {
+		speechListeners.forEach((l) -> l.speechRecognitionStarted(getUser()));
+	}
+
+	private void fireSpeechRecognitionEnded() {
+		speechListeners.forEach((l) -> l.speechRecognitionFinished(getUser()));
+	}
+
+	@Override
+	public void speechRecognitionStarted(User u) {
+		if (!u.equals(getUser()))
+			this.btnSpeak.setDisable(true);
+		else
+			startRecording();
+
+	}
+
+	private void startRecording() {
+		try {
+			recording = File.createTempFile("conceptMapRecording", ".wav");
+			recorder.record(recording);
+		} catch (IOException e) {
+			// TODO exception handling
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void speechRecognitionFinished(User u) {
+		if (u.equals(getUser())) {
+			stopRecording();
+			requestRecognition(u);
+
+		} else
+			btnSpeak.setDisable(false);
+	}
+
+	private void requestRecognition(User u) {
+		try {
+			// TODO error handling
+			// TODO indicate recognition in UI
+			btnSpeak.setStyle("-fx-background-color:yellow;");
+			nuanceClient.requestAsync(new FileInputStream(recording), CODEC, (c) -> {
+				Platform.runLater( () -> {
+					finishRecognition(u, c);
+				});
+			});
+		} catch (FileNotFoundException e) {
+			// TODO exception handling
+			e.printStackTrace();
+		}
+	}
+
+	private void finishRecognition(User u, Result c) {
+		btnSpeak.setStyle("");
+		
+
+		String result = c.resultSet.get(0);
+		for (int i = 0; i < result.length(); i++)
+			collaborativeStringBinding.append(u, result.charAt(i));
+	}
+
+	private void stopRecording() {
+		try {
+			recorder.stop();
+		} catch (RecordingException e) {
+			// TODO exception handling
+			e.printStackTrace();
+		}
 	}
 }

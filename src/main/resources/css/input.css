@@ -120,6 +120,13 @@
 	-fx-background-position: center center;
 }
 
+#voice:selected{
+	-fx-background-color:green;
+	
+	
+}
+
+
 
 .newBtnTop, .newBtnLeft, .newBtnRight, .newBtnBottom {
 	-fx-font-size: 30.0;

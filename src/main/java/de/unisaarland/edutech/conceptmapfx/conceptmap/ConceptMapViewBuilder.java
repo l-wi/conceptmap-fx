@@ -58,6 +58,8 @@ public class ConceptMapViewBuilder {
 	}
 
 	public Scene build() {
+		attachSpeechListenerToInputControllers();
+
 		attachToReloadedMap();
 		controller.setConceptMap(conceptMap);
 		if (history.isPresent())
@@ -65,6 +67,12 @@ public class ConceptMapViewBuilder {
 		if (saver.isPresent())
 			saver.get().activate();
 		return scene;
+	}
+
+	private void attachSpeechListenerToInputControllers() {
+		controller.getInputControllers().forEach((c) -> {
+			controller.getInputControllers().forEach(cA -> c.addSpeechListener(cA));
+		});
 	}
 
 	public Optional<SessionSaver> getSessionSaver() {
