@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.TextFlow?>
 
 <fx:root id="conceptNode"  type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml/1">
 
@@ -30,7 +31,7 @@
 
 	<center>
 		<HBox fx:id="captionPane"  id="captionPane" prefHeight="75">
-		<Label  id="caption" fx:id="caption" />
+		<TextFlow  id="caption" fx:id="caption" />
 		</HBox>
 	</center>
 

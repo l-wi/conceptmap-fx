@@ -4,5 +4,5 @@ import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 
 public interface ConceptContentChangeListener {
 
-	void conceptContentChanged(ConceptViewController source,String oldContent,String newContent);
+	void conceptContentChanged(ConceptViewController source,String oldContent);
 }

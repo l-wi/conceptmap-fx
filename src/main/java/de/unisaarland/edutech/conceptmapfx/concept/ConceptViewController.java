@@ -16,9 +16,11 @@ import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeSt
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.transform.Transform;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
@@ -91,16 +93,15 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		conceptCaption.setOnDoubleTapped(() -> fireConceptDeleted(getActiveUser()));
 
-		conceptCaption.textProperty().addListener((c, o, n) ->
+		conceptCaption.textProperty().addListener((ListChangeListener.Change<? extends Node> l) -> {
 
-		{
-			fireConceptContentChanged(o, n);
+			fireConceptContentChanged(conceptCaption.getText());
 		});
 
 	}
 
-	private void fireConceptContentChanged(String oldContent, String newContent) {
-		this.conceptContentChangedListeners.forEach((l) -> l.conceptContentChanged(this, oldContent, newContent));
+	private void fireConceptContentChanged(String newContent) {
+		this.conceptContentChangedListeners.forEach((l) -> l.conceptContentChanged(this, newContent));
 	}
 
 	private void fireConceptDeleted(User u) {
@@ -194,7 +195,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 		this.colBinding = CollaborativeStringTextFieldBinding.createBinding(concept.getName(),
-				conceptCaption.textProperty());
+				conceptCaption.getCaption());
 
 		int index = participants.indexOf(concept.getOwner());
 		String result = conceptCaption.getCSSClassForIndex(index);
@@ -220,8 +221,6 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private void initToggleTexts(List<User> participants) {
 		conceptCaption.setTopToggleText(String.valueOf(participants.get(0).getName().charAt(0)));
 		conceptCaption.setBottomToggleText(String.valueOf(participants.get(1).getName().charAt(0)));
-
-	
 
 		if (participants.size() > 2)
 			conceptCaption.setLeftToggleText(String.valueOf(participants.get(2).getName().charAt(0)));
@@ -269,9 +268,9 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void rotateAbsolute(int r) {
 		Concept c = this.getConcept();
-		
+
 		c.setPosition(c.getX(), c.getY(), r);
 		this.getView().setRotate(r);
-		
+
 	}
 }

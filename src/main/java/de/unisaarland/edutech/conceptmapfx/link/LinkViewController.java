@@ -190,7 +190,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			this.linkCaption = loader.load();
 
 			this.editable = CollaborativeStringTextFieldBinding.createBinding(this.link.getCaption(),
-					this.linkCaption.textProperty());
+					this.linkCaption.getCaption());
 
 			linkCaption.selectionChangedProperty().addListener((l, o, n) -> {
 				if (n.isSelected)

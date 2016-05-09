@@ -24,7 +24,7 @@ public class DefaultNewConceptListener implements NewConceptListener {
 
 		conceptViewBuilder.withNewConcept(user);
 
-		conceptViewBuilder.withConceptEmptyListener(controller);
+//		conceptViewBuilder.withConceptEmptyListener(controller);
 
 		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(controller,
 				this.mapController.getView());

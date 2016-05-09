@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.AlignListener;
-import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
@@ -48,7 +47,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
-		LinkDeletedListener, ConceptDeletedListener, ConceptContentChangeListener, SpeechRecognitionListner {
+		LinkDeletedListener, ConceptDeletedListener, SpeechRecognitionListner {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
 
@@ -405,17 +404,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public double getRotate() {
 		return inputPane.getRotate();
-	}
-
-	@Override
-	public void conceptContentChanged(ConceptViewController source, String oldContent, String newContent) {
-		if (newContent.isEmpty() && !oldContent.isEmpty())
-			emptyConceptCount++;
-		else if (!newContent.isEmpty() && oldContent.isEmpty())
-			emptyConceptCount--;
-
-		btnNewConcept.setDisable(emptyConceptCount > 0);
-
 	}
 
 	@FXML

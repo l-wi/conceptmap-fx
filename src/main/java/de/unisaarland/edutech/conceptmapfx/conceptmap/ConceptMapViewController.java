@@ -202,7 +202,7 @@ public class ConceptMapViewController implements LinkDeletedListener, LinkDirect
 		InputViewController ownerController = inputControllers.stream()
 				.filter((in) -> in.getUser().equals(c.getOwner())).findFirst().get();
 
-		conceptViewBuilder.withConceptEmptyListener(ownerController);
+//		conceptViewBuilder.withConceptEmptyListener(ownerController);
 
 		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(this.conceptMapPane);
 		return cv;

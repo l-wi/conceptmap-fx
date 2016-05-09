@@ -9,13 +9,14 @@ import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.LowLevelInterac
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.LowLevelInteractionListener.VoidFunction;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,15 +24,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 public class FourUserTouchEditable extends BorderPane {
@@ -68,7 +68,7 @@ public class FourUserTouchEditable extends BorderPane {
 	@FXML
 	private ToggleButton bottomToggle;
 	@FXML
-	private Label caption;
+	private TextFlow caption;
 
 	@FXML
 	private Node captionPane;
@@ -101,7 +101,7 @@ public class FourUserTouchEditable extends BorderPane {
 		tryLoadingFXMLOrThrow(loader);
 
 		constructRotateIndicator();
-		constructResizable(caption);
+		// constructResizable(caption);
 
 		keepAtLeastOneSelected();
 		fixPositionsOnStateChange();
@@ -145,11 +145,12 @@ public class FourUserTouchEditable extends BorderPane {
 	}
 
 	private void initChangeIfEmpty() {
-		caption.textProperty().addListener((l, o, n) -> {
-			changeIfEmpty(n);
-		});
+		caption.getChildren().addListener((ListChangeListener.Change<? extends Node> l) -> changeIfEmpty(l.getList()));
+		// caption.textProperty().addListener((l, o, n) -> {
+		// changeIfEmpty(n);
+		// });
 
-		changeIfEmpty(caption.getText());
+		changeIfEmpty(caption.getChildren());
 	}
 
 	private void initSelectionChangeProperty() {
@@ -165,9 +166,9 @@ public class FourUserTouchEditable extends BorderPane {
 				.addListener((l, o, n) -> selectionChangedProperty.set(new SelectionChanged(BOTTOM_TOGGLE_INDEX, n)));
 	}
 
-	private void changeIfEmpty(String n) {
+	private void changeIfEmpty(ObservableList<? extends Node> observableList) {
 
-		if (n.length() == 0) {
+		if (observableList.size() == 0) {
 
 			caption.getStyleClass().add("empty");
 			caption.setMinWidth(70);
@@ -252,34 +253,35 @@ public class FourUserTouchEditable extends BorderPane {
 		}
 	}
 
-	private void constructResizable(Label txt) {
-		txt.setMaxWidth(Region.USE_PREF_SIZE);
-		txt.textProperty().addListener((ov, prevText, currText) -> {
-			// Do this in a Platform.runLater because of Textfield has no
-			// padding at first time and so on
-			Platform.runLater(() -> {
-				Text text = new Text(currText);
-				text.setFont(txt.getFont()); // Set the same font, so the size
-												// is the same
-				double width = text.getLayoutBounds().getWidth() // This big is
-																	// the Text
-																	// in the
-																	// TextField
-						+ txt.getPadding().getLeft() + txt.getPadding().getRight() // Add
-																					// the
-																					// padding
-																					// of
-																					// the
-																					// TextField
-						+ 2d; // Add some spacing
-				txt.setPrefWidth(width); // Set the width
-				// txt.positionCaret(txt.getCaretPosition()); // If you remove
-				// this
-				// line, it flashes
-				// a little bit
-			});
-		});
-	}
+	// private void constructResizable(TextFlow txt) {
+	// txt.setMaxWidth(Region.USE_PREF_SIZE);
+	// txt.setText
+	// txt.textProperty().addListener((ov, prevText, currText) -> {
+	// // Do this in a Platform.runLater because of Textfield has no
+	// // padding at first time and so on
+	// Platform.runLater(() -> {
+	// Text text = new Text(currText);
+	// text.setFont(txt.getFont()); // Set the same font, so the size
+	// // is the same
+	// double width = text.getLayoutBounds().getWidth() // This big is
+	// // the Text
+	// // in the
+	// // TextField
+	// + txt.getPadding().getLeft() + txt.getPadding().getRight() // Add
+	// // the
+	// // padding
+	// // of
+	// // the
+	// // TextField
+	// + 2d; // Add some spacing
+	// txt.setPrefWidth(width); // Set the width
+	// // txt.positionCaret(txt.getCaretPosition()); // If you remove
+	// // this
+	// // line, it flashes
+	// // a little bit
+	// });
+	// });
+	// }
 
 	public void toSelectedState() {
 		if (state.get() == State.SELECTED)
@@ -331,8 +333,8 @@ public class FourUserTouchEditable extends BorderPane {
 		setDisabledAndHidden(b, topToggle);
 		setDisabledAndHidden(b, bottomToggle);
 
-		 setDisabledAndHidden(b, leftToggle);
-		 setDisabledAndHidden(b, rightToggle);
+		setDisabledAndHidden(b, leftToggle);
+		setDisabledAndHidden(b, rightToggle);
 
 	}
 
@@ -353,16 +355,31 @@ public class FourUserTouchEditable extends BorderPane {
 	}
 
 	public void setText(String text) {
-		caption.setText(text);
+		caption.getChildren().clear();
+		caption.getChildren().add(new Text(text));
+		// caption.setText(text);
 	}
 
 	public String getText() {
-		return caption.getText();
+		StringBuilder sb = new StringBuilder();
+		for (Node node : caption.getChildren()) {
+			sb.append((((Text) node).getText()));
+		}
+
+		return sb.toString();
+		
 	}
 
-	public StringProperty textProperty() {
-		return caption.textProperty();
+	public ObservableList<? extends Node> textProperty(){
+		return caption.getChildren();
 	}
+	
+	public TextFlow getCaption() {
+		return caption;
+	}
+//	public StringProperty textProperty() {
+//		return caption.propertytextProperty();
+//	}
 
 	public int getSelected() {
 		final int NO_SELECTION = -1;

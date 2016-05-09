@@ -1,9 +1,10 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
 
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewBuilder;
@@ -13,11 +14,12 @@ import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableLinkFactory;
 import de.unisaarland.edutech.conceptmapfx.preparation.ExperimentCreateController;
 import de.unisaarland.edutech.conceptmapfx.preparation.LoginController;
 import de.unisaarland.edutech.conceptmapping.Experiment;
+import de.unisaarland.edutech.conceptmapping.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -30,16 +32,14 @@ public class Main extends Application {
 	private SessionRestoreState restorer;
 	private Experiment experiment;
 	private ObservableConceptMap conceptMap;
-	
-	public static final int TOP_USER = 0;
 
-	public static final int BOTTOM_USER = 1;
+	// FIXME load colors from css to have them at a central location.
+	private static final Color userTop = Color.web("#2400F0");
+	private static final Color userLeft = Color.web("#F00054");
+	private static final Color userRight = Color.web("#CCF000");
+	private static final Color userBottom = Color.web("#00F09C");
 
-	public static final int LEFT_USER = 2;
-
-	public static final int RIGHT_USER = 3;
-	
-	
+	public static Map<User, Color> userColors = new HashMap<>();
 
 	public LoginController initUserLoginView() {
 
@@ -76,7 +76,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException {
 
 		showOnfirstOrPrimaryDisplay(primaryStage);
-		
+
 		restorer = new SessionRestoreState();
 
 		Optional<ObservableConceptMap> restoredMap = restorer.restoreSessionIfNeeded();
@@ -121,12 +121,10 @@ public class Main extends Application {
 		experimentController.setNext((e) -> {
 			this.experiment = e;
 
-
 			userTopController.setNext((u) -> {
 				this.experiment.addParticipant(u);
 				showScene(primaryStage, userBottomController.getView());
 			});
-			
 
 			userLeftController.setNext((u) -> {
 				this.experiment.addParticipant(u);
@@ -143,34 +141,29 @@ public class Main extends Application {
 				toConceptMapStage(primaryStage, this.experiment);
 
 			});
-			
-			if(e.USER_COUNT == 2)
-			{
+
+			if (e.USER_COUNT == 2) {
 				userBottomController.setNext((u) -> {
 					this.experiment.addParticipant(u);
 					toConceptMapStage(primaryStage, this.experiment);
 				});
 			}
-			
-			if(e.USER_COUNT == 3){
+
+			if (e.USER_COUNT == 3) {
 				userLeftController.setNext((u) -> {
 					this.experiment.addParticipant(u);
 					toConceptMapStage(primaryStage, this.experiment);
 				});
 
 			}
-			
 
 			showScene(primaryStage, userTopController.getView());
 		});
-
-		
 
 		primaryStage.setScene(new Scene(examinerController.getView()));
 		primaryStage.setMaximized(true);
 		primaryStage.show();
 	}
-
 
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
@@ -182,20 +175,20 @@ public class Main extends Application {
 	// TODO moving the control elements (e.g. keyboards)
 	// TODO test the damn thing to death
 
-
 	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
 		List<Screen> screens = Screen.getScreens();
-		if(screens.size() == 2) {
+		if (screens.size() == 2) {
 			javafx.stage.Screen secondary = screens.get(1);
 			primaryStage.setX(secondary.getBounds().getMinX());
 			primaryStage.setY(secondary.getBounds().getMinY());
 		}
-			
-		
+
 	}
 
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
+
+		initColors();
 
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
@@ -217,6 +210,7 @@ public class Main extends Application {
 
 		Scene scene = conceptMapViewBuilder.build();
 
+		
 		scene.setOnKeyTyped((l) -> {
 			if (l.getCharacter().equals("f"))
 				primaryStage.setFullScreen(true);
@@ -224,13 +218,22 @@ public class Main extends Application {
 
 		primaryStage.setScene(scene);
 		primaryStage.setFullScreen(true);
-		
+
 		Optional<SessionSaver> sessionSaverOptional = conceptMapViewBuilder.getSessionSaver();
 
 		if (sessionSaverOptional.isPresent()) {
 			restorer.handleRestoreState(primaryStage, sessionSaverOptional.get());
 		}
 
+	}
+
+	private void initColors() {
+		this.userColors.put(conceptMap.getExperiment().getParticipants().get(0), this.userTop);
+		this.userColors.put(conceptMap.getExperiment().getParticipants().get(1), this.userBottom);
+		if (conceptMap.getExperiment().getParticipants().size() > 2)
+			this.userColors.put(conceptMap.getExperiment().getParticipants().get(2), this.userLeft);
+		if (conceptMap.getExperiment().getParticipants().size() > 3)
+			this.userColors.put(conceptMap.getExperiment().getParticipants().get(3), this.userRight);
 	}
 
 	private void showScene(Stage primaryStage, Parent newView) {
