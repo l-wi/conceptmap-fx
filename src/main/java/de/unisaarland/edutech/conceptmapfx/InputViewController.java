@@ -1,12 +1,9 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,15 +30,8 @@ import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeSt
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
-import de.unisaarland.edutech.nuanceclient.AudioRecorder;
-import de.unisaarland.edutech.nuanceclient.NuanceClient;
-import de.unisaarland.edutech.nuanceclient.NuanceClient.Result;
-import de.unisaarland.edutech.nuanceclient.NuanceCredentials;
-import de.unisaarland.edutech.nuanceclient.RecordingException;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
-import javafx.animation.SequentialTransition;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -60,19 +50,13 @@ import javafx.util.Duration;
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
 		LinkDeletedListener, ConceptDeletedListener, ConceptContentChangeListener, SpeechRecognitionListner {
 
-	private static final int MILLIS_ANIMATION_FRAME = 500;
-
 	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
 
 	private User user;
 
-	private static final String CODEC = "audio/x-wav;codec=pcm;bit=16;rate=16000";
-
 	private InputClosedListener closedListener;
 	private List<NewConceptListener> conceptListners = new ArrayList<NewConceptListener>();
 	private List<SpeechRecognitionListner> speechListeners = new ArrayList<SpeechRecognitionListner>();
-
-	File recording;
 
 	public enum Position {
 		TOP, BOTTOM, RIGHT, LEFT
@@ -111,13 +95,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private AlignListener alignListener;
 
-	private AudioRecorder recorder = new AudioRecorder();
-
-	private NuanceClient nuanceClient;
-
-	private SequentialTransition recordingTransition;
-
-	private SequentialTransition listenTransition;
+	private DefaultSpeechListener speechListener;
 
 	@FXML
 	public void initialize() {
@@ -125,25 +103,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			initKeyboard();
 			initButtons();
 			initQuestion();
-			initSpeech();
 			hideInput();
 
 		} catch (IOException | URISyntaxException e) {
 			LOG.error("Program cannot run!", e);
 			throw new RuntimeException("Program cannot run!", e);
-		}
-	}
-
-	private void initSpeech() {
-		try {
-			NuanceCredentials creds = NuanceCredentials.construct();
-			nuanceClient = new NuanceClient(creds);
-			initRecordingTransition();
-			initListenTransition();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
@@ -302,6 +266,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		setInputClosedListener(l);
 		acquireInput(editable, u);
 		keyboard.setDisable(false);
+		speechListener.setBinding(editable);
 
 	}
 
@@ -370,6 +335,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void setUser(User u) {
 		this.user = u;
 		owner.setText(u.getName());
+		this.speechListener = new DefaultSpeechListener(u, btnSpeak);
 
 	}
 
@@ -496,117 +462,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@Override
 	public void speechRecognitionStarted(User u) {
-		if (!u.equals(getUser()))
-			this.btnSpeak.setDisable(true);
-		else
-			startRecording();
-
-	}
-
-	private void startRecording() {
-		try {
-			recording = File.createTempFile("conceptMapRecording", ".wav");
-			recorder.record(recording);
-
-			recordingTransition.play();
-
-		} catch (IOException e) {
-			// TODO exception handling
-			e.printStackTrace();
-		}
-	}
-
-	private void initListenTransition() {
-		PauseTransition p1 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
-
-		p1.setOnFinished((e) -> {
-			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/listen1.png\");");
-		});
-
-		PauseTransition p2 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
-		p2.setOnFinished((e) -> {
-			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/listen2.png\");");
-		});
-
-		listenTransition = new SequentialTransition();
-		listenTransition.setCycleCount(SequentialTransition.INDEFINITE);
-		listenTransition.getChildren().addAll(p1, p2);
-	}
-
-	private void initRecordingTransition() {
-		PauseTransition p1 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
-
-		p1.setOnFinished((e) -> {
-			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/recording1.png\");");
-		});
-
-		PauseTransition p2 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
-		p2.setOnFinished((e) -> {
-			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/recording2.png\");");
-		});
-
-		PauseTransition p3 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
-		p3.setOnFinished((e) -> {
-			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/recording3.png\");");
-		});
-
-		recordingTransition = new SequentialTransition();
-		recordingTransition.setCycleCount(SequentialTransition.INDEFINITE);
-		recordingTransition.getChildren().addAll(p1, p2, p3);
+		speechListener.speechRecognitionStarted(u);
 	}
 
 	@Override
 	public void speechRecognitionFinished(User u) {
-		if (u.equals(getUser())) {
-			recordingTransition.stop();
-			stopRecording();
-			requestRecognition(u);
+		speechListener.speechRecognitionFinished(u);
 
-		} else
-			btnSpeak.setDisable(false);
 	}
 
-	private void requestRecognition(User u) {
-		try {
-			// TODO error handling
-
-			listenTransition.play();
-			nuanceClient.requestAsync(new FileInputStream(recording), CODEC, (c) -> {
-				Platform.runLater(() -> {
-					finishRecognition(u, c);
-				});
-			});
-		} catch (FileNotFoundException e) {
-			// TODO exception handling
-			e.printStackTrace();
-		}
-	}
-
-	private void finishRecognition(User u, Result c) {
-		listenTransition.stop();
-
-		PauseTransition p = new PauseTransition(Duration.millis(1000));
-		p.setOnFinished((e) -> btnSpeak.setStyle(""));
-		p.play();
-
-		if (!c.isSuccessful()) {
-			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/error.png\");");
-			return;
-		}
-
-		btnSpeak.setStyle("-fx-background-image: url(\"/gfx/success.png\");");
-
-		String result = c.resultSet.get(0);
-		for (int i = 0; i < result.length(); i++)
-			collaborativeStringBinding.append(u, result.charAt(i));
-	}
-
-	private void stopRecording() {
-		try {
-			recorder.stop();
-		} catch (RecordingException e) {
-			// TODO exception handling
-			e.printStackTrace();
-		}
-	}
 }
