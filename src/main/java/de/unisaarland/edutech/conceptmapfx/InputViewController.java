@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import de.unisaarland.edutech.nuanceclient.NuanceCredentials;
 import de.unisaarland.edutech.nuanceclient.RecordingException;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -57,6 +59,8 @@ import javafx.util.Duration;
 
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
 		LinkDeletedListener, ConceptDeletedListener, ConceptContentChangeListener, SpeechRecognitionListner {
+
+	private static final int MILLIS_ANIMATION_FRAME = 500;
 
 	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
 
@@ -111,6 +115,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private NuanceClient nuanceClient;
 
+	private SequentialTransition recordingTransition;
+
+	private SequentialTransition listenTransition;
+
 	@FXML
 	public void initialize() {
 		try {
@@ -130,6 +138,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		try {
 			NuanceCredentials creds = NuanceCredentials.construct();
 			nuanceClient = new NuanceClient(creds);
+			initRecordingTransition();
+			initListenTransition();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -497,15 +507,58 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		try {
 			recording = File.createTempFile("conceptMapRecording", ".wav");
 			recorder.record(recording);
+
+			recordingTransition.play();
+
 		} catch (IOException e) {
 			// TODO exception handling
 			e.printStackTrace();
 		}
 	}
 
+	private void initListenTransition() {
+		PauseTransition p1 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
+
+		p1.setOnFinished((e) -> {
+			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/listen1.png\");");
+		});
+
+		PauseTransition p2 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
+		p2.setOnFinished((e) -> {
+			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/listen2.png\");");
+		});
+
+		listenTransition = new SequentialTransition();
+		listenTransition.setCycleCount(SequentialTransition.INDEFINITE);
+		listenTransition.getChildren().addAll(p1, p2);
+	}
+
+	private void initRecordingTransition() {
+		PauseTransition p1 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
+
+		p1.setOnFinished((e) -> {
+			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/recording1.png\");");
+		});
+
+		PauseTransition p2 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
+		p2.setOnFinished((e) -> {
+			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/recording2.png\");");
+		});
+
+		PauseTransition p3 = new PauseTransition(Duration.millis(MILLIS_ANIMATION_FRAME));
+		p3.setOnFinished((e) -> {
+			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/recording3.png\");");
+		});
+
+		recordingTransition = new SequentialTransition();
+		recordingTransition.setCycleCount(SequentialTransition.INDEFINITE);
+		recordingTransition.getChildren().addAll(p1, p2, p3);
+	}
+
 	@Override
 	public void speechRecognitionFinished(User u) {
 		if (u.equals(getUser())) {
+			recordingTransition.stop();
 			stopRecording();
 			requestRecognition(u);
 
@@ -516,10 +569,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private void requestRecognition(User u) {
 		try {
 			// TODO error handling
-			// TODO indicate recognition in UI
-			btnSpeak.setStyle("-fx-background-color:yellow;");
+
+			listenTransition.play();
 			nuanceClient.requestAsync(new FileInputStream(recording), CODEC, (c) -> {
-				Platform.runLater( () -> {
+				Platform.runLater(() -> {
 					finishRecognition(u, c);
 				});
 			});
@@ -530,8 +583,18 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	private void finishRecognition(User u, Result c) {
-		btnSpeak.setStyle("");
-		
+		listenTransition.stop();
+
+		PauseTransition p = new PauseTransition(Duration.millis(1000));
+		p.setOnFinished((e) -> btnSpeak.setStyle(""));
+		p.play();
+
+		if (!c.isSuccessful()) {
+			btnSpeak.setStyle("-fx-background-image: url(\"/gfx/error.png\");");
+			return;
+		}
+
+		btnSpeak.setStyle("-fx-background-image: url(\"/gfx/success.png\");");
 
 		String result = c.resultSet.get(0);
 		for (int i = 0; i < result.length(); i++)
