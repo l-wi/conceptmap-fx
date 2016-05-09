@@ -28,12 +28,15 @@ public class SessionSaver implements ConceptMapObserver {
 
 	private boolean hasUnsavedChanges;
 
+	private CXLExporter cxlExporter;
+	
 	public SessionSaver(ObservableConceptMap conceptMap) {
 		this.conceptMap = conceptMap;
 		Date d = new Date();
 
 		String dateSuffix = new SimpleDateFormat("yyyyMMdhhmmss").format(d);
 		this.workingDir = new File(FOLDER + "/" + dateSuffix);
+		this.cxlExporter = new CXLExporter();
 		isSetup = true;
 		workingDir.mkdir();
 
@@ -57,11 +60,14 @@ public class SessionSaver implements ConceptMapObserver {
 				if (hasUnsavedChanges)
 					try {
 						serialize();
+						export();
 						hasUnsavedChanges = false;
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
 			}
+
+
 		}, 0, 5000);
 	}
 
@@ -75,15 +81,27 @@ public class SessionSaver implements ConceptMapObserver {
 
 	}
 
+	private void export() {
+		File f = nextCXLFile();
+		cxlExporter.export(f, conceptMap);
+	}
+	
 	private void serialize() throws IOException {
-		ObjectOutputStream outputter = new ObjectOutputStream(new FileOutputStream(nextFile()));
+		ObjectOutputStream outputter = new ObjectOutputStream(new FileOutputStream(nextSerializedFile()));
 		outputter.writeObject(conceptMap);
 		outputter.close();
 	}
 
-	private File nextFile() {
+	private File nextSerializedFile() {
 		return new File(workingDir, String.valueOf(counter++) + ".cmap");
 	}
+	
+
+	private File nextCXLFile() {
+		return new File(workingDir, String.valueOf(counter) + ".cxl");
+
+	}
+
 
 	@Override
 	public void afterChange() {

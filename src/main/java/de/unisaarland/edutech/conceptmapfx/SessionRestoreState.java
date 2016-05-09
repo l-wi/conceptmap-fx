@@ -56,7 +56,8 @@ public class SessionRestoreState {
 
 					if (directoryContents[0].getName().equals(RESTORE_FILE_NAME)) {
 						directoryContents[0].delete();
-						File currentState = directoryContents[directoryContents.length - 1];
+						
+						File currentState = getCurrentState(directoryContents);
 						try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(currentState))) {
 							ObservableConceptMap cm = (ObservableConceptMap) stream.readObject();
 							return Optional.of(cm);
@@ -70,6 +71,14 @@ public class SessionRestoreState {
 		}
 
 		return Optional.empty();
+	}
+
+	private File getCurrentState(File[] directoryContents) {
+		for(int i=directoryContents.length-1; i >= 0; i--){
+			if(directoryContents[i].getName().contains(".cmap"))
+				return directoryContents[i];
+		}
+		throw new RuntimeException("No restore state found!");
 	}
 
 	private Optional<File[]> sortContentsNumerical(File d) {
