@@ -176,11 +176,9 @@ public class Main extends Application {
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO undo buggy
 	// TODO longpress when moving
-	// TODO Export into CXL
 	// TODO import into CXL
 	// TODO instruction component
 	// TODO awareness component
-	// TODO talk button
 	// TODO moving the control elements (e.g. keyboards)
 	// TODO test the damn thing to death
 
