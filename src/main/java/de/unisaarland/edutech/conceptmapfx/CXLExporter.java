@@ -13,9 +13,13 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
+import de.unisaarland.edutech.conceptmapping.Experiment;
+import de.unisaarland.edutech.conceptmapping.FocusQuestion;
 import de.unisaarland.edutech.conceptmapping.Link;
+import de.unisaarland.edutech.conceptmapping.User;
 
 public class CXLExporter {
 
@@ -43,6 +47,10 @@ public class CXLExporter {
 			out.writeEndElement();
 
 			out.writeEndElement();
+			
+			out.writeEndDocument();
+			
+			out.flush();
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,7 +67,6 @@ public class CXLExporter {
 		}
 	}
 	
-	//Falsch vom link zum concept! Neu
 	private void writeConnections() throws XMLStreamException {
 		out.writeStartElement("connection-list");
 		for (int i = 0; i < cmap.getConceptCount(); i++) {
@@ -69,11 +76,22 @@ public class CXLExporter {
 					boolean directed = cmap.isLinkedDirectedStartToEnd(i, j);
 
 					out.writeStartElement("connection");
-					out.writeAttribute("id", "con" + String.valueOf(i) + String.valueOf(j));
+					out.writeAttribute("id", "con" + String.valueOf(i) + String.valueOf(j) + "f");
 					out.writeAttribute("from-id", "c" + i);
-					out.writeAttribute("to-id", "c" + j);
-					out.writeAttribute("isBidirectional", String.valueOf(directed));
+					out.writeAttribute("to-id", "l" + String.valueOf(i) + String.valueOf(j));
+					if(!directed)
+						out.writeAttribute("isBidirectional", "true");
 					out.writeEndElement();
+					
+					out.writeStartElement("connection");
+					out.writeAttribute("id", "con" + String.valueOf(i) + String.valueOf(j) + "t");
+					out.writeAttribute("from-id", "l" + String.valueOf(i) + String.valueOf(j));
+					out.writeAttribute("to-id", "c" + j);
+					if(!directed)
+						out.writeAttribute("isBidirectional", "true");
+					
+					out.writeEndElement();
+					
 				}
 			}
 		}
@@ -111,5 +129,27 @@ public class CXLExporter {
 		}
 		out.writeEndElement();
 
+	}
+	
+	public static void main(String[] args) {
+		User u = new User("Tim", "Tim@tim.de");
+		ConceptMap map = new ConceptMap(new Experiment(u, new FocusQuestion("Test", u), 3));
+		
+		Concept dog = new Concept(new CollaborativeString(u,"Hund"));
+		map.addConcept(dog);
+
+		Concept cat = new Concept(new CollaborativeString(u,"Katze"));
+		map.addConcept(cat);
+
+		Concept mouse = new  Concept(new CollaborativeString(u,"Maus"));
+		map.addConcept(mouse);
+		
+		map.addDirectedLink(dog,cat).getCaption().insert(u, 0, "jagt");
+		
+		map.addDirectedLink(cat,mouse).getCaption().insert(u, 0, "eats");
+
+		CXLExporter exporter = new CXLExporter();
+		exporter.export(new File("test.cxl"), map);
+		
 	}
 }
