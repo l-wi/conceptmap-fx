@@ -218,7 +218,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@FXML
 	public void onNewAction() {
-		btnNewConcept.setDisable(true);
 		emptyConceptCount++;
 		fireNew();
 	}

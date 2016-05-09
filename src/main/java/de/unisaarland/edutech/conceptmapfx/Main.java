@@ -188,7 +188,7 @@ public class Main extends Application {
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
 
-		initColors();
+		
 
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
@@ -196,6 +196,8 @@ public class Main extends Application {
 		if (conceptMap == null)
 			conceptMap = new ObservableConceptMap(experiment, linkFactory);
 
+		initColors();
+		
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
 
