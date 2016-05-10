@@ -98,8 +98,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private DefaultSpeechListener speechListener;
 
 	private double translateX;
-	
-	
+
+	/**
+	 * 
+	 */
 	@FXML
 	public void initialize() {
 		try {
@@ -107,15 +109,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			initButtons();
 			initQuestion();
 			hideInput();
-			
-			inputControls.setOnTouchPressed((e) -> {
-				translateX = e.getTouchPoint().getX();
-				
-			});
-			inputControls.setOnTouchMoved( (e) -> {
-				TouchPoint touchPoint = e.getTouchPoint();
-				inputControls.setTranslateX(inputControls.getTranslateX() + touchPoint.getX() - translateX);
-			});
+
+			initDragging();
 
 		} catch (IOException | URISyntaxException e) {
 			LOG.error("Program cannot run!", e);
@@ -123,9 +118,23 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		}
 	}
 
+	private void initDragging() {
+		inputControls.setOnTouchPressed((e) -> {
+			translateX = e.getTouchPoint().getX();
+
+		});
+
+		inputControls.setOnTouchMoved((e) -> {
+			TouchPoint touchPoint = e.getTouchPoint();
+			if (Math.abs(touchPoint.getX() - translateX) > 30)
+				inputControls.setTranslateX(inputControls.getTranslateX() + touchPoint.getX() - translateX);
+		});
+	}
+
 	private void initButtons() {
 
-		// FIXME currently removing undo function because it is buggy and is hard to fix
+		// FIXME currently removing undo function because it is buggy and is
+		// hard to fix
 		btnUndo.setVisible(false);
 
 		btnAlign.setOnTouchPressed(e -> setTouchHighlight(btnAlign));
@@ -141,7 +150,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private void initKeyboard() throws MalformedURLException, IOException, URISyntaxException {
 		keyboard.setKeyBoardStyle(getClass().getResource("/css/input.css").toString());
 		keyboard.setSpaceKeyMove(false);
-		
 		keyboard.setLayerPath(new File("./keyboardLayout").toPath());
 		keyboard.load();
 
@@ -194,10 +202,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 				if (e.getTouchCount() > 1) {
 					key.fireEvent(new KeyButtonEvent(KeyButtonEvent.SHORT_PRESSED));
 					setTouchHighlight(key);
+					e.consume();
 				}
 
 			});
-			key.setOnTouchReleased(e -> removeTouchHighlight(key));
+			key.setOnTouchReleased(e -> {
+				removeTouchHighlight(key);
+				e.consume();
+			});
 		});
 	}
 
@@ -304,8 +316,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		Set<Node> hiddenNodes = inputControls.lookupAll(".hideable");
 
 		unhideInputControl(hiddenNodes);
-		
-		// FIXME currently removing undo function because it is buggy and is hard to fix
+
+		// FIXME currently removing undo function because it is buggy and is
+		// hard to fix
 		btnUndo.setVisible(false);
 
 	}
@@ -330,7 +343,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	}
 
-	//TODO is this still needed?
+	// TODO is this still needed?
 	public void conceptDeleted(ConceptViewController cv, User u) {
 
 		Concept concept = cv.getConcept();
@@ -339,7 +352,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		boolean isEmpty = concept.getName().getContent().isEmpty();
 		if (belongsToUser && isEmpty) {
 			emptyConceptCount--;
-//			btnNewConcept.setDisable(emptyConceptCount > 0);
+			// btnNewConcept.setDisable(emptyConceptCount > 0);
 		}
 
 		if (u == null || !u.equals(this.user))
