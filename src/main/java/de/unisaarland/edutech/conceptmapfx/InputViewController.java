@@ -141,6 +141,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private void initKeyboard() throws MalformedURLException, IOException, URISyntaxException {
 		keyboard.setKeyBoardStyle(getClass().getResource("/css/input.css").toString());
 		keyboard.setSpaceKeyMove(false);
+		
 		keyboard.setLayerPath(new File("./keyboardLayout").toPath());
 		keyboard.load();
 
@@ -282,6 +283,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		setInputClosedListener(l);
 		acquireInput(editable, u);
 		keyboard.setDisable(false);
+		btnSpeak.setDisable(false);
 		speechListener.setBinding(editable);
 
 	}
@@ -323,10 +325,12 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			currentRobotHandler = null;
 			closedListener = null;
 			keyboard.setDisable(true);
+			btnSpeak.setDisable(true);
 		}
 
 	}
 
+	//TODO is this still needed?
 	public void conceptDeleted(ConceptViewController cv, User u) {
 
 		Concept concept = cv.getConcept();
@@ -335,7 +339,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		boolean isEmpty = concept.getName().getContent().isEmpty();
 		if (belongsToUser && isEmpty) {
 			emptyConceptCount--;
-			btnNewConcept.setDisable(emptyConceptCount > 0);
+//			btnNewConcept.setDisable(emptyConceptCount > 0);
 		}
 
 		if (u == null || !u.equals(this.user))
