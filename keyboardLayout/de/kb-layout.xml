@@ -12,7 +12,7 @@
 		<Key codes="105" keyLabel="i" />
 		<Key codes="111,246,245,244,243,242,248" keyLabel="o" />
 		<Key codes="112" keyLabel="p" />
-		<Key codes="-5" keyLabel="!" keyLabelStyle=".font-fxkeyboard" repeatable="true" />
+		<Key codes="-5" keyLabel="!" keyLabelStyle=".font-fxkeyboard"  keyWidth="60" repeatable="true" />
 	</Row>
 
 	<Row>
@@ -26,7 +26,6 @@
 		<Key codes="106" keyLabel="j" />
 		<Key codes="107" keyLabel="k" />
 		<Key codes="108" keyLabel="l" />
-		<Key codes="-9" keyLabel="ENTER" keyLabelStyle=".small-style" keyWidth="70" />
 	</Row>
 
 	<Row>
