@@ -15,7 +15,7 @@
 	-fx-background-color:#FFFFFF;
 	-fx-border-radius:15.0;
 	-fx-background-radius: 20.0;
-	-fx-border-width:4;			
+	-fx-border-width:4.0;			
 }
 
 #caption{
@@ -25,28 +25,28 @@
 
 .belongsToTopUnderline{
 	-fx-border-color: userTop;
-	-fx-border-width : 0 0 3 0 ;	
+	-fx-border-width : 3.0 3.0 3.0 3.0 ;	
 }
 
 .belongsToBottomUnderline{
 	-fx-border-color: userBottom;
-	-fx-border-width : 0 0 3 0 ;	
+	-fx-border-width : 3.0 3.0 3.0 3.0 ;	
 }
 
 .belongsToLeftUnderline{
 	-fx-border-color: userLeft;
-	-fx-border-width : 0 0 3 0 ;	
+	-fx-border-width : 3.0 3.0 3.0 3.0 ;		
 }
 
 .belongsToRightUnderline{
 	-fx-border-color: userRight;
-	-fx-border-width : 0 0 3 0 ;	
+	-fx-border-width : 3.0 3.0 3.0 3.0 ;	
 }
 
 .belongsToTop, .belongsToBottom, .belongsToLeft, .belongsToRight{
 	 -fx-border-radius:15.0;
 	 -fx-background-radius: 20.0;
-	 -fx-border-width:6;	
+	 -fx-border-width:6.0;	
  
 	
 }
@@ -81,7 +81,7 @@ Label{
 -fx-border-radius: 10.0;
 -fx-background-radius: 10.0;
 -fx-background-repeat: no-repeat;
--fx-background-size: 30 30;
+-fx-background-size: 30.0 30.0;
 -fx-background-position: center;
 -fx-font-size: 1.3em;
 -fx-text-fill:#ffffff;
