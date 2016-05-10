@@ -371,7 +371,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void setUser(User u) {
 		this.user = u;
 		owner.setText(u.getName());
-		this.speechListener = new DefaultSpeechListener(u, btnSpeak);
+		this.speechListener = new DefaultSpeechListener(u, btnSpeak, btnNewConcept);
 
 	}
 

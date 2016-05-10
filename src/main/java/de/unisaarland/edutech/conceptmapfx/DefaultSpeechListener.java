@@ -1,11 +1,9 @@
 package de.unisaarland.edutech.conceptmapfx;
 
-import java.awt.Desktop.Action;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import de.unisaarland.edutech.conceptmapfx.event.SpeechRecognitionListner;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
@@ -20,6 +18,7 @@ import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.util.Duration;
 
@@ -43,9 +42,12 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 
 	private boolean isProcessing;
 
-	public DefaultSpeechListener(User u, ToggleButton btnSpeak) {
+	private Button btnNew;
+
+	public DefaultSpeechListener(User u, ToggleButton btnSpeak, Button btnNew) {
 		this.btnSpeak = btnSpeak;
 		this.user = u;
+		this.btnNew = btnNew;
 
 		initListenTransition();
 		initRecordingTransition();
@@ -104,8 +106,10 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 	public void speechRecognitionStarted(User u) {
 		if (!u.equals(user))
 			this.btnSpeak.setDisable(true);
-		else if (!isProcessing)
+		else if (!isProcessing) {
+			btnNew.setDisable(true);
 			startRecording();
+		}
 
 	}
 
@@ -126,6 +130,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 	private void startRecording() {
 		try {
 			isProcessing = true;
+
 			recording = File.createTempFile("conceptMapRecording", ".wav");
 			recorder.record(recording);
 
@@ -159,6 +164,8 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 		PauseTransition p = new PauseTransition(Duration.millis(1000));
 		p.setOnFinished((e) -> {
 			btnSpeak.setStyle("");
+			btnNew.setDisable(false);
+
 			isProcessing = false;
 		});
 		p.play();
