@@ -165,12 +165,12 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
+	// TODO data export
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO longpress when moving
 	// TODO instruction component
 	// TODO awareness component
-	// TODO import into CXL
 	// TODO test the damn thing to death
 
 	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
