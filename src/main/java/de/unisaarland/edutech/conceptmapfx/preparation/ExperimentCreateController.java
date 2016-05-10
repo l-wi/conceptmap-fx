@@ -61,8 +61,13 @@ public class ExperimentCreateController {
 
 	private void initBtnRun() {
 		btnRun.setOnAction((e) -> {
-			String currentQuestion = cmbFocusQuestion.getSelectionModel().getSelectedItem().trim();
+			String currentQuestion = cmbFocusQuestion.getSelectionModel().getSelectedItem();
 
+			if(currentQuestion == null)
+				currentQuestion = cmbFocusQuestion.getEditor().getText();
+			
+			currentQuestion.trim();
+			
 			FocusQuestion q = updateQuestionList(currentQuestion);
 
 			rewriteQuestionList();
