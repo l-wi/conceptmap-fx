@@ -112,6 +112,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private void initButtons() {
 
+		// FIXME currently removing undo function because it is buggy and is hard to fix
+		btnUndo.setVisible(false);
+
 		btnAlign.setOnTouchPressed(e -> setTouchHighlight(btnAlign));
 		btnUndo.setOnTouchPressed(e -> setTouchHighlight(btnUndo));
 		btnNewConcept.setOnTouchPressed(e -> setTouchHighlight(btnNewConcept));
@@ -286,6 +289,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		Set<Node> hiddenNodes = inputControls.lookupAll(".hideable");
 
 		unhideInputControl(hiddenNodes);
+		
+		// FIXME currently removing undo function because it is buggy and is hard to fix
+		btnUndo.setVisible(false);
 
 	}
 
