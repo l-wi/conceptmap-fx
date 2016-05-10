@@ -26,7 +26,6 @@
 		<Key codes="61" keyLabel="=" />
 		<Key codes="40" keyLabel="(" />
 		<Key codes="41" keyLabel=")" />
-		<Key codes="-9" keyLabel="ENTER" keyLabelStyle=".small-style" keyWidth="70" />
 	</Row>
 	<Row>
 		<Key codes="-1" keyLabel="I" keyLabelStyle=".font-fxkeyboard" keyWidth="40" modifier="true" sticky="true" />
