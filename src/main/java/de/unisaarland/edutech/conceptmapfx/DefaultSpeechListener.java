@@ -41,6 +41,8 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 
 	private CollaborativeStringTextFieldBinding binding;
 
+	private boolean isProcessing;
+
 	public DefaultSpeechListener(User u, ToggleButton btnSpeak) {
 		this.btnSpeak = btnSpeak;
 		this.user = u;
@@ -83,8 +85,6 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 		recordingTransition.getChildren().addAll(p1, p2, p3);
 	}
 
-
-
 	private String getStyleForImage(String image) {
 		return String.format("-fx-background-image: url(\"/gfx/%s\")", image);
 	}
@@ -104,13 +104,16 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 	public void speechRecognitionStarted(User u) {
 		if (!u.equals(user))
 			this.btnSpeak.setDisable(true);
-		else
+		else if (!isProcessing)
 			startRecording();
 
 	}
 
 	@Override
 	public void speechRecognitionFinished(User u) {
+		if (!isProcessing)
+			return;
+
 		if (u.equals(user)) {
 			recordingTransition.stop();
 			stopRecording();
@@ -122,6 +125,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 
 	private void startRecording() {
 		try {
+			isProcessing = true;
 			recording = File.createTempFile("conceptMapRecording", ".wav");
 			recorder.record(recording);
 
@@ -153,7 +157,10 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 		listenTransition.stop();
 
 		PauseTransition p = new PauseTransition(Duration.millis(1000));
-		p.setOnFinished((e) -> btnSpeak.setStyle(""));
+		p.setOnFinished((e) -> {
+			btnSpeak.setStyle("");
+			isProcessing = false;
+		});
 		p.play();
 
 		if (!c.isSuccessful()) {
