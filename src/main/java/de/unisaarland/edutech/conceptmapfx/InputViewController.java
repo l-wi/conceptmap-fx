@@ -40,6 +40,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.TouchEvent;
+import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -96,6 +97,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private DefaultSpeechListener speechListener;
 
+	private double translateX;
+	
+	
 	@FXML
 	public void initialize() {
 		try {
@@ -103,6 +107,15 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			initButtons();
 			initQuestion();
 			hideInput();
+			
+			inputControls.setOnTouchPressed((e) -> {
+				translateX = e.getTouchPoint().getX();
+				
+			});
+			inputControls.setOnTouchMoved( (e) -> {
+				TouchPoint touchPoint = e.getTouchPoint();
+				inputControls.setTranslateX(inputControls.getTranslateX() + touchPoint.getX() - translateX);
+			});
 
 		} catch (IOException | URISyntaxException e) {
 			LOG.error("Program cannot run!", e);

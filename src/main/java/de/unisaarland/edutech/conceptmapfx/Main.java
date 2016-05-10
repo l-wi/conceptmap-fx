@@ -167,12 +167,10 @@ public class Main extends Application {
 
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
-	// TODO undo buggy
 	// TODO longpress when moving
-	// TODO import into CXL
 	// TODO instruction component
 	// TODO awareness component
-	// TODO moving the control elements (e.g. keyboards)
+	// TODO import into CXL
 	// TODO test the damn thing to death
 
 	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
