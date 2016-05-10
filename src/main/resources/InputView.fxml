@@ -14,8 +14,10 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import java.lang.Double ?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.Pane?>
 
-<AnchorPane styleClass="input" fx:id="inputPane"
+<AnchorPane minHeight="330" scaleX="1.2" scaleY="1.2" styleClass="input" fx:id="inputPane"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
 	fx:controller="de.unisaarland.edutech.conceptmapfx.InputViewController">
 	<!-- TODO Add Nodes -->
@@ -31,18 +33,20 @@
 
 						<Label fx:id="lblStatus" text="" />
 					</HBox>
-					<HBox>
+					<HBox  >
 						<children>
 
 							<VBox>
 								<children>
-									<KeyboardPane styleClass="hideable" id="keyboard"
-										fx:id="keyboard" />
+									<Pane>
+										<KeyboardPane styleClass="hideable" id="keyboard"
+											fx:id="keyboard" />
+
+									</Pane>
 									<AnchorPane id="ownerPane" prefHeight="60">
 										<HBox>
 											<children>
-												<BorderPane fx:id="ownerIcon" prefHeight="60"
-													prefWidth="60">
+												<BorderPane fx:id="ownerIcon" prefWidth="60">
 													<center>
 														<Label styleClass="letter"></Label>
 													</center>
@@ -68,10 +72,10 @@
 										prefWidth="100.0" prefHeight="50.0" />
 
 									<Button styleClass="hideable" id="align" fx:id="btnAlign"
-										text="Align Rotation" onAction="#onAlignAction" mnemonicParsing="false"
-										prefWidth="100.0" prefHeight="50.0" />
-										
-										
+										text="Align Rotation" onAction="#onAlignAction"
+										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0" />
+
+
 									<ToggleButton styleClass="hideable" id="voice"
 										fx:id="btnSpeak" mnemonicParsing="false" prefWidth="100.0"
 										prefHeight="50.0" onAction="#onSpeechAction" />
