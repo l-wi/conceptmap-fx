@@ -40,7 +40,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 
 	private CollaborativeStringTextFieldBinding binding;
 
-	private boolean isProcessing;
+	private boolean  isProcessing;
 
 	private Button btnNew;
 
@@ -106,6 +106,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 	public void speechRecognitionStarted(User u) {
 		if (!u.equals(user))
 			this.btnSpeak.setDisable(true);
+		
 		else if (!isProcessing) {
 			btnNew.setDisable(true);
 			startRecording();
@@ -161,7 +162,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 	private void finishRecognition(User u, Result c) {
 		listenTransition.stop();
 
-		PauseTransition p = new PauseTransition(Duration.millis(1000));
+		PauseTransition p = new PauseTransition(Duration.millis(1500));
 		p.setOnFinished((e) -> {
 			btnSpeak.setStyle("");
 			btnNew.setDisable(false);
