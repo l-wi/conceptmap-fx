@@ -37,6 +37,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.TouchEvent;
@@ -137,14 +138,15 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		// hard to fix
 		btnUndo.setVisible(false);
 
-		btnAlign.setOnTouchPressed(e -> setTouchHighlight(btnAlign));
-		btnUndo.setOnTouchPressed(e -> setTouchHighlight(btnUndo));
-		btnNewConcept.setOnTouchPressed(e -> setTouchHighlight(btnNewConcept));
+		btnAlign.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnAlign));
+		btnUndo.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnUndo));
+		btnNewConcept.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnNewConcept));
+		btnSpeak.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnSpeak));
 
 		btnAlign.setOnTouchReleased(e -> removeTouchHighlight(btnAlign));
 		btnUndo.setOnTouchReleased(e -> removeTouchHighlight(btnUndo));
 		btnNewConcept.setOnTouchReleased(e -> removeTouchHighlight(btnNewConcept));
-
+		btnSpeak.setOnTouchReleased(e -> removeTouchHighlight(btnSpeak));
 	}
 
 	private void initKeyboard() throws MalformedURLException, IOException, URISyntaxException {
@@ -201,7 +203,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			key.setOnTouchPressed(e -> {
 				if (e.getTouchCount() > 1) {
 					key.fireEvent(new KeyButtonEvent(KeyButtonEvent.SHORT_PRESSED));
-					setTouchHighlight(key);
+					setTouchHighlightAndFire(e, key);
 					e.consume();
 				}
 
@@ -213,11 +215,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		});
 	}
 
-	private void setTouchHighlight(Button b) {
-		b.setStyle("-fx-background-color: #dcdcdc");
+	private void setTouchHighlightAndFire(TouchEvent e, ButtonBase b) {
+		if (e.getTouchCount() > 1) {
+			b.setStyle("-fx-background-color: #dcdcdc");
+			b.fire();
+		}
 	}
 
-	private void removeTouchHighlight(Button b) {
+	private void removeTouchHighlight(ButtonBase b) {
 		PauseTransition wait = new PauseTransition(Duration.millis(300));
 		wait.setOnFinished((e) -> {
 			b.setStyle("");
