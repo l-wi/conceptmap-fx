@@ -114,9 +114,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 		btnAlign.setOnTouchPressed(e -> setTouchHighlight(btnAlign));
 		btnUndo.setOnTouchPressed(e -> setTouchHighlight(btnUndo));
+		btnNewConcept.setOnTouchPressed(e -> setTouchHighlight(btnNewConcept));
 
 		btnAlign.setOnTouchReleased(e -> removeTouchHighlight(btnAlign));
 		btnUndo.setOnTouchReleased(e -> removeTouchHighlight(btnUndo));
+		btnNewConcept.setOnTouchReleased(e -> removeTouchHighlight(btnNewConcept));
 
 	}
 
@@ -189,7 +191,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private void removeTouchHighlight(Button b) {
 		PauseTransition wait = new PauseTransition(Duration.millis(300));
 		wait.setOnFinished((e) -> {
-			b.setStyle("-fx-background-color: #3c4250");
+			b.setStyle("");
 		});
 		wait.play();
 	}
