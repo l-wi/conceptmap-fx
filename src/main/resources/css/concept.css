@@ -25,22 +25,22 @@
 
 .belongsToTopUnderline{
 	-fx-border-color: userTop;
-	-fx-border-width : 3.0 3.0 3.0 3.0 ;	
+	-fx-border-width : 0 3.0 0 0 ;	
 }
 
 .belongsToBottomUnderline{
 	-fx-border-color: userBottom;
-	-fx-border-width : 3.0 3.0 3.0 3.0 ;	
+	-fx-border-width : 0 3.0 0 0 ;	
 }
 
 .belongsToLeftUnderline{
 	-fx-border-color: userLeft;
-	-fx-border-width : 3.0 3.0 3.0 3.0 ;		
+	-fx-border-width : 0 3.0 0 0 ;	
 }
 
 .belongsToRightUnderline{
 	-fx-border-color: userRight;
-	-fx-border-width : 3.0 3.0 3.0 3.0 ;	
+	-fx-border-width : 0 3.0 0 0 ;	
 }
 
 .belongsToTop, .belongsToBottom, .belongsToLeft, .belongsToRight{
