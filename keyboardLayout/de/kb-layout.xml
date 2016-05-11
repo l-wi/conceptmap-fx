@@ -12,6 +12,8 @@
 		<Key codes="105" keyLabel="i" />
 		<Key codes="111" keyLabel="o" />
 		<Key codes="112" keyLabel="p" />
+		<Key codes="252" keyLabel="ü" />
+		
 		<Key codes="-5" keyLabel="!" keyLabelStyle=".font-fxkeyboard"  keyWidth="60" repeatable="true" />
 	</Row>
 
@@ -26,6 +28,10 @@
 		<Key codes="106" keyLabel="j" />
 		<Key codes="107" keyLabel="k" />
 		<Key codes="108" keyLabel="l" />
+		<Key codes="246" keyLabel="ö" />
+		<Key codes="228" keyLabel="ä" />
+		
+		
 	</Row>
 
 	<Row>
