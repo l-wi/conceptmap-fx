@@ -34,15 +34,15 @@ public class ExperimentCreateController {
 
 	@FXML
 	private Parent root;
-	
+
 	@FXML
 	private KeyboardPane keyboard;
 	@FXML
 	private ComboBox<String> cmbFocusQuestion;
-	
+
 	@FXML
 	private ComboBox<String> userPicker;
-	
+
 	@FXML
 	private Button btnRun;
 
@@ -61,20 +61,14 @@ public class ExperimentCreateController {
 
 	private void initBtnRun() {
 		btnRun.setOnAction((e) -> {
-			String currentQuestion = cmbFocusQuestion.getSelectionModel().getSelectedItem();
-
-			if(currentQuestion == null)
-				currentQuestion = cmbFocusQuestion.getEditor().getText();
-			
-			currentQuestion.trim();
-			
+			String currentQuestion = cmbFocusQuestion.getValue().trim();
 			FocusQuestion q = updateQuestionList(currentQuestion);
 
 			rewriteQuestionList();
-		
+
 			Integer userCount = Integer.valueOf(userPicker.getValue());
-			
-			next.accept(new Experiment(researcher, q,userCount));
+
+			next.accept(new Experiment(researcher, q, userCount));
 
 		});
 	}
@@ -86,7 +80,7 @@ public class ExperimentCreateController {
 
 		if (question.isPresent()) {
 			int index = this.available.indexOf(question.get());
-			Collections.rotate(available.subList(0, index+1), 1);
+			Collections.rotate(available.subList(0, index + 1), 1);
 		} else {
 			question = Optional.of(new FocusQuestion(currentQuestion, researcher));
 			available.add(0, question.get());
@@ -117,7 +111,7 @@ public class ExperimentCreateController {
 	}
 
 	private void initCmbFocusQuestion() {
-		
+
 		List<String> questionStrings = available.stream().map((f) -> f.getQuestion()).collect(Collectors.toList());
 		cmbFocusQuestion.getItems().addAll(questionStrings);
 		cmbFocusQuestion.getSelectionModel().select(0);
@@ -125,7 +119,10 @@ public class ExperimentCreateController {
 		cmbFocusQuestion.getSelectionModel().selectedItemProperty().addListener((c, o, n) -> {
 
 		});
-		cmbFocusQuestion.getEditor().textProperty().addListener((c, o, n) -> btnRun.setDisable(n.trim().isEmpty()));
+		cmbFocusQuestion.getEditor().textProperty().addListener((c, o, n) -> {
+			btnRun.setDisable(n.trim().isEmpty());
+			cmbFocusQuestion.setValue(n);
+		});
 
 		cmbFocusQuestion.getSelectionModel().clearSelection();
 		cmbFocusQuestion.setFocusTraversable(false);
@@ -143,7 +140,6 @@ public class ExperimentCreateController {
 		}
 	}
 
-	
 	public void setNext(Consumer<Experiment> next) {
 		this.next = next;
 	}
@@ -151,8 +147,7 @@ public class ExperimentCreateController {
 	public void setResearcher(User researcher) {
 		this.researcher = researcher;
 	}
-	
-	
+
 	public Parent getView() {
 		return root;
 	}
