@@ -32,10 +32,6 @@ public class LowLevelInteractionListener {
 
 	private double dragY;
 
-	private double rotateX;
-
-	private double rotateY;
-
 	private boolean isPressed;
 
 	private int touchEventsActive;
@@ -143,13 +139,6 @@ public class LowLevelInteractionListener {
 
 		onRotate(e.getAngle());
 
-		e.consume();
-	}
-
-	public void onRotationStarted(RotateEvent e) {
-
-		rotateY = e.getSceneY();
-		rotateX = e.getSceneX();
 		e.consume();
 	}
 
