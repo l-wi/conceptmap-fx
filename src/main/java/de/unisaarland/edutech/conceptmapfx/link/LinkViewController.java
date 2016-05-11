@@ -123,7 +123,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		initToggleTexts();
 
 		linkCaption.setUserCount(participants.size());
-		
+
 		layout();
 	}
 
@@ -188,11 +188,10 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/LinkView.fxml"));
 
 			this.linkCaption = loader.load();
-			//TODO this is only a workaround
+			// TODO this is only a workaround
 			linkCaption.getCaption().setMaxHeight(25);
-			
-			this.editable = CollaborativeStringTextFieldBinding.createBinding(this.link.getCaption(),
-					this.linkCaption.getCaption());
+
+			this.editable = CollaborativeStringTextFieldBinding.createBinding(this.link, this.linkCaption.getCaption());
 
 			linkCaption.selectionChangedProperty().addListener((l, o, n) -> {
 				if (n.isSelected)
@@ -411,10 +410,12 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		else
 			return participants.get(index);
 	}
-	
-	public void rotateAbsolute(int r) {		
-	
+
+	public void rotateAbsolute(int r) {
 		this.linkCaption.setRotate(r);
-		
+	}
+	
+	public Link getLink() {
+		return link;
 	}
 }

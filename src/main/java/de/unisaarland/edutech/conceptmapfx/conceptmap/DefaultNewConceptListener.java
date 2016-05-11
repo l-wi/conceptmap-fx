@@ -1,6 +1,7 @@
 package de.unisaarland.edutech.conceptmapfx.conceptmap;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController;
+import de.unisaarland.edutech.conceptmapfx.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
@@ -12,6 +13,8 @@ import javafx.util.Duration;
 
 public class DefaultNewConceptListener implements NewConceptListener {
 
+	private static final InteractionLogger INTERACTION_LOGGER = InteractionLogger.getInstance();
+	
 	private ConceptViewBuilder conceptViewBuilder;
 	private ConceptMapViewController mapController;
 
@@ -28,17 +31,17 @@ public class DefaultNewConceptListener implements NewConceptListener {
 
 		conceptViewBuilder.withNewConcept(user);
 
-//		conceptViewBuilder.withConceptEmptyListener(controller);
+		// conceptViewBuilder.withConceptEmptyListener(controller);
 
-
-		
 		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(controller,
 				this.mapController.getView());
 
 		updateConceptPosition(cv);
 
 		this.mapController.add(cv);
-		
+
+		INTERACTION_LOGGER.newConceptData(cv.getConcept(), user);
+
 		animateNew(cv);
 	}
 
@@ -51,10 +54,9 @@ public class DefaultNewConceptListener implements NewConceptListener {
 		scaleTrans.setFromY(0);
 		scaleTrans.setToX(1);
 		scaleTrans.setToY(1);
-		
-		ParallelTransition transition = new ParallelTransition();
-		transition.getChildren().addAll(fadeTrans,scaleTrans);
 
+		ParallelTransition transition = new ParallelTransition();
+		transition.getChildren().addAll(fadeTrans, scaleTrans);
 
 		transition.play();
 	}

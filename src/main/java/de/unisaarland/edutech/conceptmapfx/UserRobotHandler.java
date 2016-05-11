@@ -19,7 +19,7 @@ public class UserRobotHandler implements IRobot {
 	public void sendToComponent(Object source, char ch, boolean ctrl) {
 
 		if (ch == java.awt.event.KeyEvent.VK_BACK_SPACE) {
-			editable.removeLast();
+			editable.removeLast(u);
 		} else {
 			editable.append(u,ch);
 		}

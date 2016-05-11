@@ -16,11 +16,11 @@ public class SessionSaver implements ConceptMapObserver {
 
 	private static final int SNAPSHOT_TIME = 1000 * 30;
 
-	private final String FOLDER = "./session";
+	private static final String FOLDER = "./session";
 
 	private ObservableConceptMap conceptMap;
 
-	private File workingDir;
+	private static File workingDir;
 
 	private int counter = 1;
 
@@ -29,16 +29,12 @@ public class SessionSaver implements ConceptMapObserver {
 	private boolean hasUnsavedChanges;
 
 	private CXLExporter cxlExporter;
-	
+
 	public SessionSaver(ObservableConceptMap conceptMap) {
 		this.conceptMap = conceptMap;
-		Date d = new Date();
 
-		String dateSuffix = new SimpleDateFormat("yyyyMMdhhmmss").format(d);
-		this.workingDir = new File(FOLDER + "/" + dateSuffix);
 		this.cxlExporter = new CXLExporter();
 		isSetup = true;
-		workingDir.mkdir();
 
 		try {
 			serialize();
@@ -48,7 +44,13 @@ public class SessionSaver implements ConceptMapObserver {
 
 	}
 
-	public File getWorkingDir() {
+	public static File getWorkingDir() {
+		if (workingDir == null) {
+			Date d = new Date();
+			String dateSuffix = new SimpleDateFormat("yyyyMMdhhmmss").format(d);
+			workingDir = new File(FOLDER + "/" + dateSuffix);
+			workingDir.mkdir();
+		}
 		return workingDir;
 	}
 
@@ -67,7 +69,6 @@ public class SessionSaver implements ConceptMapObserver {
 					}
 			}
 
-
 		}, 0, 5000);
 	}
 
@@ -85,7 +86,7 @@ public class SessionSaver implements ConceptMapObserver {
 		File f = nextCXLFile();
 		cxlExporter.export(f, conceptMap);
 	}
-	
+
 	private void serialize() throws IOException {
 		ObjectOutputStream outputter = new ObjectOutputStream(new FileOutputStream(nextSerializedFile()));
 		outputter.writeObject(conceptMap);
@@ -95,13 +96,11 @@ public class SessionSaver implements ConceptMapObserver {
 	private File nextSerializedFile() {
 		return new File(workingDir, String.valueOf(counter++) + ".cmap");
 	}
-	
 
 	private File nextCXLFile() {
 		return new File(workingDir, String.valueOf(counter) + ".cxl");
 
 	}
-
 
 	@Override
 	public void afterChange() {

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.InputViewController;
+import de.unisaarland.edutech.conceptmapfx.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
@@ -28,6 +29,8 @@ import javafx.scene.Node;
 public class ConceptMapViewController implements LinkDeletedListener, LinkDirectionUpdatedListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapViewController.class);
+
+	private static final InteractionLogger INTERACTION_LOGGER = InteractionLogger.getInstance();
 
 	private List<ConceptDeletedListener> conceptDeletedListners = new ArrayList<ConceptDeletedListener>();
 	private List<LinkDeletedListener> linkDeletedListeners = new ArrayList<LinkDeletedListener>();
@@ -64,7 +67,9 @@ public class ConceptMapViewController implements LinkDeletedListener, LinkDirect
 
 	public void linkDeleted(LinkViewController lv, User u) {
 		removeLinkFromMap(lv);
+
 		linkControllers.remove(lv);
+		INTERACTION_LOGGER.deleteLinkData(lv.getStart(), lv.getEnd(), lv.getLink());
 	}
 
 	public void removeLinkFromMap(LinkViewController lv) {
@@ -202,7 +207,7 @@ public class ConceptMapViewController implements LinkDeletedListener, LinkDirect
 		InputViewController ownerController = inputControllers.stream()
 				.filter((in) -> in.getUser().equals(c.getOwner())).findFirst().get();
 
-//		conceptViewBuilder.withConceptEmptyListener(ownerController);
+		// conceptViewBuilder.withConceptEmptyListener(ownerController);
 
 		ConceptViewController cv = conceptViewBuilder.buildControllerAndAddView(this.conceptMapPane);
 		return cv;
@@ -241,6 +246,8 @@ public class ConceptMapViewController implements LinkDeletedListener, LinkDirect
 			conceptMap.removeDirectedLink(lv.getStart(), lv.getEnd());
 		else
 			conceptMap.setDirectedRelationToUndirected(lv.getStart(), lv.getEnd());
+
+		INTERACTION_LOGGER.directionUpdateLinkData(lv.getStart(), lv.getEnd(), lv.getLink());
 	}
 
 	public DoubleProperty getWidth() {

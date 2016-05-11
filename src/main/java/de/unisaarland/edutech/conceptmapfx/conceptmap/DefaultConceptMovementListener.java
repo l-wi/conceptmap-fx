@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.unisaarland.edutech.conceptmapfx.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
@@ -18,6 +19,9 @@ public class DefaultConceptMovementListener implements ConceptMovedListener, Con
 
 	private Map<ConceptViewController, List<ConceptViewController>> conceptToIntersectedConcepts = new HashMap<>();
 
+	private static final InteractionLogger INTERACTION_LOGGER = InteractionLogger.getInstance();
+
+	
 	private ConceptMapViewController controller;
 
 
@@ -37,6 +41,8 @@ public class DefaultConceptMovementListener implements ConceptMovedListener, Con
 
 		cv.getConcept().setPosition(x, y, r);
 
+		INTERACTION_LOGGER.positionConceptData(cv.getConcept());
+		
 		for (ConceptViewController intersected : intersections) {
 			controller.fireNewLinkListener(cv, intersected);
 		}

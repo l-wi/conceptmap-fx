@@ -194,7 +194,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
-		this.colBinding = CollaborativeStringTextFieldBinding.createBinding(concept.getName(),
+		this.colBinding = CollaborativeStringTextFieldBinding.createBinding(concept,
 				conceptCaption.getCaption());
 
 		int index = participants.indexOf(concept.getOwner());

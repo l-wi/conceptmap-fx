@@ -1,7 +1,9 @@
 package de.unisaarland.edutech.conceptmapfx.conceptmap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.NewLinkListener;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
@@ -11,6 +13,8 @@ import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import javafx.geometry.Point2D;
 
 public class DefaultNewLinkListener implements NewLinkListener {
+
+	private static final InteractionLogger INTERACTION_LOGGER = InteractionLogger.getInstance();
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultNewLinkListener.class);
 
@@ -44,6 +48,8 @@ public class DefaultNewLinkListener implements NewLinkListener {
 		});
 		LinkViewController lvc = builder.buildUndirectedAndAdd();
 		controller.addLinkController(lvc);
+
+		INTERACTION_LOGGER.newLinkData(cv1.getConcept(), cv2.getConcept(), lvc.getLink());
 
 	}
 

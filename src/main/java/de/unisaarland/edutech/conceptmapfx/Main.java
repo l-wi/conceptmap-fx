@@ -194,6 +194,7 @@ public class Main extends Application {
 		if (conceptMap == null)
 			conceptMap = new ObservableConceptMap(experiment, linkFactory);
 
+		InteractionLogger.getInstance().setConceptMap(conceptMap);
 		initColors();
 		
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
