@@ -71,12 +71,12 @@
 										text="Undo" onAction="#onUndoAction" mnemonicParsing="false"
 										prefWidth="100.0" prefHeight="50.0" />
 
-									<Button styleClass="hideable" id="align" fx:id="btnAlign"
+									<Button  id="align" fx:id="btnAlign"
 										text="Align Rotation" onAction="#onAlignAction"
 										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0" />
 
 
-									<ToggleButton styleClass="hideable" id="voice"
+									<ToggleButton  id="voice"
 										fx:id="btnSpeak" mnemonicParsing="false" prefWidth="100.0"
 										prefHeight="50.0" onAction="#onSpeechAction" />
 
