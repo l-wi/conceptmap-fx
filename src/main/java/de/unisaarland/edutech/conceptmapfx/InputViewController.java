@@ -90,8 +90,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private CollaborativeStringTextFieldBinding collaborativeStringBinding;
 
-	private int emptyConceptCount = 0;
-
 	private UndoHistory undoHistory;
 
 	private AlignListener alignListener;
@@ -216,8 +214,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	private void setTouchHighlightAndFire(TouchEvent e, ButtonBase b) {
+		b.setStyle("-fx-background-color: #dcdcdc");
+
 		if (e.getTouchCount() > 1) {
-			b.setStyle("-fx-background-color: #dcdcdc");
 			b.fire();
 		}
 	}
@@ -254,7 +253,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@FXML
 	public void onNewAction() {
-		emptyConceptCount++;
 		fireNew();
 	}
 
@@ -350,15 +348,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	// TODO is this still needed?
 	public void conceptDeleted(ConceptViewController cv, User u) {
-
-		Concept concept = cv.getConcept();
-
-		boolean belongsToUser = concept.getOwner().equals(this.user);
-		boolean isEmpty = concept.getName().getContent().isEmpty();
-		if (belongsToUser && isEmpty) {
-			emptyConceptCount--;
-			// btnNewConcept.setDisable(emptyConceptCount > 0);
-		}
 
 		if (u == null || !u.equals(this.user))
 			return;
