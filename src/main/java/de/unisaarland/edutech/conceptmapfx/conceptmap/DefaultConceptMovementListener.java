@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.unisaarland.edutech.conceptmapfx.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
+import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;

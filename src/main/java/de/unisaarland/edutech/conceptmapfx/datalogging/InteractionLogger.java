@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.datalogging;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import de.unisaarland.edutech.conceptmapfx.SessionSaver;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Link;
@@ -178,7 +179,7 @@ public class InteractionLogger {
 
 		}
 
-		private void printConceptData(de.unisaarland.edutech.conceptmapfx.InteractionLogger.Row.ConceptData c)
+		private void printConceptData(de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger.Row.ConceptData c)
 				throws IOException {
 			if (c == null) {
 				for (int i = 0; i < 8; i++)

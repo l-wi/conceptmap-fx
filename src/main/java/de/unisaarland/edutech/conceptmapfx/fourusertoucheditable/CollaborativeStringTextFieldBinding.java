@@ -1,7 +1,7 @@
 package de.unisaarland.edutech.conceptmapfx.fourusertoucheditable;
 
-import de.unisaarland.edutech.conceptmapfx.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.Main;
+import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
