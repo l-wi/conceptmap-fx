@@ -223,7 +223,7 @@ public class Main extends Application {
 		Optional<SessionSaver> sessionSaverOptional = conceptMapViewBuilder.getSessionSaver();
 
 		if (sessionSaverOptional.isPresent()) {
-			restorer.handleRestoreState(primaryStage, sessionSaverOptional.get());
+			restorer.handleRestoreState(primaryStage);
 		}
 
 	}

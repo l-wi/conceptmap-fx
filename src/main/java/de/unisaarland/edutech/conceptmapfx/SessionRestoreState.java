@@ -17,9 +17,9 @@ public class SessionRestoreState {
 
 	private static final String RESTORE_FILE_NAME = "lock";
 
-	public void handleRestoreState(Stage primaryStage, SessionSaver sessionSaver) {
+	public void handleRestoreState(Stage primaryStage) {
 		try {
-			File workingDir = sessionSaver.getWorkingDir();
+			File workingDir = SessionSaver.getWorkingDir();
 			this.restoreFile = new File(workingDir, RESTORE_FILE_NAME);
 
 			restoreFile.createNewFile();
@@ -28,64 +28,63 @@ public class SessionRestoreState {
 				restoreFile.delete();
 				System.exit(0);
 			});
-			
+
 		} catch (IOException exception) {
 			throw new RuntimeException("Cannot create restore file! " + exception);
 		}
 	}
 
 	public Optional<ObservableConceptMap> restoreSessionIfNeeded() {
-		File sessionFolder = new File("./session");
+		File rootFolder = new File("./session");
 
-		if (!isDirectory(sessionFolder))
-			sessionFolder.mkdir();
+		if (!isDirectory(rootFolder))
+			rootFolder.mkdir();
 
-		Optional<File[]> files = getFiles(sessionFolder);
+		File[] sessionFolders = rootFolder.listFiles();
 
-		if (!files.isPresent())
-			return Optional.empty();
+		for (File sessionFolder : sessionFolders) {
 
-		for (File d : files.get()) {
-			if (isDirectory(sessionFolder)) {
-				Optional<File[]> directoryContentsOptinal = sortContentsNumerical(d);
+			if (!isDirectory(sessionFolder))
+				continue;
 
-				File[] directoryContents = null;
+			File[] sessionContents = sortContentsNumerical(sessionFolder);
 
-				if (directoryContentsOptinal.isPresent()
-						&& (directoryContents = directoryContentsOptinal.get()).length > 0) {
+			Optional<File> lockFileOptional = Arrays.stream(sessionContents)
+					.filter(f -> f.getName().equals(RESTORE_FILE_NAME)).findFirst();
 
-					if (directoryContents[0].getName().equals(RESTORE_FILE_NAME)) {
-						directoryContents[0].delete();
-						
-						File currentState = getCurrentState(directoryContents);
-						try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(currentState))) {
-							ObservableConceptMap cm = (ObservableConceptMap) stream.readObject();
-							return Optional.of(cm);
+			if (!lockFileOptional.isPresent())
+				continue;
 
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
-				}
-			}
+			lockFileOptional.get().delete();
+
+			File currentState = getCurrentState(sessionContents);
+			return loadConceptMap(currentState);
+
 		}
 
 		return Optional.empty();
+
+	}
+
+	private Optional<ObservableConceptMap> loadConceptMap(File currentState) {
+		try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(currentState))) {
+			ObservableConceptMap cm = (ObservableConceptMap) stream.readObject();
+			return Optional.of(cm);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private File getCurrentState(File[] directoryContents) {
-		for(int i=directoryContents.length-1; i >= 0; i--){
-			if(directoryContents[i].getName().contains(".cmap"))
+		for (int i = directoryContents.length - 1; i >= 0; i--) {
+			if (directoryContents[i].getName().contains(".cmap"))
 				return directoryContents[i];
 		}
 		throw new RuntimeException("No restore state found!");
 	}
 
-	private Optional<File[]> sortContentsNumerical(File d) {
-		Optional<File[]> directoryContents = getFiles(d);
-
-		if (!directoryContents.isPresent())
-			return Optional.empty();
+	private File[] sortContentsNumerical(File d) {
+		File[] directoryContents = d.listFiles();
 
 		Comparator<File> c = (a, b) -> {
 
@@ -98,7 +97,7 @@ public class SessionRestoreState {
 			return n1 - n2;
 		};
 
-		Arrays.sort(directoryContents.get(), c);
+		Arrays.sort(directoryContents, c);
 		return directoryContents;
 	}
 
@@ -112,13 +111,12 @@ public class SessionRestoreState {
 		if (index == -1)
 			return -1000;
 		String nameWithoutEnding = nameA.substring(0, index);
-
-		return Integer.parseInt(nameWithoutEnding);
+		try {
+			return Integer.parseInt(nameWithoutEnding);
+		} catch (NumberFormatException e) {
+			return -1000;
+		}
 
 	}
 
-	private Optional<File[]> getFiles(File f) {
-		File[] fileList = f.listFiles();
-		return Optional.ofNullable(fileList);
-	}
 }
