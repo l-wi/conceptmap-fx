@@ -1,10 +1,10 @@
 package de.unisaarland.edutech.conceptmapfx.conceptmap;
 
-import de.unisaarland.edutech.conceptmapfx.InputViewController;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
+import de.unisaarland.edutech.conceptmapfx.input.InputViewController;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;

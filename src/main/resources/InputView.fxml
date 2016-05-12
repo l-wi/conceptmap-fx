@@ -19,7 +19,7 @@
 
 <AnchorPane minHeight="330" scaleX="1.2" scaleY="1.2" styleClass="input" fx:id="inputPane"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
-	fx:controller="de.unisaarland.edutech.conceptmapfx.InputViewController">
+	fx:controller="de.unisaarland.edutech.conceptmapfx.input.InputViewController">
 	<!-- TODO Add Nodes -->
 	<children>
 		<HBox>

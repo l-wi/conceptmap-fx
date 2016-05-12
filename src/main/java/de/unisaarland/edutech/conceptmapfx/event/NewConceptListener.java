@@ -1,6 +1,6 @@
 package de.unisaarland.edutech.conceptmapfx.event;
 
-import de.unisaarland.edutech.conceptmapfx.InputViewController;
+import de.unisaarland.edutech.conceptmapfx.input.InputViewController;
 
 public interface NewConceptListener {
 

@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.input;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import org.comtel2000.keyboard.robot.IRobot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.UndoHistory;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.AlignListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;

@@ -15,11 +15,11 @@ import java.util.Set;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
-import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewController;
+import de.unisaarland.edutech.conceptmapfx.input.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;

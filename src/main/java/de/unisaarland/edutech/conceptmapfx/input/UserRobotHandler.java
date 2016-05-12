@@ -1,4 +1,4 @@
-package de.unisaarland.edutech.conceptmapfx;
+package de.unisaarland.edutech.conceptmapfx.input;
 
 import org.comtel2000.keyboard.robot.IRobot;
 

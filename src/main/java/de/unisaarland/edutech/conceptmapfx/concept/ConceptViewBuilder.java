@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.unisaarland.edutech.conceptmapfx.InputViewController;
-import de.unisaarland.edutech.conceptmapfx.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptContentChangeListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
+import de.unisaarland.edutech.conceptmapfx.input.InputViewController;
+import de.unisaarland.edutech.conceptmapfx.input.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptFactory;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
