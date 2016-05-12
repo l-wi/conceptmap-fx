@@ -150,7 +150,7 @@ public class Row {
 	}
 
 	public String getEditingUser() {
-		return (user == null) ? "group" :user;
+		return (user == null) ? "anonymous" :user;
 	}
 
 	@Override
