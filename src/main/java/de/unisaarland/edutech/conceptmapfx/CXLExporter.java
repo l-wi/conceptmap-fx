@@ -47,9 +47,9 @@ public class CXLExporter {
 			out.writeEndElement();
 
 			out.writeEndElement();
-			
+
 			out.writeEndDocument();
-			
+
 			out.flush();
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -66,7 +66,7 @@ public class CXLExporter {
 			e1.printStackTrace();
 		}
 	}
-	
+
 	private void writeConnections() throws XMLStreamException {
 		out.writeStartElement("connection-list");
 		for (int i = 0; i < cmap.getConceptCount(); i++) {
@@ -79,19 +79,19 @@ public class CXLExporter {
 					out.writeAttribute("id", "con" + String.valueOf(i) + String.valueOf(j) + "f");
 					out.writeAttribute("from-id", "c" + i);
 					out.writeAttribute("to-id", "l" + String.valueOf(i) + String.valueOf(j));
-					if(!directed)
+					if (!directed)
 						out.writeAttribute("isBidirectional", "true");
 					out.writeEndElement();
-					
+
 					out.writeStartElement("connection");
 					out.writeAttribute("id", "con" + String.valueOf(i) + String.valueOf(j) + "t");
 					out.writeAttribute("from-id", "l" + String.valueOf(i) + String.valueOf(j));
 					out.writeAttribute("to-id", "c" + j);
-					if(!directed)
+					if (!directed)
 						out.writeAttribute("isBidirectional", "true");
-					
+
 					out.writeEndElement();
-					
+
 				}
 			}
 		}
@@ -130,26 +130,26 @@ public class CXLExporter {
 		out.writeEndElement();
 
 	}
-	
+
 	public static void main(String[] args) {
 		User u = new User("Tim", "Tim@tim.de");
-		ConceptMap map = new ConceptMap(new Experiment(u, new FocusQuestion("Test", u), 3));
-		
-		Concept dog = new Concept(new CollaborativeString(u,"Hund"));
+		ConceptMap map = new ConceptMap(new Experiment(u, new FocusQuestion("Test", u), 3, false));
+
+		Concept dog = new Concept(new CollaborativeString(u, "Hund"));
 		map.addConcept(dog);
 
-		Concept cat = new Concept(new CollaborativeString(u,"Katze"));
+		Concept cat = new Concept(new CollaborativeString(u, "Katze"));
 		map.addConcept(cat);
 
-		Concept mouse = new  Concept(new CollaborativeString(u,"Maus"));
+		Concept mouse = new Concept(new CollaborativeString(u, "Maus"));
 		map.addConcept(mouse);
-		
-		map.addDirectedLink(dog,cat).getCaption().insert(u, 0, "jagt");
-		
-		map.addDirectedLink(cat,mouse).getCaption().insert(u, 0, "eats");
+
+		map.addDirectedLink(dog, cat).getCaption().insert(u, 0, "jagt");
+
+		map.addDirectedLink(cat, mouse).getCaption().insert(u, 0, "eats");
 
 		CXLExporter exporter = new CXLExporter();
 		exporter.export(new File("test.cxl"), map);
-		
+
 	}
 }

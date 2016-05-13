@@ -11,6 +11,7 @@
 <?import org.comtel2000.keyboard.control.*?>
 <?import java.net.* ?>
 <?import javafx.collections.*?>
+<?import javafx.scene.control.CheckBox?>
 
 
 <BorderPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.40"
@@ -47,19 +48,9 @@
 								<Separator prefWidth="200.0" />
 								<HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
 									<children>
-										<VBox alignment="CENTER" spacing="10.0">
-											<children>
-												<Label text="Scripts" />
-												<ListView prefHeight="200.0" prefWidth="200.0" />
-											</children>
-										</VBox>
-										<Separator orientation="VERTICAL" prefHeight="200.0" />
-										<VBox alignment="CENTER" spacing="10.0">
-											<children>
-												<Label text="Awareness Tools" />
-												<ListView prefHeight="200.0" prefWidth="200.0" />
-											</children>
-										</VBox>
+										<CheckBox text="Show Awareness Tool" id="useAwt"
+											fx:id="useAwt"></CheckBox>
+
 									</children>
 								</HBox>
 								<Separator prefWidth="200.0" />

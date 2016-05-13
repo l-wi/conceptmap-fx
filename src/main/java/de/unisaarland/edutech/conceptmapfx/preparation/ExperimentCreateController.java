@@ -23,6 +23,7 @@ import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 
 public class ExperimentCreateController {
@@ -46,6 +47,9 @@ public class ExperimentCreateController {
 	@FXML
 	private Button btnRun;
 
+	@FXML
+	private CheckBox useAwt;
+
 	private List<FocusQuestion> available = new ArrayList<>();
 
 	private File workingFile = new File("profiles/focusQuesions.ostream");
@@ -67,8 +71,9 @@ public class ExperimentCreateController {
 			rewriteQuestionList();
 
 			Integer userCount = Integer.valueOf(userPicker.getValue());
+			boolean awt = this.useAwt.isSelected();
 
-			next.accept(new Experiment(researcher, q, userCount));
+			next.accept(new Experiment(researcher, q, userCount, awt));
 
 		});
 	}

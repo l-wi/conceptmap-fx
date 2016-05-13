@@ -61,7 +61,7 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		p.add(u3);
 		p.add(u4);
 
-		Experiment experiment = new Experiment(u1, new FocusQuestion("How dare you?", u1), 4);
+		Experiment experiment = new Experiment(u1, new FocusQuestion("How dare you?", u1), 4, false);
 		experiment.addParticipant(u1);
 		experiment.addParticipant(u2);
 		experiment.addParticipant(u3);
@@ -73,8 +73,6 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(map, conceptFactory);
 
-		
-		
 		scene = builder.withConceptViewBuilder(conceptBuilder).withConceptMap(map).build();
 
 		controller = builder.getController();
@@ -158,7 +156,7 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		Concept c = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(0), FIRST_CONCEPT));
 		double x = 0.4;
 		double y = 0.4;
-		c.setPosition(x,y,0);
+		c.setPosition(x, y, 0);
 
 		map.addConcept(c);
 
@@ -193,11 +191,10 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setPosition(0.8,0.5,0);
+		c1.setPosition(0.8, 0.5, 0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setPosition(0.5,0.3,30);
-
+		c2.setPosition(0.5, 0.3, 30);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -229,12 +226,10 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 
 		User user = map.getExperiment().getParticipants().get(2);
 		Concept c1 = new Concept(new CollaborativeString(user, FIRST_CONCEPT));
-		c1.setPosition(0.2,0.5,0);
-
+		c1.setPosition(0.2, 0.5, 0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setPosition(0.4,0.4,0);
-
+		c2.setPosition(0.4, 0.4, 0);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -282,10 +277,10 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		this.map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setPosition(0.3,0.3,0);
+		c1.setPosition(0.3, 0.3, 0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c1.setPosition(0.6,0.6,30);
+		c1.setPosition(0.6, 0.6, 30);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -311,11 +306,10 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setPosition(0.5,0.5,0);
+		c1.setPosition(0.5, 0.5, 0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c1.setPosition(0.7,0.7,30);
-
+		c1.setPosition(0.7, 0.7, 30);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -352,16 +346,13 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setPosition(0.5,0.5,0);
-
+		c1.setPosition(0.5, 0.5, 0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setPosition(0.7,0.7,30);
-
+		c2.setPosition(0.7, 0.7, 30);
 
 		Concept c3 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(3), THIRD_CONCEPT));
-		c3.setPosition(0.7,0.2,0);
-
+		c3.setPosition(0.7, 0.2, 0);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -395,99 +386,97 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 	}
 
 	@Test
-	public void testBugSecondNewNotShown(){
-		//given
+	public void testBugSecondNewNotShown() {
+		// given
 		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
 		Node firstNewButton = newButtons.iterator().next();
 
-		//when
+		// when
 		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
 		Node concept = conceptMapView.lookup(".concept");
 		moveTo(concept).doubleClickOn(MouseButton.PRIMARY);
-		assertSame(0,conceptMapView.lookupAll(".concept").size());
+		assertSame(0, conceptMapView.lookupAll(".concept").size());
 		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
-		
-		//then
-		assertSame(1,conceptMapView.lookupAll(".concept").size());
+
+		// then
+		assertSame(1, conceptMapView.lookupAll(".concept").size());
 	}
-	
+
 	@Test
-	public void testDelete(){
-		//given
+	public void testDelete() {
+		// given
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setPosition(0.5,0.5,0);
+		c1.setPosition(0.5, 0.5, 0);
 
 		map.addConcept(c1);
-		
+
 		super.interact(() -> {
 			controller.setConceptMap(map);
 			controller.layout();
 		});
-		
-		
+
 		Node concept = conceptMapView.lookup(".concept");
 
-		//when 
+		// when
 		moveTo(concept).doubleClickOn(MouseButton.PRIMARY);
-		
+
 		Set<Node> concepts = conceptMapView.lookupAll(".concept");
-		
-		//then
-		assertSame(0,concepts.size());
+
+		// then
+		assertSame(0, concepts.size());
 
 	}
+
 	@Test
-	public void testDisableNew(){
-		//given
+	public void testDisableNew() {
+		// given
 		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
 		Node firstNewButton = newButtons.iterator().next();
 
-		//when
-		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);	
-		
+		// when
+		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
+
 		assertTrue(firstNewButton.isDisabled());
-		
-		//Delete Concept again
+
+		// Delete Concept again
 		Node concept = conceptMapView.lookup(".concept");
 		moveTo(concept).doubleClickOn(MouseButton.PRIMARY);
-		
+
 		assertFalse(firstNewButton.isDisabled());
-		
+
 		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
 		concept = conceptMapView.lookup(".concept");
 
 		assertTrue(firstNewButton.isDisabled());
 
 		moveTo(concept).clickOn(MouseButton.PRIMARY);
-		
+
 		// right Keyboard
 		Node rightToggle = concept.lookup("#fourUserEditable-topToggle");
 		moveTo(rightToggle).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
 
-		//press a key
-		moveTo(1200,140).clickOn(MouseButton.PRIMARY);
-		
+		// press a key
+		moveTo(1200, 140).clickOn(MouseButton.PRIMARY);
+
 		assertFalse(firstNewButton.isDisabled());
 
 	}
-	
+
 	@Test
-	public void testLinkAnchorSelection(){
-		//given
+	public void testLinkAnchorSelection() {
+		// given
 		map.clear();
 
 		Concept c1 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(2), FIRST_CONCEPT));
-		c1.setPosition(0.5,0.5,0);
-
+		c1.setPosition(0.5, 0.5, 0);
 
 		Concept c2 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(1), SECOND_CONCEPT));
-		c2.setPosition(0.3,0.5,30);
-
+		c2.setPosition(0.3, 0.5, 30);
 
 		Concept c3 = new Concept(new CollaborativeString(map.getExperiment().getParticipants().get(3), THIRD_CONCEPT));
-		c3.setPosition(0.7,0.2,0);
+		c3.setPosition(0.7, 0.2, 0);
 
 		map.addConcept(c1);
 		map.addConcept(c2);
@@ -497,81 +486,77 @@ public class ConceptMapViewControllerTests extends ApplicationTest {
 		map.addUndirectedLink(c2, c3);
 
 		map.addDirectedLink(c1, c3);
-				
+
 		super.interact(() -> {
 			controller.setConceptMap(map);
 			controller.layout();
 		});
-		
+
 		Set<Node> links = conceptMapView.lookupAll(".linkPath");
-		
+
 		Iterator<Node> iterator = links.iterator();
 		Node link1 = iterator.next();
 		Node link2 = iterator.next();
-		
-		//when
+
+		// when
 		moveTo(link1).clickOn(MouseButton.PRIMARY);
-		
+
 		ObservableList<Node> children = conceptMapView.getChildren();
-		Node lookupAnchor = children.get(children.size()-1);
-		
+		Node lookupAnchor = children.get(children.size() - 1);
+
 		moveTo(lookupAnchor).clickOn(MouseButton.PRIMARY);
-		
+
 		moveTo(link1).clickOn(MouseButton.PRIMARY);
-		
-		//select second link
+
+		// select second link
 		moveTo(link2).clickOn(MouseButton.PRIMARY);
-		
+
 		children = conceptMapView.getChildren();
-		lookupAnchor = children.get(children.size()-1);
-		
+		lookupAnchor = children.get(children.size() - 1);
+
 		moveTo(lookupAnchor).clickOn(MouseButton.PRIMARY);
-		
+
 		assertSame(0, conceptMapView.lookupAll(".anchorPolygon").size());
-		
+
 	}
-	
+
 	@Test
-	public void testConceptNewJump(){
-		//given
+	public void testConceptNewJump() {
+		// given
 		Set<Node> newButtons = conceptMapView.lookupAll(".newBtnTop");
 		Node firstNewButton = newButtons.iterator().next();
 
 		moveTo(firstNewButton).press(MouseButton.PRIMARY).release(MouseButton.PRIMARY);
 		Node concept = conceptMapView.lookup(".concept");
-		
-		double expectedX = concept.getLayoutX()+ concept.getTranslateX();
-		double expectedY = concept.getLayoutY()+ concept.getTranslateY();
-		
-		//when
-		
+
+		double expectedX = concept.getLayoutX() + concept.getTranslateX();
+		double expectedY = concept.getLayoutY() + concept.getTranslateY();
+
+		// when
+
 		super.interact(() -> {
 			stage.setFullScreen(false);
-			stage.setWidth(stage.getWidth()-40);
-			stage.setHeight(stage.getHeight()-40);
+			stage.setWidth(stage.getWidth() - 40);
+			stage.setHeight(stage.getHeight() - 40);
 		});
-		
-		//then
-		
-		double actualX = concept.getLayoutX()+ concept.getTranslateX();
-		double actualY = concept.getLayoutY()+ concept.getTranslateY();
-		
-		assertEquals(expectedX, actualX,50 );
-		assertEquals(expectedY, actualY,50 );
+
+		// then
+
+		double actualX = concept.getLayoutX() + concept.getTranslateX();
+		double actualY = concept.getLayoutY() + concept.getTranslateY();
+
+		assertEquals(expectedX, actualX, 50);
+		assertEquals(expectedY, actualY, 50);
 
 	}
-	
+
 	// TODO test undo logic
 	/*
-	 * 1. create map with some concepts by using UI
-	 * 2. undo all
-	 * 3. create new concept
-	 * 4. remove new concept
-	 * 5. undo
+	 * 1. create map with some concepts by using UI 2. undo all 3. create new
+	 * concept 4. remove new concept 5. undo
 	 */
 
 	// TODO too many touch points reported exception kills whole multitouch
 	// process, find out if this is a javafx bug and how to fix i
-
 
 }

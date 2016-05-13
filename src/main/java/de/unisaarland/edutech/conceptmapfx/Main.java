@@ -188,8 +188,6 @@ public class Main extends Application {
 	private void toConceptMapStage(Stage primaryStage, Experiment experiment) {
 		// setting up construction facilities
 
-		
-
 		ObservableConceptFactory conceptFactory = new ObservableConceptFactory();
 		ObservableLinkFactory linkFactory = new ObservableLinkFactory();
 
@@ -198,12 +196,13 @@ public class Main extends Application {
 
 		InteractionLogger.getInstance().setConceptMap(conceptMap);
 		initColors();
-		
+
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
 
-		conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, 0.1, 0.5);
-		
+		if (conceptMap.getExperiment().USE_AWT)
+			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, 0.1, 0.5);
+
 		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
 
 		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
@@ -215,7 +214,6 @@ public class Main extends Application {
 
 		Scene scene = conceptMapViewBuilder.build();
 
-		
 		scene.setOnKeyTyped((l) -> {
 			if (l.getCharacter().equals("f"))
 				primaryStage.setFullScreen(true);
