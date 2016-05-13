@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.UndoHistory;
+import de.unisaarland.edutech.conceptmapfx.awt.AwarenessBars;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.AlignListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
@@ -36,6 +37,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
@@ -44,6 +46,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -65,9 +69,12 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	@FXML
+	private AnchorPane awtPane;
+	
+	@FXML
 	private KeyboardPane keyboard;
 	@FXML
-	private VBox inputControls;
+	private HBox inputControls;
 	@FXML
 	private AnchorPane inputPane;
 	@FXML
@@ -109,7 +116,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			initButtons();
 			initQuestion();
 			hideInput();
-
 			initDragging();
 
 		} catch (IOException | URISyntaxException e) {
@@ -118,8 +124,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		}
 	}
 
+
 	private void initDragging() {
-		inputControls.setOnTouchPressed((e) -> {
+		inputPane.setOnTouchPressed((e) -> {
 			translateX = e.getTouchPoint().getX();
 
 		});
@@ -447,7 +454,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	@FXML
-	void onAlignAction() {
+	public void onAlignAction() {
 		alignListener.align();
 	}
 
@@ -463,6 +470,12 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void setFocusQuestion(String question) {
 		this.question.setText(question);
 	}
+	
+	public void setAWT(AwarenessBars awt) {
+		awtPane.getChildren().add(awt);
+	}
+
+	
 
 	@FXML
 	public void onSpeechAction() {

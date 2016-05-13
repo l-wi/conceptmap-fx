@@ -1,0 +1,15 @@
+.userTop> .track{
+    -fx-background-color: #2400F0;
+}
+
+.userBottom> .track{
+    -fx-background-color: #00F09C;
+}
+
+.userLeft> .track{
+    -fx-background-color: #F00054;
+}
+
+.userRight> .track{
+    -fx-background-color: #CCF000;
+}

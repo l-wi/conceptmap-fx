@@ -201,6 +201,8 @@ public class Main extends Application {
 		ConceptViewBuilder conceptBuilder = new ConceptViewBuilder(conceptMap, conceptFactory);
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
 
+		conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, 0.1, 0.5);
+		
 		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
 
 		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
@@ -230,12 +232,12 @@ public class Main extends Application {
 	}
 
 	private void initColors() {
-		this.userColors.put(conceptMap.getExperiment().getParticipants().get(0), this.userTop);
-		this.userColors.put(conceptMap.getExperiment().getParticipants().get(1), this.userBottom);
+		Main.userColors.put(conceptMap.getExperiment().getParticipants().get(0), Main.userTop);
+		Main.userColors.put(conceptMap.getExperiment().getParticipants().get(1), Main.userBottom);
 		if (conceptMap.getExperiment().getParticipants().size() > 2)
-			this.userColors.put(conceptMap.getExperiment().getParticipants().get(2), this.userLeft);
+			Main.userColors.put(conceptMap.getExperiment().getParticipants().get(2), Main.userLeft);
 		if (conceptMap.getExperiment().getParticipants().size() > 3)
-			this.userColors.put(conceptMap.getExperiment().getParticipants().get(3), this.userRight);
+			Main.userColors.put(conceptMap.getExperiment().getParticipants().get(3), Main.userRight);
 	}
 
 	private void showScene(Stage primaryStage, Parent newView) {

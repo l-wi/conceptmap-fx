@@ -7,7 +7,9 @@ import java.util.Optional;
 import de.unisaarland.edutech.conceptmapfx.Main;
 import de.unisaarland.edutech.conceptmapfx.SessionSaver;
 import de.unisaarland.edutech.conceptmapfx.UndoHistory;
+import de.unisaarland.edutech.conceptmapfx.awt.AwarenessBars;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
+import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
 import de.unisaarland.edutech.conceptmapfx.input.InputViewController;
 import de.unisaarland.edutech.conceptmapfx.input.InputViewController.Position;
 import de.unisaarland.edutech.conceptmapfx.observablemap.Observable;
@@ -20,6 +22,7 @@ import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 public class ConceptMapViewBuilder {
 
@@ -32,6 +35,8 @@ public class ConceptMapViewBuilder {
 	private Scene scene;
 	private ConceptMap conceptMap;
 	private ConceptViewBuilder conceptViewBuilder;
+
+	private AwarenessBars[] awarenessTools;
 
 	public ConceptMapViewBuilder() {
 		try {
@@ -89,6 +94,17 @@ public class ConceptMapViewBuilder {
 		return this;
 	}
 
+	public ConceptMapViewBuilder withAWT(int count, int barWidth, int barHeight, double zpdLower, double zpdUpper) {
+		awarenessTools = new AwarenessBars[count];
+
+		for (int i = 0; i < count; i++) {
+			awarenessTools[i] = new AwarenessBars(count, barWidth, barHeight, zpdLower, zpdUpper);
+			InteractionLogger.getInstance().bindAWT(awarenessTools[i]);
+
+		}
+		return this;
+	}
+
 	private void initHistoryAndSessionSaverIfNeeded(ConceptMap conceptMap) {
 		if (conceptMap instanceof ObservableConceptMap) {
 			UndoHistory history = new UndoHistory((ObservableConceptMap) conceptMap, controller);
@@ -124,21 +140,21 @@ public class ConceptMapViewBuilder {
 	private void setInputPositions(List<User> u) throws IOException {
 		// north
 
-		setPositionTop(u.get(0));
+		setPositionTop(u.get(0), 0);
 
-		setPositionBottom(u.get(1));
+		setPositionBottom(u.get(1), 1);
 
 		if (u.size() > 2)
-			setPositionLeft(u.get(2));
+			setPositionLeft(u.get(2), 2);
 
 		if (u.size() > 3)
-			setPositionRight(u.get(3));
+			setPositionRight(u.get(3), 3);
 
 	}
 
-	private void setPositionRight(User u4) throws IOException {
+	private void setPositionRight(User u4, int i) throws IOException {
 		// east
-		final Pane v4 = initInputController(Position.RIGHT, u4);
+		final Pane v4 = initInputController(Position.RIGHT, u4, i);
 		v4.setRotate(270);
 		// as we rotate around center, we need to readjust on screen
 		scene.heightProperty().addListener(c -> {
@@ -154,9 +170,9 @@ public class ConceptMapViewBuilder {
 		});
 	}
 
-	private void setPositionBottom(User u3) throws IOException {
+	private void setPositionBottom(User u3, int i) throws IOException {
 		// south
-		final Pane v3 = initInputController(Position.BOTTOM, u3);
+		final Pane v3 = initInputController(Position.BOTTOM, u3, i);
 		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
 			v3.setLayoutX(newVal.doubleValue() * 0.5 - (v3.getWidth() / 2));
 		});
@@ -166,9 +182,9 @@ public class ConceptMapViewBuilder {
 		});
 	}
 
-	private void setPositionLeft(User u2) throws IOException {
+	private void setPositionLeft(User u2, int i) throws IOException {
 		// west
-		final Pane v2 = initInputController(Position.LEFT, u2);
+		final Pane v2 = initInputController(Position.LEFT, u2, i);
 		v2.setRotate(90);
 
 		// as we rotate around center, we need to readjust on screen
@@ -181,15 +197,15 @@ public class ConceptMapViewBuilder {
 		});
 	}
 
-	private void setPositionTop(User u1) throws IOException {
-		final Pane v1 = initInputController(Position.TOP, u1);
+	private void setPositionTop(User u1, int i) throws IOException {
+		final Pane v1 = initInputController(Position.TOP, u1, i);
 		v1.setRotate(180);
 		scene.widthProperty().addListener((observeable, oldVal, newVal) -> {
 			v1.setLayoutX(newVal.doubleValue() * 0.6 - v1.getWidth() / 2);
 		});
 	}
 
-	private Pane initInputController(InputViewController.Position p, User u) throws IOException {
+	private Pane initInputController(InputViewController.Position p, User u, int i) throws IOException {
 		FXMLLoader inputLoader = new FXMLLoader(Main.class.getResource("/InputView.fxml"));
 		Pane inputView = inputLoader.load();
 		inputView.setId(p.toString());
@@ -199,6 +215,10 @@ public class ConceptMapViewBuilder {
 		inputController.setPosition(p);
 		inputController.setAlignListener(new DefaultAlignListener(controller));
 		inputController.setFocusQuestion(conceptMap.getExperiment().getFocusQuestion().getQuestion());
+
+		if (awarenessTools != null)
+			inputController.setAWT(awarenessTools[i]);
+
 		if (history.isPresent())
 			inputController.setUndoHistory(history.get());
 

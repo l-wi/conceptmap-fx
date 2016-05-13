@@ -3,6 +3,7 @@ package de.unisaarland.edutech.conceptmapfx.datalogging;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
@@ -53,10 +54,10 @@ public class CSVExporter {
 		}
 	}
 
-	public void printUserSummary(List<UserSummary> l) {
+	public void printUserSummary(Collection<UserSummary> collection) {
 		initUserSummaryPrinter();
 		printUserSummaryHeader();
-		l.forEach(e -> printUserSummaryEntry(e));
+		collection.forEach(e -> printUserSummaryEntry(e));
 		try {
 			summaryPrinter.close();
 		} catch (IOException e1) {
@@ -170,8 +171,8 @@ public class CSVExporter {
 			summaryPrinter.print(s.getForeignConceptsEdits());
 			summaryPrinter.print(s.getConceptDeletes());
 
-			summaryPrinter.print(s.getLinkCreates());
-			summaryPrinter.print(s.getOwnLinkEdits());
+			summaryPrinter.print(s.getLinkCount());
+			summaryPrinter.print(s.getLinkEdits());
 			summaryPrinter.print(s.getLinkDeletes());
 
 			summaryPrinter.println();

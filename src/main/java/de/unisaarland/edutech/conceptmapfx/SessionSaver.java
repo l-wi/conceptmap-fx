@@ -47,7 +47,7 @@ public class SessionSaver implements ConceptMapObserver {
 	public static File getWorkingDir() {
 		if (workingDir == null) {
 			Date d = new Date();
-			String dateSuffix = new SimpleDateFormat("yyyyMMdhhmmss").format(d);
+			String dateSuffix = new SimpleDateFormat("yyyyMMddHHmmss").format(d);
 			workingDir = new File(FOLDER + "/" + dateSuffix);
 			workingDir.mkdir();
 		}

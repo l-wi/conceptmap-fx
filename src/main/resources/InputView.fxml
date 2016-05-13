@@ -17,13 +17,13 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane minHeight="330" scaleX="1.2" scaleY="1.2" styleClass="input" fx:id="inputPane"
-	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
-	fx:controller="de.unisaarland.edutech.conceptmapfx.input.InputViewController">
+<AnchorPane minHeight="330" scaleX="1.2" scaleY="1.2"
+	styleClass="input" fx:id="inputPane" xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/8.0.40" fx:controller="de.unisaarland.edutech.conceptmapfx.input.InputViewController">
 	<!-- TODO Add Nodes -->
 	<children>
-		<HBox>
-			<VBox fx:id="inputControls">
+		<HBox  fx:id="inputControls">
+			<VBox>
 				<children>
 					<HBox>
 						<Button styleClass="hideable" id="btnClose" fx:id="btnClose"
@@ -33,7 +33,7 @@
 
 						<Label fx:id="lblStatus" text="" />
 					</HBox>
-					<HBox  >
+					<HBox>
 						<children>
 
 							<VBox>
@@ -71,14 +71,14 @@
 										text="Undo" onAction="#onUndoAction" mnemonicParsing="false"
 										prefWidth="100.0" prefHeight="50.0" />
 
-									<Button  id="align" fx:id="btnAlign"
-										text="Align Rotation" onAction="#onAlignAction"
-										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0" />
+									<Button id="align" fx:id="btnAlign" text="Align Rotation"
+										onAction="#onAlignAction" mnemonicParsing="false" prefWidth="100.0"
+										prefHeight="50.0" />
 
 
-									<ToggleButton  id="voice"
-										fx:id="btnSpeak" mnemonicParsing="false" prefWidth="100.0"
-										prefHeight="50.0" onAction="#onSpeechAction" />
+									<ToggleButton id="voice" fx:id="btnSpeak"
+										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"
+										onAction="#onSpeechAction" />
 
 									<Button fx:id="btnNewConcept" text="+" onAction="#onNewAction"
 										onTouchPressed="#onNewTouchPressed" BorderPane.alignment="CENTER"
@@ -91,11 +91,13 @@
 					</HBox>
 				</children>
 			</VBox>
-			<BorderPane>
-				<bottom>
+			<VBox alignment="BOTTOM_CENTER">
+				<children>
+					<AnchorPane id="awtPane" fx:id="awtPane">
 
-				</bottom>
-			</BorderPane>
+					</AnchorPane>
+				</children>
+			</VBox>
 		</HBox>
 	</children>
 	<stylesheets>
