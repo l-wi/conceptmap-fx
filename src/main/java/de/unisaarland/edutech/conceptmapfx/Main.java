@@ -84,6 +84,7 @@ public class Main extends Application {
 
 		if (restoredMap.isPresent()) {
 			this.conceptMap = restoredMap.get();
+			this.experiment = conceptMap.getExperiment();
 			toConceptMapStage(primaryStage, experiment);
 			primaryStage.show();
 			return;
