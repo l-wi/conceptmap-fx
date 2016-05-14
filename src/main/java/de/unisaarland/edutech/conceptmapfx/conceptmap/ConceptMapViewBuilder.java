@@ -16,13 +16,13 @@ import de.unisaarland.edutech.conceptmapfx.observablemap.Observable;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableCollaborativeString;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConcept;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
+import de.unisaarland.edutech.conceptmapfx.prompts.PromptLoader;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 
 public class ConceptMapViewBuilder {
 
@@ -38,6 +38,8 @@ public class ConceptMapViewBuilder {
 
 	private AwarenessBars[] awarenessTools;
 
+	private InputViewController[] inputControllers;
+
 	public ConceptMapViewBuilder() {
 		try {
 			FXMLLoader conceptMapLoader = new FXMLLoader(getClass().getResource("/ConceptMapView.fxml"));
@@ -45,6 +47,7 @@ public class ConceptMapViewBuilder {
 			conceptMapView = conceptMapLoader.load();
 			controller = conceptMapLoader.getController();
 			scene = new Scene(conceptMapView);
+
 			DefaultNewLinkListener newLinkListener = new DefaultNewLinkListener(controller);
 
 			controller.addNewLinkListener(newLinkListener);
@@ -140,6 +143,8 @@ public class ConceptMapViewBuilder {
 	private void setInputPositions(List<User> u) throws IOException {
 		// north
 
+		inputControllers = new InputViewController[4];
+
 		setPositionTop(u.get(0), 0);
 
 		setPositionBottom(u.get(1), 1);
@@ -211,6 +216,8 @@ public class ConceptMapViewBuilder {
 		inputView.setId(p.toString());
 
 		InputViewController inputController = inputLoader.getController();
+		inputControllers[i] = inputController;
+
 		inputController.setUser(u);
 		inputController.setPosition(p);
 		inputController.setAlignListener(new DefaultAlignListener(controller));
@@ -263,6 +270,19 @@ public class ConceptMapViewBuilder {
 					name.addListener(saver.get());
 				}
 			}
+		}
+
+		return this;
+	}
+
+	public ConceptMapViewBuilder withPrompts(PromptLoader promptLoader) {
+
+		List<User> participants = this.conceptMap.getExperiment().getParticipants();
+
+		for (int i = 0; i < participants.size(); i++) {
+			String promptForUser = promptLoader.getPromptForUser(participants.get(i));
+			if (promptForUser != null)
+				inputControllers[i].setPrompt(promptForUser);
 		}
 
 		return this;

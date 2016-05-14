@@ -70,7 +70,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@FXML
 	private AnchorPane awtPane;
-	
+
 	@FXML
 	private KeyboardPane keyboard;
 	@FXML
@@ -84,13 +84,15 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	private Label owner;
 	@FXML
-	private Pane ownerIcon;
+	private Pane ownerBox;
 	@FXML
 	private Label question;
 	@FXML
 	private Button btnAlign;
 	@FXML
 	private ToggleButton btnSpeak;
+	@FXML
+	private Label lblPrompts;
 
 	private Position position;
 
@@ -123,7 +125,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			throw new RuntimeException("Program cannot run!", e);
 		}
 	}
-
 
 	private void initDragging() {
 		inputPane.setOnTouchPressed((e) -> {
@@ -392,13 +393,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void setPosition(Position position) {
 		this.position = position;
 		adjustNewButton();
-		adjustIcon();
+		adjustOwnerBoxColor();
 	}
 
-	private void adjustIcon() {
-		ObservableList<String> styleClasses = ownerIcon.getStyleClass();
+	private void adjustOwnerBoxColor() {
+		ObservableList<String> styleClasses = ownerBox.getStyleClass();
 
-		((Label) ownerIcon.lookup(".letter")).setText(user.getName().subSequence(0, 1).toString());
+		((Label) ownerBox.lookup(".letter")).setText(user.getName().subSequence(0, 1).toString());
 
 		String css = "background-";
 		switch (position) {
@@ -470,12 +471,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void setFocusQuestion(String question) {
 		this.question.setText(question);
 	}
-	
+
 	public void setAWT(AwarenessBars awt) {
 		awtPane.getChildren().add(awt);
 	}
-
-	
 
 	@FXML
 	public void onSpeechAction() {
@@ -502,6 +501,12 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	public void speechRecognitionFinished(User u) {
 		speechListener.speechRecognitionFinished(u);
 
+	}
+
+	public void setPrompt(String text) {
+		this.lblPrompts.setVisible(true);
+		this.lblPrompts.setManaged(true);
+		this.lblPrompts.setText(text);
 	}
 
 }

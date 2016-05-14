@@ -34,54 +34,52 @@
 	src: url('/FontKeyboardFX.ttf');
 }
 
-*{
-	userTop: #2400F0; 
+* {
+	userTop: #2400F0;
 	userLeft: #F00054;
 	userRight: #CCF000;
 	userBottom: #00F09C;
-	
 	userTopSelected: #7B151F;
-	userLeftSelected: #554000;	
-	userRightSelected:#1B1A59;
-	userBottomSelected: #0C4700;	
+	userLeftSelected: #554000;
+	userRightSelected: #1B1A59;
+	userBottomSelected: #0C4700;
 }
 
-#ownerPane{
-		-fx-background-color: #222222;
+#ownerPane {
+	-fx-background-color: #222222;
 }
 
-#ownerIcon{
+#ownerIcon {
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: 35.0 35.0;
-	-fx-background-position:center;
-	
-}
-#owner{
-
-	-fx-font-size:1.4em;
-	-fx-text-fill:white;
-	-fx-padding: 10.0 0.0 0.0 50.0;
-	
+	-fx-background-position: center;
 }
 
-.letter{
-	-fx-font-size:1.8em;
-	-fx-text-fill:white;
-	 -fx-stroke: black;
-    -fx-stroke-width: 3.0px;
-}
-
-#question{
-	-fx-font-size:1.1em;
-	-fx-text-fill:white;
+#owner {
+	-fx-font-size: 1.4em;
+	-fx-text-fill: white;
 	-fx-padding: 10.0 0.0 0.0 50.0;
 }
-#undo{
+
+.letter {
+	-fx-font-size: 1.8em;
+	-fx-text-fill: white;
+	-fx-stroke: black;
+	-fx-stroke-width: 3.0px;
+}
+
+#question {
+	-fx-font-size: 1.1em;
+	-fx-text-fill: white;
+	-fx-padding: 10.0 0.0 0.0 50.0;
+}
+
+#undo {
 	-fx-border-radius: 0.0 30.0 0.0 0.0;
 	-fx-background-radius: 0.0 30.0 0.0 0.0;
 	-fx-background-color: #3c4250;
 	-fx-border-width: 5.0 5.0 0.0 0.0;
-	-fx-border-color: #222222;	
+	-fx-border-color: #222222;
 	-fx-text-fill: white;
 }
 
@@ -96,17 +94,16 @@
 	-fx-background-repeat: stretch;
 	-fx-background-size: 50.0 50.0;
 	-fx-background-position: center center;
-	
 }
 
-#align{
+#align {
 	-fx-background-color: #3c4250;
 	-fx-border-width: 5.0 5.0 0.0 0.0;
 	-fx-border-color: #222222;
 	-fx-text-fill: white;
 }
 
-#align:pressed{
+#align:pressed {
 	-fx-background-color: #dcdcdc;
 }
 
@@ -120,6 +117,11 @@
 	-fx-background-position: center center;
 }
 
+#lblPrompts {
+	-fx-text-fill: white;
+	-fx-background-color: #222222;
+	
+}
 
 .newBtnTop, .newBtnLeft, .newBtnRight, .newBtnBottom {
 	-fx-font-size: 30.0;
@@ -129,23 +131,20 @@
 	-fx-text-fill: white;
 }
 
-.newBtnTop{
-		-fx-background-color: userTop;
+.newBtnTop {
+	-fx-background-color: userTop;
 }
 
-.newBtnBottom{
-		-fx-background-color: userBottom;
-	
+.newBtnBottom {
+	-fx-background-color: userBottom;
 }
 
-.newBtnLeft{
-		-fx-background-color: userLeft;
-	
+.newBtnLeft {
+	-fx-background-color: userLeft;
 }
 
-.newBtnRight{
-		-fx-background-color: userRight;
-	
+.newBtnRight {
+	-fx-background-color: userRight;
 }
 
 .key-background {

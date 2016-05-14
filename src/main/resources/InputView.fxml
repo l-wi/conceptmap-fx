@@ -16,13 +16,15 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ScrollPane?>
 
 <AnchorPane minHeight="330" scaleX="1.2" scaleY="1.2"
 	styleClass="input" fx:id="inputPane" xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/8.0.40" fx:controller="de.unisaarland.edutech.conceptmapfx.input.InputViewController">
 	<!-- TODO Add Nodes -->
 	<children>
-		<HBox  fx:id="inputControls">
+		<HBox fx:id="inputControls">
 			<VBox>
 				<children>
 					<HBox>
@@ -31,7 +33,6 @@
 							onAction="#onCloseAction" prefHeight="80.0" prefWidth="80.0"
 							text="" />
 
-						<Label fx:id="lblStatus" text="" />
 					</HBox>
 					<HBox>
 						<children>
@@ -46,7 +47,7 @@
 									<AnchorPane id="ownerPane" prefHeight="60">
 										<HBox>
 											<children>
-												<BorderPane fx:id="ownerIcon" prefWidth="60">
+												<BorderPane fx:id="ownerBox" prefWidth="60">
 													<center>
 														<Label styleClass="letter"></Label>
 													</center>
@@ -91,11 +92,14 @@
 					</HBox>
 				</children>
 			</VBox>
-			<VBox alignment="BOTTOM_CENTER">
+			<VBox spacing="10" alignment="BOTTOM_CENTER">
 				<children>
 					<AnchorPane id="awtPane" fx:id="awtPane">
-
 					</AnchorPane>
+					<Label wrapText="true" style="-fx-padding:20;" visible="false"
+						managed="false" fx:id="lblPrompts" id="lblPrompts" prefWidth="250">
+
+					</Label>
 				</children>
 			</VBox>
 		</HBox>

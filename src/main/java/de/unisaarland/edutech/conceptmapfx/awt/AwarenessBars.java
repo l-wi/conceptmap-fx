@@ -22,6 +22,7 @@ public class AwarenessBars extends AnchorPane {
 
 	public AwarenessBars(int count, int barHeight, int barWidth, double zpdLower, double zpdUpper) {
 		throwIfInvalidZPD(zpdLower, zpdUpper);
+	
 		this.barHeight = barHeight;
 		this.barWidth = barWidth;
 		this.zpdLower = zpdLower;
