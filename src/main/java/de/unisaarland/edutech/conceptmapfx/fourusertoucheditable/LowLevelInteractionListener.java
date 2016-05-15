@@ -13,7 +13,6 @@ import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
-import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
 public class LowLevelInteractionListener {
@@ -60,6 +59,11 @@ public class LowLevelInteractionListener {
 		public void apply(D1 t, D2 u, D3 v);
 	}
 
+	@FunctionalInterface
+	public interface OnPressed {
+		void onPressed(double x, double y, boolean isTouch);
+	}
+
 	public LowLevelInteractionListener(FourUserTouchEditable fourUserTouchEditable) {
 		this.fourUserTouchEditable = fourUserTouchEditable;
 
@@ -67,7 +71,7 @@ public class LowLevelInteractionListener {
 		showRotateTransition.setOnFinished((l) -> {
 			fourUserTouchEditable.toRotateState();
 		});
-		
+
 	}
 
 	public void setOnMoved(VoidFunction moved) {
@@ -91,7 +95,7 @@ public class LowLevelInteractionListener {
 		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY(), true);
 	}
 
-	private void onPressed(double x, double y, boolean isTouch) {
+	public void onPressed(double x, double y, boolean isTouch) {
 		touchEventsActive++;
 		if (touchEventsActive != 1)
 			return;

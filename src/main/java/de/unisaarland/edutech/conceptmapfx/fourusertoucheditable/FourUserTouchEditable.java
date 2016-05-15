@@ -252,35 +252,7 @@ public class FourUserTouchEditable extends BorderPane {
 		}
 	}
 
-	// private void constructResizable(TextFlow txt) {
-	// txt.setMaxWidth(Region.USE_PREF_SIZE);
-	// txt.setText
-	// txt.textProperty().addListener((ov, prevText, currText) -> {
-	// // Do this in a Platform.runLater because of Textfield has no
-	// // padding at first time and so on
-	// Platform.runLater(() -> {
-	// Text text = new Text(currText);
-	// text.setFont(txt.getFont()); // Set the same font, so the size
-	// // is the same
-	// double width = text.getLayoutBounds().getWidth() // This big is
-	// // the Text
-	// // in the
-	// // TextField
-	// + txt.getPadding().getLeft() + txt.getPadding().getRight() // Add
-	// // the
-	// // padding
-	// // of
-	// // the
-	// // TextField
-	// + 2d; // Add some spacing
-	// txt.setPrefWidth(width); // Set the width
-	// // txt.positionCaret(txt.getCaretPosition()); // If you remove
-	// // this
-	// // line, it flashes
-	// // a little bit
-	// });
-	// });
-	// }
+
 
 	public void toSelectedState() {
 		if (state.get() == State.SELECTED)

@@ -16,16 +16,28 @@ import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeSt
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.RotateTransition;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.transform.Transform;
+import javafx.util.Duration;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
 
@@ -45,6 +57,8 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 	private List<User> participants;
 
 	private CollaborativeStringTextFieldBinding colBinding;
+
+	private Path crossOut;
 
 	public void addConceptEditRequestedListener(ConceptEditRequestedListener l) {
 		conceptEditListeners.add(l);
@@ -95,13 +109,74 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		conceptCaption.setOnMoved(() -> this.fireConceptMoved());
 
-		conceptCaption.setOnDoubleTapped(() -> fireConceptDeleted(getActiveUser()));
+		conceptCaption.setOnDoubleTapped(() -> {
+			conceptDeletionInitiated(getActiveUser());
+		});
 
 		conceptCaption.textProperty().addListener((ListChangeListener.Change<? extends Node> l) -> {
 
 			fireConceptContentChanged(conceptCaption.getText());
 		});
 
+	}
+
+	private void conceptDeletionInitiated(User activeUser) {
+		initCrossOut();
+
+		animateToDeleteState();
+
+		EventHandler<? super MouseEvent> onMousePressed = conceptCaption.getOnMousePressed();
+		EventHandler<? super TouchEvent> onTouchPressed = conceptCaption.getOnTouchPressed();
+
+		conceptCaption.setOnMousePressed(e -> fireConceptDeleted());
+		conceptCaption.setOnTouchPressed(e -> fireConceptDeleted());
+
+		PauseTransition p = new PauseTransition(Duration.seconds(2));
+		p.setOnFinished(e -> {
+			conceptCaption.getChildren().remove(crossOut);
+			conceptCaption.setOnMousePressed(onMousePressed);
+			conceptCaption.setOnTouchPressed(onTouchPressed);
+			conceptCaption.setOpacity(1);
+		});
+
+		p.play();
+
+		this.conceptCaption.getChildren().add(crossOut);
+
+	}
+
+	private void animateToDeleteState() {
+		FadeTransition fd = new FadeTransition(Duration.millis(200), conceptCaption);
+		fd.setByValue(-0.5);
+
+		RotateTransition rt = new RotateTransition(Duration.millis(100), conceptCaption);
+		double rotate = conceptCaption.getRotate();
+		int wiggle = 10;
+		rt.setFromAngle(rotate - wiggle);
+		rt.setToAngle(rotate + wiggle);
+		rt.setCycleCount(4);
+		rt.setAutoReverse(true);
+
+		ParallelTransition pl = new ParallelTransition(fd, rt);
+		pl.setOnFinished(f -> conceptCaption.setRotate(rotate));
+		pl.play();
+	}
+
+	private void initCrossOut() {
+		Bounds boundsInScene = conceptCaption.getBoundsInLocal();
+
+		Point2D pStart = new Point2D(boundsInScene.getMinX(), boundsInScene.getMinY());
+		Point2D pEnd = new Point2D(boundsInScene.getMaxX(), boundsInScene.getMaxY());
+
+		MoveTo m = new MoveTo(pStart.getX(), pStart.getY());
+		LineTo l = new LineTo(pEnd.getX(), pEnd.getY());
+
+		MoveTo m2 = new MoveTo(boundsInScene.getMaxX(), boundsInScene.getMinY());
+		LineTo l2 = new LineTo(boundsInScene.getMinX(), boundsInScene.getMaxY());
+
+		crossOut = new Path(m, l, m2, l2);
+		crossOut.setStroke(Color.RED);
+		crossOut.setStrokeWidth(12);
 	}
 
 	private void fireConceptContentChanged(String newContent) {
