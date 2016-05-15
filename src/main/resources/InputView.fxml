@@ -78,7 +78,7 @@
 										prefWidth="100.0" prefHeight="50.0" />
 
 
-									<Button id="align" fx:id="btnAlign" text="Align Rotation"
+									<Button id="align" fx:id="btnAlign" text=""
 										onAction="#onAlignAction" mnemonicParsing="false" prefWidth="100.0"
 										prefHeight="50.0" />
 

@@ -98,6 +98,10 @@
 
 #align {
 	-fx-background-color: #3c4250;
+	-fx-background-image: url("/gfx/rotate.png");
+	-fx-background-repeat: stretch;
+	-fx-background-size: 30.0 30.0;
+	-fx-background-position: center center;
 	-fx-border-width: 5.0 5.0 0.0 0.0;
 	-fx-border-color: #222222;
 	-fx-text-fill: white;
