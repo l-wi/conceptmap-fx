@@ -29,7 +29,6 @@ import de.unisaarland.edutech.conceptmapfx.event.NewConceptListener;
 import de.unisaarland.edutech.conceptmapfx.event.SpeechRecognitionListner;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
-import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
@@ -37,7 +36,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
@@ -46,7 +44,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -82,6 +79,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	private Button btnUndo;
 	@FXML
+	private ToggleButton btnVote;
+	@FXML
 	private Label owner;
 	@FXML
 	private Pane ownerBox;
@@ -108,9 +107,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private double translateX;
 
-	/**
-	 * 
-	 */
 	@FXML
 	public void initialize() {
 		try {
@@ -149,11 +145,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		btnUndo.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnUndo));
 		btnNewConcept.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnNewConcept));
 		btnSpeak.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnSpeak));
+		btnVote.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnVote));
 
 		btnAlign.setOnTouchReleased(e -> removeTouchHighlight(btnAlign));
 		btnUndo.setOnTouchReleased(e -> removeTouchHighlight(btnUndo));
 		btnNewConcept.setOnTouchReleased(e -> removeTouchHighlight(btnNewConcept));
 		btnSpeak.setOnTouchReleased(e -> removeTouchHighlight(btnSpeak));
+		btnVote.setOnTouchReleased(e -> removeTouchHighlight(btnVote));
 	}
 
 	private void initKeyboard() throws MalformedURLException, IOException, URISyntaxException {
@@ -329,6 +327,10 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 		unhideInputControl(hiddenNodes);
 
+		boolean hasVoted = cv.hasVoted(u);
+		btnVote.setSelected(hasVoted);
+		btnVote.setDisable(false);
+
 		// FIXME currently removing undo function because it is buggy and is
 		// hard to fix
 		btnUndo.setVisible(false);
@@ -351,6 +353,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			closedListener = null;
 			keyboard.setDisable(true);
 			btnSpeak.setDisable(true);
+			btnVote.setDisable(true);
+			btnVote.setSelected(false);
 		}
 
 	}
@@ -474,6 +478,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void setAWT(AwarenessBars awt) {
 		awtPane.getChildren().add(awt);
+	}
+
+	@FXML
+	public void onVoteAction() {
+		collaborativeStringBinding.vote(user, btnVote.isSelected());
 	}
 
 	@FXML

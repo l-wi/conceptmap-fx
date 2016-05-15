@@ -107,6 +107,21 @@
 	-fx-background-color: #dcdcdc;
 }
 
+#vote{
+	-fx-background-color: #3c4250;
+	-fx-border-width: 5.0 5.0 0.0 0.0;
+	-fx-border-color: #222222;
+	-fx-background-image: url("/gfx/like.png");
+	-fx-background-repeat: stretch;
+	-fx-background-size: 30.0 30.0;
+	-fx-background-position: center center;
+}
+
+#vote:selected{
+	-fx-background-color: green;
+
+}
+
 #voice {
 	-fx-background-color: #3c4250;
 	-fx-border-width: 5.0 5.0 0.0 0.0;

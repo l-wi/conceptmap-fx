@@ -17,10 +17,14 @@ import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEd
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.scene.transform.Transform;
 
 public class ConceptViewController implements ConceptMovingListener, InputClosedListener {
@@ -194,8 +198,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
-		this.colBinding = CollaborativeStringTextFieldBinding.createBinding(concept,
-				conceptCaption.getCaption());
+		this.colBinding = CollaborativeStringTextFieldBinding.createBinding(concept, this);
 
 		int index = participants.indexOf(concept.getOwner());
 		String result = conceptCaption.getCSSClassForIndex(index);
@@ -271,6 +274,24 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 
 		c.setPosition(c.getX(), c.getY(), r);
 		this.getView().setRotate(r);
+	}
 
+	public TextFlow getTextFlow() {
+		return conceptCaption.getCaption();
+	}
+
+	public void onVote(User user, boolean hasVoted) {
+
+		concept.setVoted(user, hasVoted);
+		adjustFontSizeToVotes();
+	}
+
+	public void adjustFontSizeToVotes() {
+		ObservableList<Node> children = this.getTextFlow().getChildren();
+		for (Node n : children) {
+			Text t = (Text) n;
+			Font f = new Font(20 + 15 * (concept.getVotes()));
+			t.setFont(f);
+		}
 	}
 }

@@ -56,7 +56,7 @@ public class AwarenessBars extends AnchorPane {
 
 		Path zpdLowerPath = initLine(zpdLowerX, zpdLowerY);
 
-		double zpdUpperY = barHeight - (zpdUpper * barHeight + 4);
+		double zpdUpperY = barHeight - (zpdUpper * barHeight);
 		int zpdUpperX = bars.length * (spacing + barWidth);
 
 		Path zpdUpperPath = initLine(zpdUpperX, zpdUpperY);
