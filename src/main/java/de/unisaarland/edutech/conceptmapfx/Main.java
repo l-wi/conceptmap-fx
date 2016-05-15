@@ -182,11 +182,13 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
+	// TODO delete action with crossed out animation 
 	// TODO data export
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO longpress when moving
 	// TODO test the damn thing to death
+	// TODO refactor the damn thing  
 
 	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
 		List<Screen> screens = Screen.getScreens();
