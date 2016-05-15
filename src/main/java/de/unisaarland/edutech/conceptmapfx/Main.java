@@ -182,7 +182,6 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-	// TODO delete action with crossed out animation 
 	// TODO data export
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
