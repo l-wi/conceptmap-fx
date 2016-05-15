@@ -186,7 +186,6 @@ public class Main extends Application {
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO longpress when moving
-	// TODO voting component
 	// TODO test the damn thing to death
 
 	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
