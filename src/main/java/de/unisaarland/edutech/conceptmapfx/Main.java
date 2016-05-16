@@ -187,7 +187,7 @@ public class Main extends Application {
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO longpress when moving
 	// TODO test the damn thing to death
-	// TODO refactor the damn thing  
+	// TODO refactor the damn thing
 
 	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
 		List<Screen> screens = Screen.getScreens();
@@ -217,10 +217,12 @@ public class Main extends Application {
 		if (conceptMap.getExperiment().USE_AWT)
 			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, 0.1, 0.5);
 
-		
 		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
 
 		conceptMapViewBuilder.withPrompts(promptLoader);
+
+		if (conceptMap.getExperiment().USE_VOTING)
+			conceptMapViewBuilder.withVoting();
 
 		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
 				.attachToListener(conceptFactory);

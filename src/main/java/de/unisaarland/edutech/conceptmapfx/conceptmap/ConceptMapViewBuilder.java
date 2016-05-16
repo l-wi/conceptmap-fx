@@ -39,6 +39,7 @@ public class ConceptMapViewBuilder {
 	private AwarenessBars[] awarenessTools;
 
 	private InputViewController[] inputControllers;
+	private boolean isUsingVoting;
 
 	public ConceptMapViewBuilder() {
 		try {
@@ -275,6 +276,14 @@ public class ConceptMapViewBuilder {
 		return this;
 	}
 
+	public void withVoting() {
+		List<User> participants = this.conceptMap.getExperiment().getParticipants();
+
+		for (int i = 0; i < participants.size(); i++) {
+			inputControllers[i].useVoting();
+		}
+	}
+
 	public ConceptMapViewBuilder withPrompts(PromptLoader promptLoader) {
 
 		List<User> participants = this.conceptMap.getExperiment().getParticipants();
@@ -283,6 +292,7 @@ public class ConceptMapViewBuilder {
 			String promptForUser = promptLoader.getPromptForUser(participants.get(i));
 			if (promptForUser != null)
 				inputControllers[i].setPrompt(promptForUser);
+
 		}
 
 		return this;

@@ -107,6 +107,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private double translateX;
 
+	private boolean isUsingVoting;
+
 	@FXML
 	public void initialize() {
 		try {
@@ -140,6 +142,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		// FIXME currently removing undo function because it is buggy and is
 		// hard to fix
 		btnUndo.setVisible(false);
+		this.btnVote.setVisible(isUsingVoting);
 
 		btnAlign.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnAlign));
 		btnUndo.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnUndo));
@@ -341,6 +344,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		for (Node n : hiddenNodes) {
 			n.setVisible(true);
 		}
+
+		this.btnVote.setVisible(isUsingVoting && btnVote.isVisible());
 	}
 
 	private void releaseInput() {
@@ -518,4 +523,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		this.lblPrompts.setText(text);
 	}
 
+	public void useVoting() {
+		isUsingVoting = true;
+	}
 }
