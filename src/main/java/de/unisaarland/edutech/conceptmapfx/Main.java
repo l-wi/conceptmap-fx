@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import de.unisaarland.edutech.conceptmapfx.awt.AWTConfig;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
@@ -215,7 +216,7 @@ public class Main extends Application {
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
 
 		if (conceptMap.getExperiment().USE_AWT)
-			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, 0.1, 0.5);
+			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, AWTConfig.getZPDLowerBound(), AWTConfig.getZPDHigherBound());
 
 		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
 

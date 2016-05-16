@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.unisaarland.edutech.conceptmapfx.awt.AWTFormula;
+import de.unisaarland.edutech.conceptmapfx.awt.AWTConfig;
 import de.unisaarland.edutech.conceptmapfx.awt.AwarenessBars;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.ConceptMap;
@@ -31,7 +31,7 @@ public class InteractionLogger {
 
 	private List<AwarenessBars> awts = new ArrayList<>();
 
-	private AWTFormula awtFormula;
+	private AWTConfig awtFormula;
 
 	private Map<String, UserSummary> stats = new HashMap<>();
 
@@ -52,7 +52,7 @@ public class InteractionLogger {
 
 	public void bindAWT(AwarenessBars bars) {
 		this.awts.add(bars);
-		this.awtFormula = new AWTFormula();
+		this.awtFormula = new AWTConfig();
 	}
 
 	public void setConceptMap(ConceptMap map) {
