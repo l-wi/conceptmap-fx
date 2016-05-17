@@ -128,8 +128,16 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		EventHandler<? super MouseEvent> onMousePressed = conceptCaption.getOnMousePressed();
 		EventHandler<? super TouchEvent> onTouchPressed = conceptCaption.getOnTouchPressed();
 
-		conceptCaption.setOnMousePressed(e -> fireConceptDeleted());
-		conceptCaption.setOnTouchPressed(e -> fireConceptDeleted());
+		conceptCaption.setOnMousePressed(e -> {
+			if (!e.isSynthesized()) {
+				conceptCaption.setOnMouseClicked(null);
+				fireConceptDeleted();
+			}
+		});
+		conceptCaption.setOnTouchPressed(e -> {
+			conceptCaption.setOnTouchPressed(null);
+			fireConceptDeleted();
+		});
 
 		PauseTransition p = new PauseTransition(Duration.seconds(2));
 		p.setOnFinished(e -> {

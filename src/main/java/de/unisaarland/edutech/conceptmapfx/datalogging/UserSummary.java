@@ -17,6 +17,10 @@ public class UserSummary {
 	private long linkEdits;
 	//how many links associated with a concept of the user have been deleted
 	private long linkDeletes;
+	//what was the awareness score of the user
+	private double awarenessScore;
+	//how often did the user vote
+	private int votingCount;
 
 	public void setUser(String user) {
 		this.user = user;
@@ -116,6 +120,22 @@ public class UserSummary {
 				+ ownConceptsEdits + ", foreignConceptsEdits=" + foreignConceptsEdits + ", conceptDeletes="
 				+ conceptDeletes + ", linkCreates=" + linkCount + ", linkEdits=" + linkEdits + ", linkDeletes="
 				+ linkDeletes + "]";
+	}
+
+	public double getAwarenessScore() {
+		return awarenessScore;
+	}
+
+	public void setAwarenessScore(double awarenessScore) {
+		this.awarenessScore = awarenessScore;
+	}
+
+	public void incVotingCount() {
+		this.votingCount++;
+	}
+
+	public int getVotingCount() {
+		return this.votingCount;
 	}
 
 

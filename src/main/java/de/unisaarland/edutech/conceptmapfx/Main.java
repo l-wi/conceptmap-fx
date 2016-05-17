@@ -124,7 +124,7 @@ public class Main extends Application {
 
 		// set links with controllers
 		examinerController.setNext((u) -> {
-			experimentController.setResearcher(u.user);
+			experimentController.setResearcher(u);
 			Parent newView = experimentController.getView();
 			showScene(primaryStage, newView);
 		});
@@ -133,43 +133,38 @@ public class Main extends Application {
 			this.experiment = e;
 
 			userTopController.setNext((u) -> {
-				this.experiment.addParticipant(u.user);
-				promptLoader.setPromptForUser(u.user, u.prompt);
+				this.experiment.addParticipant(u);
+
 				showScene(primaryStage, userBottomController.getView());
 			});
 
 			userLeftController.setNext((u) -> {
-				this.experiment.addParticipant(u.user);
-				promptLoader.setPromptForUser(u.user, u.prompt);
+				this.experiment.addParticipant(u);
 
 				showScene(primaryStage, userRightController.getView());
 			});
 
 			userBottomController.setNext((u) -> {
-				this.experiment.addParticipant(u.user);
-				promptLoader.setPromptForUser(u.user, u.prompt);
+				this.experiment.addParticipant(u);
 				showScene(primaryStage, userLeftController.getView());
 			});
 
 			userRightController.setNext((u) -> {
-				this.experiment.addParticipant(u.user);
-				promptLoader.setPromptForUser(u.user, u.prompt);
+				this.experiment.addParticipant(u);
 				toConceptMapStage(primaryStage, this.experiment);
 
 			});
 
 			if (e.USER_COUNT == 2) {
 				userBottomController.setNext((u) -> {
-					this.experiment.addParticipant(u.user);
-					promptLoader.setPromptForUser(u.user, u.prompt);
+					this.experiment.addParticipant(u);
 					toConceptMapStage(primaryStage, this.experiment);
 				});
 			}
 
 			if (e.USER_COUNT == 3) {
 				userLeftController.setNext((u) -> {
-					this.experiment.addParticipant(u.user);
-					promptLoader.setPromptForUser(u.user, u.prompt);
+					this.experiment.addParticipant(u);
 					toConceptMapStage(primaryStage, this.experiment);
 				});
 
@@ -216,7 +211,8 @@ public class Main extends Application {
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
 
 		if (conceptMap.getExperiment().USE_AWT)
-			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, AWTConfig.getZPDLowerBound(), AWTConfig.getZPDHigherBound());
+			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, AWTConfig.getZPDLowerBound(),
+					AWTConfig.getZPDHigherBound());
 
 		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
 

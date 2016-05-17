@@ -17,20 +17,6 @@ import javafx.scene.layout.VBox;
 
 public class LoginController {
 
-	public class UserConfig {
-		public User user;
-		public String prompt;
-
-		public UserConfig(User u, String p) {
-			user = u;
-			prompt = p;
-		}
-
-		public boolean hasPrompt() {
-			return prompt != null;
-		}
-	}
-
 	private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@FXML
@@ -42,7 +28,7 @@ public class LoginController {
 	@FXML
 	private KeyboardPane keyboard;
 
-	private Consumer<UserConfig> nextFunction;
+	private Consumer<User> nextFunction;
 
 	private ComboBox<String> cmbInstruction;
 
@@ -67,6 +53,7 @@ public class LoginController {
 		keyboard.setKeyBoardStyle(getClass().getResource("/css/input.css").toString());
 		keyboard.setSpaceKeyMove(false);
 		keyboard.setLayerPath(new File("./keyboardLayout").toPath());
+		keyboard.setScale(1.2);
 		try {
 			keyboard.load();
 		} catch (Exception e) {
@@ -78,16 +65,16 @@ public class LoginController {
 		picker.setOnAction((u) -> {
 
 			String prompt = (cmbInstruction != null) ? this.cmbInstruction.getValue() : null;
-			UserConfig config = new UserConfig(u, prompt);
-			fadeOut(config);
+			u.setPrompt(prompt);
+			fadeOut(u);
 		});
 	}
 
-	private void fadeOut(UserConfig u) {
+	private void fadeOut(User u) {
 		nextFunction.accept(u);
 	}
 
-	public void setNext(Consumer<UserConfig> func) {
+	public void setNext(Consumer<User> func) {
 		this.nextFunction = func;
 	}
 

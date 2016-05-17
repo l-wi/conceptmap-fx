@@ -7,17 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-
-import de.unisaarland.edutech.conceptmapping.User;
 
 public class PromptLoader {
 
 	private List<String> prompts = new ArrayList<>();
-	private Map<User,String> userPrompts = new HashMap<>();
 
 	public PromptLoader() {
 		try {
@@ -37,14 +32,8 @@ public class PromptLoader {
 		}
 
 	}
-	
-	public void setPromptForUser(User u, String s){
-		this.userPrompts.put(u,s);
-	}
 
-	public String getPromptForUser(User u){
-		return this.userPrompts.get(u);
-	}
+
 	public List<String> getAvailablePrompts() {
 		return Collections.unmodifiableList(prompts);
 	}

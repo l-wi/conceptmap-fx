@@ -1,13 +1,11 @@
 package de.unisaarland.edutech.conceptmapfx.preparation;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -66,8 +64,6 @@ public class UserPickerView extends VBox {
 
 	private double imgHeight;
 
-	private String prompt;
-
 	public UserPickerView() {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserPickerView.fxml"));
 		loader.setRoot(this);
@@ -103,7 +99,6 @@ public class UserPickerView extends VBox {
 		this.userFilePath = userFilePath;
 		workingFile = new File(userFilePath);
 
-
 	}
 
 	public void setWriteUsersOnAction(boolean b) {
@@ -119,15 +114,21 @@ public class UserPickerView extends VBox {
 	}
 
 	public void loadUsers() {
-		
+
 		users = new ArrayList<>();
 
-		try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(workingFile))) {
-			users = (List<User>) stream.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+		try (Scanner scanner = new Scanner(workingFile)) {
+
+			while (scanner.hasNext()) {
+				String name = scanner.nextLine();
+				String email = scanner.nextLine();
+
+				users.add(new User(name, email));
+			}
+		} catch (IOException e) {
 			LOG.error("could not load existing users!", e);
 		}
-		
+
 		initComboBox();
 	}
 
@@ -185,12 +186,13 @@ public class UserPickerView extends VBox {
 
 			try {
 				this.activeUser = new User(name, email);
-				this.users.add(0,activeUser);
+				this.users.add(0, activeUser);
 				if (isWriteUsersOnAction && this.isNewUser())
-					appendUser();
+					saveUsers();
 
 				c.accept(activeUser);
 			} catch (EmailException ex) {
+				LOG.error(ex.getMessage(), ex);
 				this.showError();
 			}
 		});
@@ -213,12 +215,22 @@ public class UserPickerView extends VBox {
 		return isNewUser;
 	}
 
-	private void appendUser() {
-		try (ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(workingFile))) {
-			stream.writeObject(users);
-		} catch (IOException ex) {
+	private void saveUsers() {
+
+		try (FileWriter writer = new FileWriter(workingFile)) {
+			for (User u : users) {
+				writer.write(u.getName());
+				writer.write("\n");
+				writer.write(u.getEmail());
+				writer.write("\n");
+				writer.flush();
+			}
+		} catch (IOException ex)
+
+		{
 			LOG.error("could not save user!", ex);
 		}
+
 	}
 
 	public double getImgHeight() {

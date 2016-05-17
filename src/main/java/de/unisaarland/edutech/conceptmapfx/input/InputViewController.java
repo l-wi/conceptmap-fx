@@ -332,7 +332,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 		boolean hasVoted = cv.hasVoted(u);
 		btnVote.setSelected(hasVoted);
-		btnVote.setDisable(false);
+		btnVote.setDisable(cv.isLinkEditing());
 
 		// FIXME currently removing undo function because it is buggy and is
 		// hard to fix

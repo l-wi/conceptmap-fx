@@ -289,7 +289,7 @@ public class ConceptMapViewBuilder {
 		List<User> participants = this.conceptMap.getExperiment().getParticipants();
 
 		for (int i = 0; i < participants.size(); i++) {
-			String promptForUser = promptLoader.getPromptForUser(participants.get(i));
+			String promptForUser = participants.get(i).getPrompt();
 			if (promptForUser != null)
 				inputControllers[i].setPrompt(promptForUser);
 
