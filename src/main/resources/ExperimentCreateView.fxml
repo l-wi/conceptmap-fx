@@ -50,7 +50,8 @@
 									<children>
 										<CheckBox text="Show Awareness Tool" id="useAwt"
 											fx:id="useAwt"></CheckBox>
-
+										<CheckBox text="Show Voting" id="useAwt"
+											fx:id="useVoting"></CheckBox>
 									</children>
 								</HBox>
 								<Separator prefWidth="200.0" />

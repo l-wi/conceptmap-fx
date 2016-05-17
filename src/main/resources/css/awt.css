@@ -1,15 +1,21 @@
-.userTop> .track{
-    -fx-background-color: #2400F0;
+
+
+.userTop{
+	  -fx-border-width: 5.0;
+      -fx-border-color:#2400F0;
 }
 
-.userBottom> .track{
-    -fx-background-color: #00F09C;
+.userBottom{
+      -fx-border-color:  #00F09C;
+	  -fx-border-width: 5.0;
 }
 
-.userLeft> .track{
-    -fx-background-color: #F00054;
+.userLeft{
+      -fx-border-color:  #F00054;
+      -fx-border-width: 5.0;
 }
 
-.userRight> .track{
-    -fx-background-color: #CCF000;
+.userRight{
+      -fx-border-color:  #CCF000;
+      -fx-border-width: 200.0;
 }

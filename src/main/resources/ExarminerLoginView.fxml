@@ -18,7 +18,7 @@
 <BorderPane fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/8.0.40"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unisaarland.edutech.conceptmapfx.preparation.LoginController">
 	<center>
-		<VBox alignment="CENTER">
+		<VBox fx:id="usersBox" alignment="CENTER">
 			<children>
 				<UserPickerView fx:id="picker" UserFilePath="./profiles/examiners.ostream"></UserPickerView>
 			</children>

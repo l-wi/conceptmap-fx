@@ -13,14 +13,17 @@
 <?import org.comtel2000.keyboard.control.*?>
 <?import javafx.scene.layout.VBox?>
 <?import de.unisaarland.edutech.conceptmapfx.preparation.UserPickerView?>
+<?import javafx.scene.control.ComboBox?>
 
 
-<BorderPane fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/8.0.40"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unisaarland.edutech.conceptmapfx.preparation.LoginController">
+<BorderPane fx:id="root" styleClass="root"
+	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="de.unisaarland.edutech.conceptmapfx.preparation.LoginController">
 	<center>
-		<VBox alignment="CENTER">
+		<VBox  spacing="50"  fx:id="usersBox" alignment="CENTER">
 			<children>
-				<UserPickerView stylesheets="@/css/user.css" fx:id="picker" UserFilePath="./profiles/user.ostream" prompt="select user"></UserPickerView>
+				<UserPickerView stylesheets="@/css/user.css" fx:id="picker"
+					UserFilePath="./profiles/user.ostream" prompt="select user"></UserPickerView>
 			</children>
 		</VBox>
 	</center>
@@ -36,6 +39,6 @@
 	</bottom>
 	<stylesheets>
 		<URL value="@/css/setup.css" />
-		
+
 	</stylesheets>
 </BorderPane>

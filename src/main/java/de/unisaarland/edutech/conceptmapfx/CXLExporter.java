@@ -133,7 +133,7 @@ public class CXLExporter {
 
 	public static void main(String[] args) {
 		User u = new User("Tim", "Tim@tim.de");
-		ConceptMap map = new ConceptMap(new Experiment(u, new FocusQuestion("Test", u), 3, false));
+		ConceptMap map = new ConceptMap(new Experiment(u, new FocusQuestion("Test", u), 3, false,false));
 
 		Concept dog = new Concept(new CollaborativeString(u, "Hund"));
 		map.addConcept(dog);

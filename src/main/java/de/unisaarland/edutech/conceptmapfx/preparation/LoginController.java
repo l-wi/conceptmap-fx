@@ -7,21 +7,44 @@ import org.comtel2000.keyboard.control.KeyboardPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.unisaarland.edutech.conceptmapfx.prompts.PromptLoader;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.ComboBox;
+import javafx.scene.layout.VBox;
 
 public class LoginController {
+
+	public class UserConfig {
+		public User user;
+		public String prompt;
+
+		public UserConfig(User u, String p) {
+			user = u;
+			prompt = p;
+		}
+
+		public boolean hasPrompt() {
+			return prompt != null;
+		}
+	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@FXML
+	private VBox usersBox;
+
+	@FXML
 	private Parent root;
-	
+
 	@FXML
 	private KeyboardPane keyboard;
 
-	private Consumer<User> nextFunction;
+	private Consumer<UserConfig> nextFunction;
+
+	private ComboBox<String> cmbInstruction;
 
 	@FXML
 	private UserPickerView picker;
@@ -30,6 +53,13 @@ public class LoginController {
 	public void initialize() {
 		initKeyboard();
 		initLoginClick();
+	}
+
+	public void usePrompts(PromptLoader promptLoader) {
+		cmbInstruction = new ComboBox<String>(FXCollections.observableList(promptLoader.getAvailablePrompts()));
+		cmbInstruction.setVisible(true);
+		cmbInstruction.setPromptText("Optional: Select a user prompt");
+		usersBox.getChildren().add(cmbInstruction);
 
 	}
 
@@ -47,29 +77,33 @@ public class LoginController {
 	private void initLoginClick() {
 		picker.setOnAction((u) -> {
 
-			fadeOut(u);
+			String prompt = (cmbInstruction != null) ? this.cmbInstruction.getValue() : null;
+			UserConfig config = new UserConfig(u, prompt);
+			fadeOut(config);
 		});
 	}
 
-	private void fadeOut(User u) {
+	private void fadeOut(UserConfig u) {
 		nextFunction.accept(u);
 	}
 
-	public void setNext(Consumer<User> func) {
+	public void setNext(Consumer<UserConfig> func) {
 		this.nextFunction = func;
 	}
 
 	public Parent getView() {
-		//TODO call this not when getting view but on a better place, e.g. when controller is added to view
+		// TODO call this not when getting view but on a better place, e.g. when
+		// controller is added to view
 		picker.loadUsers();
 		return root;
 	}
-	
-	public void setPrompt(String prompt){
+
+	public void setPrompt(String prompt) {
 		picker.setPrompt(prompt);
 	}
-	
-	public void addImageCSSClass(String css){
+
+	public void addImageCSSClass(String css) {
 		picker.addImageCSSClass(css);
 	}
+
 }

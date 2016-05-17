@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import de.unisaarland.edutech.conceptmapfx.awt.AWTConfig;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
@@ -14,6 +15,7 @@ import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableLinkFactory;
 import de.unisaarland.edutech.conceptmapfx.preparation.ExperimentCreateController;
 import de.unisaarland.edutech.conceptmapfx.preparation.LoginController;
+import de.unisaarland.edutech.conceptmapfx.prompts.PromptLoader;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.application.Application;
@@ -33,6 +35,7 @@ public class Main extends Application {
 	private SessionRestoreState restorer;
 	private Experiment experiment;
 	private ObservableConceptMap conceptMap;
+	private PromptLoader promptLoader;
 
 	// FIXME load colors from css to have them at a central location.
 	private static final Color userTop = Color.web("#2400F0");
@@ -97,25 +100,31 @@ public class Main extends Application {
 
 		ExperimentCreateController experimentController = initExperimentView();
 
+		promptLoader = new PromptLoader();
+
 		LoginController userTopController = initUserLoginView();
 		userTopController.setPrompt("insert/select top user");
 		userTopController.addImageCSSClass("background-top");
+		userTopController.usePrompts(promptLoader);
 
 		LoginController userLeftController = initUserLoginView();
 		userLeftController.setPrompt("insert/select left user");
 		userLeftController.addImageCSSClass("background-left");
+		userLeftController.usePrompts(promptLoader);
 
 		LoginController userRightController = initUserLoginView();
 		userRightController.setPrompt("insert/select right user");
 		userRightController.addImageCSSClass("background-right");
+		userRightController.usePrompts(promptLoader);
 
 		LoginController userBottomController = initUserLoginView();
 		userBottomController.setPrompt("insert/select bottom user");
 		userBottomController.addImageCSSClass("background-bottom");
+		userBottomController.usePrompts(promptLoader);
 
 		// set links with controllers
 		examinerController.setNext((u) -> {
-			experimentController.setResearcher(u);
+			experimentController.setResearcher(u.user);
 			Parent newView = experimentController.getView();
 			showScene(primaryStage, newView);
 		});
@@ -124,36 +133,43 @@ public class Main extends Application {
 			this.experiment = e;
 
 			userTopController.setNext((u) -> {
-				this.experiment.addParticipant(u);
+				this.experiment.addParticipant(u.user);
+				promptLoader.setPromptForUser(u.user, u.prompt);
 				showScene(primaryStage, userBottomController.getView());
 			});
 
 			userLeftController.setNext((u) -> {
-				this.experiment.addParticipant(u);
+				this.experiment.addParticipant(u.user);
+				promptLoader.setPromptForUser(u.user, u.prompt);
+
 				showScene(primaryStage, userRightController.getView());
 			});
 
 			userBottomController.setNext((u) -> {
-				this.experiment.addParticipant(u);
+				this.experiment.addParticipant(u.user);
+				promptLoader.setPromptForUser(u.user, u.prompt);
 				showScene(primaryStage, userLeftController.getView());
 			});
 
 			userRightController.setNext((u) -> {
-				this.experiment.addParticipant(u);
+				this.experiment.addParticipant(u.user);
+				promptLoader.setPromptForUser(u.user, u.prompt);
 				toConceptMapStage(primaryStage, this.experiment);
 
 			});
 
 			if (e.USER_COUNT == 2) {
 				userBottomController.setNext((u) -> {
-					this.experiment.addParticipant(u);
+					this.experiment.addParticipant(u.user);
+					promptLoader.setPromptForUser(u.user, u.prompt);
 					toConceptMapStage(primaryStage, this.experiment);
 				});
 			}
 
 			if (e.USER_COUNT == 3) {
 				userLeftController.setNext((u) -> {
-					this.experiment.addParticipant(u);
+					this.experiment.addParticipant(u.user);
+					promptLoader.setPromptForUser(u.user, u.prompt);
 					toConceptMapStage(primaryStage, this.experiment);
 				});
 
@@ -171,9 +187,8 @@ public class Main extends Application {
 	// TODO selected eintippen geht nicht (Bug?)
 	// TODO rotate two nodes simultaneously (Bug?)
 	// TODO longpress when moving
-	// TODO instruction component
-	// TODO awareness component
 	// TODO test the damn thing to death
+	// TODO refactor the damn thing
 
 	private void showOnfirstOrPrimaryDisplay(Stage primaryStage) {
 		List<Screen> screens = Screen.getScreens();
@@ -201,9 +216,14 @@ public class Main extends Application {
 		ConceptMapViewBuilder conceptMapViewBuilder = new ConceptMapViewBuilder();
 
 		if (conceptMap.getExperiment().USE_AWT)
-			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, 0.1, 0.5);
+			conceptMapViewBuilder.withAWT(experiment.USER_COUNT, 150, 40, AWTConfig.getZPDLowerBound(), AWTConfig.getZPDHigherBound());
 
 		conceptMapViewBuilder.withConceptViewBuilder(conceptBuilder).withConceptMap(conceptMap);
+
+		conceptMapViewBuilder.withPrompts(promptLoader);
+
+		if (conceptMap.getExperiment().USE_VOTING)
+			conceptMapViewBuilder.withVoting();
 
 		conceptMapViewBuilder.attachToListener(conceptMap).attachToListener(linkFactory)
 				.attachToListener(conceptFactory);

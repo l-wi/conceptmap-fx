@@ -19,9 +19,11 @@ public class AwarenessBars extends AnchorPane {
 	private double zpdUpper;
 
 	private int spacing = 10;
+	private int count;
 
 	public AwarenessBars(int count, int barHeight, int barWidth, double zpdLower, double zpdUpper) {
 		throwIfInvalidZPD(zpdLower, zpdUpper);
+		this.count =count;
 		this.barHeight = barHeight;
 		this.barWidth = barWidth;
 		this.zpdLower = zpdLower;
@@ -51,12 +53,12 @@ public class AwarenessBars extends AnchorPane {
 	private void initZPD(double zpdLower, double zpdUpper) {
 
 		double zpdLowerY = barHeight - (zpdLower * barHeight + 4);
-		int zpdLowerX = bars.length * (spacing + barWidth);
+		int zpdLowerX =  count * (spacing + barWidth);
 
 		Path zpdLowerPath = initLine(zpdLowerX, zpdLowerY);
 
-		double zpdUpperY = barHeight - (zpdUpper * barHeight + 4);
-		int zpdUpperX = bars.length * (spacing + barWidth);
+		double zpdUpperY = barHeight - (zpdUpper * barHeight);
+		int zpdUpperX = count * (spacing + barWidth);
 
 		Path zpdUpperPath = initLine(zpdUpperX, zpdUpperY);
 

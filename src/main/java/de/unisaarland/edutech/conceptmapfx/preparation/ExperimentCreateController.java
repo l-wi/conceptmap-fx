@@ -38,6 +38,7 @@ public class ExperimentCreateController {
 
 	@FXML
 	private KeyboardPane keyboard;
+
 	@FXML
 	private ComboBox<String> cmbFocusQuestion;
 
@@ -50,6 +51,9 @@ public class ExperimentCreateController {
 	@FXML
 	private CheckBox useAwt;
 
+	@FXML
+	private CheckBox useVoting;
+	
 	private List<FocusQuestion> available = new ArrayList<>();
 
 	private File workingFile = new File("profiles/focusQuesions.ostream");
@@ -72,8 +76,9 @@ public class ExperimentCreateController {
 
 			Integer userCount = Integer.valueOf(userPicker.getValue());
 			boolean awt = this.useAwt.isSelected();
+			boolean useVoting = this.useVoting.isSelected();
 
-			next.accept(new Experiment(researcher, q, userCount, awt));
+			next.accept(new Experiment(researcher, q, userCount, awt, useVoting));
 
 		});
 	}

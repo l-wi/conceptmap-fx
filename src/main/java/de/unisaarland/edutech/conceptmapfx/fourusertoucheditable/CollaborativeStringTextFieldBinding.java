@@ -1,6 +1,7 @@
 package de.unisaarland.edutech.conceptmapfx.fourusertoucheditable;
 
 import de.unisaarland.edutech.conceptmapfx.Main;
+import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
@@ -19,14 +20,18 @@ public class CollaborativeStringTextFieldBinding {
 
 	private Link l;
 
+	private ConceptViewController controller;
+
 	private CollaborativeStringTextFieldBinding(Link l, TextFlow caption) {
 		this.l = l;
+
 		init(l.getCaption(), caption);
 	}
 
-	private CollaborativeStringTextFieldBinding(Concept c, TextFlow caption) {
+	private CollaborativeStringTextFieldBinding(Concept c, ConceptViewController controller) {
 		this.c = c;
-		init(c.getName(), caption);
+		this.controller = controller;
+		init(c.getName(), controller.getTextFlow());
 	}
 
 	private void init(CollaborativeString c, TextFlow caption) {
@@ -60,6 +65,10 @@ public class CollaborativeStringTextFieldBinding {
 		t.setStrokeWidth(0.2);
 		t.setStroke(javafx.scene.paint.Color.BLACK);
 		caption.getChildren().add(t);
+		
+		if(controller != null)
+			controller.adjustFontSizeToVotes();
+
 	}
 
 	private void logInteraction(User u) {
@@ -69,12 +78,22 @@ public class CollaborativeStringTextFieldBinding {
 			INTERACTION_LOGGER.contentLinkData(this.l, u);
 	}
 
-	public static CollaborativeStringTextFieldBinding createBinding(Concept source, TextFlow dest) {
+	public static CollaborativeStringTextFieldBinding createBinding(Concept source, ConceptViewController dest) {
 		return new CollaborativeStringTextFieldBinding(source, dest);
 	}
 
 	public static CollaborativeStringTextFieldBinding createBinding(Link source, TextFlow dest) {
 		return new CollaborativeStringTextFieldBinding(source, dest);
+	}
+
+	public void vote(User user, boolean hasVoted) {
+
+		
+		controller.onVote(user,hasVoted);
+	}
+	
+	public boolean hasVoted(User u){
+		return this.c.hasVoted(u);
 	}
 
 }
