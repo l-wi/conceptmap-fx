@@ -58,6 +58,10 @@ public class CollaborativeStringTextFieldBinding {
 		}
 	}
 
+	public boolean isLinkEditing() {
+		return this.c == null;
+	}
+
 	private void update(User u, char c) {
 		Text t = new Text(String.valueOf(c));
 
@@ -65,8 +69,8 @@ public class CollaborativeStringTextFieldBinding {
 		t.setStrokeWidth(0.2);
 		t.setStroke(javafx.scene.paint.Color.BLACK);
 		caption.getChildren().add(t);
-		
-		if(controller != null)
+
+		if (controller != null)
 			controller.adjustFontSizeToVotes();
 
 	}
@@ -87,13 +91,11 @@ public class CollaborativeStringTextFieldBinding {
 	}
 
 	public void vote(User user, boolean hasVoted) {
-
-		
-		controller.onVote(user,hasVoted);
+		controller.onVote(user, hasVoted);
 	}
-	
-	public boolean hasVoted(User u){
-		return this.c.hasVoted(u);
+
+	public boolean hasVoted(User u) {
+		return (c != null) ? this.c.hasVoted(u) : false;
 	}
 
 }

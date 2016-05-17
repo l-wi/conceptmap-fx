@@ -23,7 +23,7 @@
 		<VBox  spacing="50"  fx:id="usersBox" alignment="CENTER">
 			<children>
 				<UserPickerView stylesheets="@/css/user.css" fx:id="picker"
-					UserFilePath="./profiles/user.ostream" prompt="select user"></UserPickerView>
+					UserFilePath="./profiles/user.txt" prompt="select user"></UserPickerView>
 			</children>
 		</VBox>
 	</center>

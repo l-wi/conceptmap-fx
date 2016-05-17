@@ -53,6 +53,7 @@ public class LoginController {
 		keyboard.setKeyBoardStyle(getClass().getResource("/css/input.css").toString());
 		keyboard.setSpaceKeyMove(false);
 		keyboard.setLayerPath(new File("./keyboardLayout").toPath());
+		keyboard.setScale(1.2);
 		try {
 			keyboard.load();
 		} catch (Exception e) {
