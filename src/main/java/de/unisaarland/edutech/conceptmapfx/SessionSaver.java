@@ -22,6 +22,10 @@ public class SessionSaver implements ConceptMapObserver {
 
 	private static File workingDir;
 
+	private static File binaryDir;
+
+	private static File cxlDir;
+
 	private int counter = 1;
 
 	private boolean isSetup;
@@ -36,6 +40,10 @@ public class SessionSaver implements ConceptMapObserver {
 		this.cxlExporter = new CXLExporter();
 		isSetup = true;
 
+		getWorkingDir();
+		getCXLDir();
+		getBinaryDir();
+
 		try {
 			serialize();
 		} catch (IOException e) {
@@ -49,9 +57,26 @@ public class SessionSaver implements ConceptMapObserver {
 			Date d = new Date();
 			String dateSuffix = new SimpleDateFormat("yyyyMMddHHmmss").format(d);
 			workingDir = new File(FOLDER + "/" + dateSuffix);
-			workingDir.mkdir();
+			if (!workingDir.mkdirs())
+				throw new RuntimeException("could not create session dir  " + workingDir);
 		}
 		return workingDir;
+	}
+
+	public static File getBinaryDir() {
+		if (binaryDir == null) {
+			binaryDir = new File(getWorkingDir(), "binary");
+			binaryDir.mkdir();
+		}
+		return binaryDir;
+	}
+
+	public static File getCXLDir() {
+		if (cxlDir == null) {
+			cxlDir = new File(getWorkingDir(), "cxl");
+			cxlDir.mkdir();
+		}
+		return cxlDir;
 	}
 
 	private void startTimer() {
@@ -94,11 +119,12 @@ public class SessionSaver implements ConceptMapObserver {
 	}
 
 	private File nextSerializedFile() {
-		return new File(workingDir, String.valueOf(counter++) + ".cmap");
+
+		return new File(binaryDir, String.valueOf(counter++) + ".cmap");
 	}
 
 	private File nextCXLFile() {
-		return new File(workingDir, String.valueOf(counter) + ".cxl");
+		return new File(cxlDir, String.valueOf(counter) + ".cxl");
 
 	}
 

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import java.net.* ?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Accordion?>
+
+<BorderPane styleClass=".root" xmlns="http://javafx.com/javafx/8.0.40"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unisaarland.edutech.conceptmapfx.SummaryViewController">
+
+
+
+	<center>
+		<GridPane fx:id="charts" BorderPane.alignment="CENTER">
+			<columnConstraints>
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+					prefWidth="100.0" />
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+					prefWidth="100.0" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints minHeight="10.0" prefHeight="60.0"
+					vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="60.0"
+					vgrow="SOMETIMES" />
+			</rowConstraints>
+			<children>
+
+				<PieChart fx:id="conceptCreateChart" title="Created Concepts"
+					GridPane.columnIndex="0" GridPane.rowIndex="0" />
+				<PieChart fx:id="conceptEditChart" title="Edited Concepts"
+					GridPane.columnIndex="1" GridPane.rowIndex="0" />
+				<PieChart fx:id="conceptDeleteChart" title="Deleted Concepts"
+					GridPane.columnIndex="2" GridPane.rowIndex="0" />
+				<PieChart fx:id="linkCreateChart" title="Involved Links"
+					GridPane.columnIndex="0" GridPane.rowIndex="1" />
+				<PieChart fx:id="linkEditChart" title="Edited Links"
+					GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<PieChart fx:id="linkDeleteChart" title="Deleted Links"
+					GridPane.columnIndex="2" GridPane.rowIndex="1" />
+			</children>
+		</GridPane>
+	</center>
+
+	<top>
+		<StackPane>
+			<children>
+				<HBox rotate="180" alignment="CENTER">
+					<children>
+						<Button rotate="180" fx:id="btnTop" styleClass="top"
+							text="email me the map" onAction="#onTopEmail" />
+						<Button text="rotate" onAction="#onRotateAction"></Button>
+					</children>
+				</HBox>
+			</children>
+		</StackPane>
+	</top>
+
+	<left>
+		<StackPane>
+			<children>
+				<HBox fx:id="rightPanel" rotate="90" alignment="CENTER">
+					<children>
+						<Button fx:id="btnLeft" styleClass="left" text="email me the map"  onAction="#onLeftEmail"/>
+						<Button text="rotate" onAction="#onRotateAction"></Button>
+					</children>
+				</HBox>
+			</children>
+		</StackPane>
+	</left>
+
+	<right>
+		<StackPane>
+			<children>
+
+				<HBox fx:id="leftPanel" rotate="270" alignment="CENTER">
+					<children>
+						<Button fx:id="btnRight" styleClass="right" text="email me the map"  onAction="#onRightEmail"/>
+						<Button text="rotate" onAction="#onRotateAction" ></Button>
+					</children>
+				</HBox>
+			</children>
+		</StackPane>
+	</right>
+
+	<bottom>
+		<StackPane>
+			<children>
+				<HBox alignment="CENTER">
+					<children>
+						<Button styleClass="bottom" fx:id="btnBottom" text="email me the map"  onAction="#onBottomEmail" />
+						<Button text="rotate" onAction="#onRotateAction"></Button>
+					</children>
+				</HBox>
+			</children>
+		</StackPane>
+	</bottom>
+
+
+	<stylesheets>
+		<URL value="@/css/summary.css" />
+
+	</stylesheets>
+</BorderPane>

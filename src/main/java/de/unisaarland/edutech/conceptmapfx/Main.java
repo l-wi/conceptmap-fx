@@ -233,6 +233,10 @@ public class Main extends Application {
 		scene.setOnKeyTyped((l) -> {
 			if (l.getCharacter().equals("f"))
 				primaryStage.setFullScreen(true);
+			if (l.getCharacter().equals(" ")) {
+				showSummaryView(primaryStage);
+			}
+
 		});
 
 		primaryStage.setScene(scene);
@@ -244,6 +248,19 @@ public class Main extends Application {
 			restorer.handleRestoreState(primaryStage);
 		}
 
+	}
+
+	private void showSummaryView(Stage primaryStage) {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/SummaryView.fxml"));
+		tryLoadingFXMLOrThrow(loader);
+
+		SummaryViewController controller = loader.getController();
+		controller.setUserSummary(conceptMap.getExperiment(), InteractionLogger.getInstance().getStatistics());
+
+		Scene s = new Scene(loader.getRoot());
+
+		primaryStage.setScene(s);
+		primaryStage.setFullScreen(true);
 	}
 
 	private void initColors() {

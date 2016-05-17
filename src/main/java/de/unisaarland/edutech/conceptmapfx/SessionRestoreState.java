@@ -35,7 +35,7 @@ public class SessionRestoreState {
 	}
 
 	public Optional<ObservableConceptMap> restoreSessionIfNeeded() {
-		File rootFolder = new File("./session");
+		File rootFolder = SessionSaver.getBinaryDir();
 
 		if (!isDirectory(rootFolder))
 			rootFolder.mkdir();

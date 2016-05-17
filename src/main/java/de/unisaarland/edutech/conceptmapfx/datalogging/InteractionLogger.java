@@ -149,7 +149,7 @@ public class InteractionLogger {
 		addRow(Event.DIRECTION_LINK, c1, c2, l, null);
 	}
 
-	public void votingData(Concept c, User u){
+	public void votingData(Concept c, User u) {
 		UserSummary userSummary = getUserSummaryForUser(u);
 
 		userSummary.incVotingCount();
@@ -157,7 +157,7 @@ public class InteractionLogger {
 
 		addRow(Event.VOTING, c, null, null, u);
 	}
-	
+
 	private UserSummary getUserSummaryForUser(User u) {
 		addUserToSummaryIfNotExisting(u);
 		return stats.get(u.getEmail());
@@ -185,10 +185,10 @@ public class InteractionLogger {
 		Row r = new Row(nextTime(), e, c, ingoingC1, outgoingC1, c2, ingoingC2, outgoingC2, l, u);
 		rows.add(r);
 
-		if (awtFormula == null)
-			return;
+		long absoluteScore = 0;
 
-		long absoluteScore = computeAWTValue(totalSummary);
+		if (awtFormula != null)
+			absoluteScore = computeAWTValue(totalSummary);
 
 		for (AwarenessBars bars : awts) {
 			List<User> participants = map.getExperiment().getParticipants();
@@ -206,7 +206,6 @@ public class InteractionLogger {
 
 				if (userSummary != null)
 					userSummary.setAwarenessScore(relativeScore);
-				
 
 				if (user.equals(r.getEditingUser()))
 					r.setAwarenessScore(relativeScore);
@@ -217,6 +216,10 @@ public class InteractionLogger {
 		exporter.printProcessEntry(r);
 		exporter.printUserSummary(stats.values());
 
+	}
+
+	public List<UserSummary> getStatistics() {
+		return new ArrayList(stats.values());
 	}
 
 	private long computeAWTValue(UserSummary userSummary) {

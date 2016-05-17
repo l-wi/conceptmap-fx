@@ -1,0 +1,99 @@
+*{
+	userTop: #2400F0; 
+	userLeft: #F00054;
+	userRight: #CCF000;
+	userBottom: #00F09C;
+	researcher: black;
+	
+	userTopSelected: #2400F0;
+	userLeftSelected: #F00054;	
+	userRightSelected:#CCF000;
+	userBottomSelected: #00F09C;
+	-fx-text-fill:white;
+	
+}
+
+
+Button{
+	-fx-background-color: #3c4250;
+	-fx-padding: 30.0;
+	-fx-border-color: #222222;
+	-fx-text-fill:white;
+	-fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+
+Button.top{
+	-fx-border-color: userTop;
+	
+}
+
+Button.left{
+	-fx-border-color: userLeft;
+	
+}
+
+Button.right{
+	-fx-border-color: userRight;	
+}
+
+Button.bottom{
+	-fx-border-color: #00F09C;
+	
+}
+.root {
+	-fx-background-image: url("/gfx/textureMetal2.jpg");
+	-fx-background-size: cover;
+}
+
+.background-top{
+-fx-background-color: userTop;
+}
+
+.background-left{
+-fx-background-color:userLeft;
+
+}
+
+.background-right{
+-fx-background-color: userRight;
+
+}
+
+.background-bottom{
+-fx-background-color: userBottom;
+
+}
+
+.chart-legend {
+   -fx-background-color:  black;
+   -fx-stroke: white;
+}
+
+.success{
+	-fx-background-color: #3c4250;
+	-fx-border-width: 5.0 5.0 0.0 0.0;
+	-fx-border-color: #222222;
+	-fx-background-image: url("/gfx/success.png");
+	-fx-background-repeat: stretch;
+	-fx-background-size: 30.0 30.0;
+	-fx-background-position: center center;
+}
+
+
+.failure{
+	-fx-background-color: #3c4250;
+	-fx-border-width: 5.0 5.0 0.0 0.0;
+	-fx-border-color: #222222;
+	-fx-background-image: url("/gfx/error.png");
+	-fx-background-repeat: stretch;
+	-fx-background-size: 30.0 30.0;
+	-fx-background-position: center center;
+}
+
+.default-color0.chart-pie { -fx-pie-color: userTop; }
+.default-color1.chart-pie { -fx-pie-color: userBottom; }
+.default-color2.chart-pie { -fx-pie-color: userLeft; }
+.default-color3.chart-pie { -fx-pie-color: userRight; }
+
+

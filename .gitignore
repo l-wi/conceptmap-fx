@@ -12,3 +12,4 @@ buildNumber.properties
 /session/[0-9]*
 /reports/
 /credentials.properties
+/mail.properties
