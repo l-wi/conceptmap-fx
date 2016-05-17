@@ -33,6 +33,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.transform.NonInvertibleTransformException;
 
 public class LinkViewController implements ConceptMovingListener, InputClosedListener, AnchorAlteredListener {
 
@@ -117,7 +118,9 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			}
 		});
 
-		// linkCaption.setPrefHeight(20);
+		linkCaption.getCaption().setMinHeight(25);
+		linkCaption.setMaxHeight(25);
+
 		linkingPath.setCache(true);
 
 		initToggleTexts();
@@ -357,8 +360,13 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 		double angleX = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(1, 0)));
 		double angleY = Math.acos(betweenAnchors.normalize().dotProduct(new Point2D(0, 1)));
 
-		linkCaption.setTranslateX(startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkCaption.getWidth() / 2);
-		linkCaption.setTranslateY(startAnchorPoint.getY() + betweenAnchors.getY() / 2 + 15);
+		double centerOfLineX = startAnchorPoint.getX() + betweenAnchors.getX() / 2 - linkCaption.getWidth() / 2;
+		double centerOfLineY = startAnchorPoint.getY() + betweenAnchors.getY() / 2 - linkCaption.getHeight() / 2;
+
+		Point2D p = linkCaption.getLocalToParentTransform().deltaTransform(0, 30);
+
+		linkCaption.setTranslateX(centerOfLineX + p.getX());
+		linkCaption.setTranslateY(centerOfLineY + p.getY());
 
 		angleX = Math.toDegrees(angleX);
 		angleY = Math.toDegrees(angleY);
@@ -414,7 +422,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 	public void rotateAbsolute(int r) {
 		this.linkCaption.setRotate(r);
 	}
-	
+
 	public Link getLink() {
 		return link;
 	}
