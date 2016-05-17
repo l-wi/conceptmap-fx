@@ -39,7 +39,6 @@ public class ConceptMapViewBuilder {
 	private AwarenessBars[] awarenessTools;
 
 	private InputViewController[] inputControllers;
-	private boolean isUsingVoting;
 
 	public ConceptMapViewBuilder() {
 		try {
@@ -70,11 +69,16 @@ public class ConceptMapViewBuilder {
 		attachSpeechListenerToInputControllers();
 
 		attachToReloadedMap();
+		
+		for(int i=0;i < conceptMap.getExperiment().USER_COUNT;i++)
+			conceptViewBuilder.withMovingListener(inputControllers[i]);
+		
 		controller.setConceptMap(conceptMap);
 		if (history.isPresent())
 			history.get().activate();
 		if (saver.isPresent())
 			saver.get().activate();
+		
 		return scene;
 	}
 
@@ -125,6 +129,7 @@ public class ConceptMapViewBuilder {
 
 		builder.withMovedListener(conceptMovementListener).withMovingListener(conceptMovementListener)
 				.withDeletedListener(conceptDeletedListener);
+
 		controller.setConceptViewBuilder(builder);
 
 		return this;

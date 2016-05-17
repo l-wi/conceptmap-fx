@@ -22,6 +22,8 @@ import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
 import de.unisaarland.edutech.conceptmapfx.event.AlignListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptMovedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
@@ -30,6 +32,7 @@ import de.unisaarland.edutech.conceptmapfx.event.SpeechRecognitionListner;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.collections.ObservableList;
@@ -51,7 +54,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
-		LinkDeletedListener, ConceptDeletedListener, SpeechRecognitionListner {
+		LinkDeletedListener, ConceptDeletedListener, SpeechRecognitionListner, ConceptMovingListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
 
@@ -254,6 +257,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	private void hideInput() {
+	
 		Set<Node> toHide = inputControls.lookupAll(".hideable");
 
 		for (Node n : toHide) {
@@ -525,5 +529,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void useVoting() {
 		isUsingVoting = true;
+	}
+
+
+
+	@Override
+	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
+		if(currentRobotHandler !=null && cv.getConcept().equals(this.collaborativeStringBinding.getConcept()))
+			onCloseAction();		
 	}
 }
