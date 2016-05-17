@@ -10,7 +10,9 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 import de.unisaarland.edutech.conceptmapfx.SessionSaver;
+import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.Experiment;
+import de.unisaarland.edutech.conceptmapping.User;
 
 public class CSVExporter {
 
@@ -73,7 +75,6 @@ public class CSVExporter {
 		try {
 			corePrinter.close();
 		} catch (IOException e1) {
-			// TODO error handling
 			e1.printStackTrace();
 		}
 	}
@@ -84,13 +85,33 @@ public class CSVExporter {
 			corePrinter.print(e.getFocusQuestion().getQuestion());
 			corePrinter.print(e.getReseacher().getEmail());
 			corePrinter.print(e.getRunDate().toGMTString());
-			corePrinter.println();
-			corePrinter.flush();
+			corePrinter.print(e.USE_AWT);
+			corePrinter.print(e.USE_VOTING);
+
+			List<User> participants = e.getParticipants();
+
+			corePrinter.print(participants.get(0).getEmail());
+			corePrinter.print(participants.get(1).getEmail());
+			corePrinter.print(participants.size() > 2 ? participants.get(2).getEmail() : "null");
+			corePrinter.print(participants.size() > 3 ? participants.get(3).getEmail() : "null");
+
+			corePrinter.print(getPrompt(participants, 0));
+			corePrinter.print(getPrompt(participants, 1));
+			corePrinter.print(getPrompt(participants, 2));
+			corePrinter.print(getPrompt(participants, 3));
 
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+
+	private String getPrompt(List<User> participants, int i) {
+		if (participants.size() <= i)
+			return "null";
+
+		String prompt = participants.get(i).getPrompt();
+		return (prompt == null) ? "null" : prompt;
 	}
 
 	private void printCoreHeader() {
@@ -99,6 +120,16 @@ public class CSVExporter {
 			corePrinter.print("FocusQuestion");
 			corePrinter.print("Experimenter");
 			corePrinter.print("Date");
+			corePrinter.print("AWT_used");
+			corePrinter.print("Votes_used");
+			corePrinter.print("user_top");
+			corePrinter.print("user_bottom");
+			corePrinter.print("user_left");
+			corePrinter.print("user_right");
+			corePrinter.print("prompts_top");
+			corePrinter.print("prompts_bottom");
+			corePrinter.print("prompts_left");
+			corePrinter.print("prompts_right");
 			corePrinter.println();
 			corePrinter.flush();
 		} catch (IOException e) {
@@ -119,6 +150,8 @@ public class CSVExporter {
 			processPrinter.print("Link_ID");
 			processPrinter.print("Link_Caption");
 			processPrinter.print("Interacting_User");
+			processPrinter.print("Interacting_User_Awareness_Score");
+
 			processPrinter.println();
 			processPrinter.flush();
 		} catch (IOException e) {
@@ -137,6 +170,9 @@ public class CSVExporter {
 			summaryPrinter.print("Link_Creates");
 			summaryPrinter.print("Link_Edits");
 			summaryPrinter.print("Link_Deletes");
+			summaryPrinter.print("Awareness_score");
+			summaryPrinter.print("Votes");
+
 
 			summaryPrinter.println();
 			summaryPrinter.flush();
@@ -174,6 +210,9 @@ public class CSVExporter {
 			summaryPrinter.print(s.getLinkCount());
 			summaryPrinter.print(s.getLinkEdits());
 			summaryPrinter.print(s.getLinkDeletes());
+			summaryPrinter.print(s.getAwarenessScore());
+			summaryPrinter.print(s.getVotingCount());
+
 
 			summaryPrinter.println();
 			summaryPrinter.flush();
@@ -214,6 +253,7 @@ public class CSVExporter {
 			processPrinter.print(r.getLinkLabel());
 
 			processPrinter.print(r.getEditingUser());
+			processPrinter.print(r.getAwarenessScore());
 			processPrinter.println();
 			processPrinter.flush();
 

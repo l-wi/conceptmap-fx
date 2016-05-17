@@ -24,6 +24,8 @@ public class Row {
 
 	// the user executing the event
 	private String user;
+	
+	private double awarenessScore;
 
 	public Row(Duration timestamp, Event type, Concept c1, int ingoingLinks1, int outgoingLinks1, Concept c2,
 			int ingoingLinks2, int outgoingLinks2, Link l, User u) {
@@ -157,6 +159,14 @@ public class Row {
 	public String toString() {
 		return "Row [timestamp=" + timestamp + ", type=" + type + ", conceptData1=" + conceptData1 + ", conceptData2="
 				+ conceptData2 + ", idL=" + idL + ", labelL=" + labelL + ", user=" + user + "]";
+	}
+
+	public double getAwarenessScore() {
+		return awarenessScore;
+	}
+
+	public void setAwarenessScore(double awarenessScore) {
+		this.awarenessScore = awarenessScore;
 	}
 
 	private class ConceptData {

@@ -91,6 +91,9 @@ public class CollaborativeStringTextFieldBinding {
 	}
 
 	public void vote(User user, boolean hasVoted) {
+		if (controller == null)
+			return;
+		INTERACTION_LOGGER.votingData(this.c, user);
 		controller.onVote(user, hasVoted);
 	}
 

@@ -17,7 +17,7 @@ import de.unisaarland.edutech.conceptmapping.User;
 public class InteractionLogger {
 
 	public enum Event {
-		NEW_CONCEPT, POSITION_CONCEPT, CONTENT_CONCEPT, DELETE_CONCEPT, NEW_LINK, CONTENT_LINK, DELETE_LINK, DIRECTION_LINK
+		NEW_CONCEPT, POSITION_CONCEPT, CONTENT_CONCEPT, DELETE_CONCEPT, NEW_LINK, CONTENT_LINK, DELETE_LINK, DIRECTION_LINK, VOTING
 	}
 
 	private List<Row> rows = new ArrayList<Row>();
@@ -47,6 +47,8 @@ public class InteractionLogger {
 		startTime = Instant.now();
 		this.exporter = new CSVExporter();
 		this.exporter.printProcessHeader();
+		totalSummary.setUser("total");
+		totalSummary.setAwarenessScore(1);
 		this.stats.put("total", totalSummary);
 	}
 
@@ -147,6 +149,15 @@ public class InteractionLogger {
 		addRow(Event.DIRECTION_LINK, c1, c2, l, null);
 	}
 
+	public void votingData(Concept c, User u){
+		UserSummary userSummary = getUserSummaryForUser(u);
+
+		userSummary.incVotingCount();
+		totalSummary.incVotingCount();
+
+		addRow(Event.VOTING, c, null, null, u);
+	}
+	
 	private UserSummary getUserSummaryForUser(User u) {
 		addUserToSummaryIfNotExisting(u);
 		return stats.get(u.getEmail());
@@ -154,7 +165,9 @@ public class InteractionLogger {
 	}
 
 	private void addUserToSummaryIfNotExisting(User u) {
-		stats.putIfAbsent(u.getEmail(), new UserSummary());
+		UserSummary userSummary = new UserSummary();
+		userSummary.setUser(u.getEmail());
+		stats.putIfAbsent(u.getEmail(), userSummary);
 	}
 
 	private Duration nextTime() {
@@ -172,13 +185,10 @@ public class InteractionLogger {
 		Row r = new Row(nextTime(), e, c, ingoingC1, outgoingC1, c2, ingoingC2, outgoingC2, l, u);
 		rows.add(r);
 
-		exporter.printProcessEntry(r);
-		exporter.printUserSummary(stats.values());
-
 		if (awtFormula == null)
 			return;
 
-		long vT = computeAWTValue(totalSummary);
+		long absoluteScore = computeAWTValue(totalSummary);
 
 		for (AwarenessBars bars : awts) {
 			List<User> participants = map.getExperiment().getParticipants();
@@ -187,15 +197,25 @@ public class InteractionLogger {
 				String user = participants.get(i).getEmail();
 				UserSummary userSummary = stats.get(user);
 
-				long vU = 0;
+				long absoluteUserScore = 0;
 				if (userSummary != null)
-					vU = computeAWTValue(userSummary);
+					absoluteUserScore = computeAWTValue(userSummary);
 
-				double v = vU * 1.0 / vT;
-				bars.setValue(i, v);
+				double relativeScore = absoluteUserScore * 1.0 / absoluteScore;
+				bars.setValue(i, relativeScore);
+
+				if (userSummary != null)
+					userSummary.setAwarenessScore(relativeScore);
+				
+
+				if (user.equals(r.getEditingUser()))
+					r.setAwarenessScore(relativeScore);
+
 			}
-
 		}
+
+		exporter.printProcessEntry(r);
+		exporter.printUserSummary(stats.values());
 
 	}
 
