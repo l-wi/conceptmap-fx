@@ -35,7 +35,7 @@ public class SessionRestoreState {
 	}
 
 	public Optional<ObservableConceptMap> restoreSessionIfNeeded() {
-		File rootFolder = SessionSaver.getBinaryDir();
+		File rootFolder = new File("./session");
 
 		if (!isDirectory(rootFolder))
 			rootFolder.mkdir();
@@ -57,7 +57,7 @@ public class SessionRestoreState {
 
 			lockFileOptional.get().delete();
 
-			File currentState = getCurrentState(sessionContents);
+			File currentState = getCurrentState(new File(sessionFolder, "binary").listFiles());
 			return loadConceptMap(currentState);
 
 		}
