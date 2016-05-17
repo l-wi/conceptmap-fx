@@ -101,8 +101,4 @@ public class CollaborativeStringTextFieldBinding {
 		return (c != null) ? this.c.hasVoted(u) : false;
 	}
 
-	public Concept getConcept() {
-		return c;
-	}
-
 }

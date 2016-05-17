@@ -82,7 +82,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptMovedListeners.forEach(l -> l.conceptMoved(this));
 	}
 
-	private void fireConceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {		
+	private void fireConceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
 		conceptMovingListeners.forEach(l -> l.conceptMoving(x, y, rotate, cv, u));
 	}
 
