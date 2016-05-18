@@ -4,7 +4,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AWTConfig {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AWTConfig.class);
 
 	private int conceptCreationWeight;
 	private int ownEditWeight;
@@ -25,8 +30,7 @@ public class AWTConfig {
 			conceptsLinkedWeight = getPropertyForAWT(p, "conceptsLinked");
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Failed to configure AWT:", e);
 		}
 	}
 
@@ -53,16 +57,16 @@ public class AWTConfig {
 				+ conceptsLinkedWeight * conceptsLinked + linkEditWeight * linkEdit;
 	}
 
-	private int getPropertyForAWT(Properties p, String key) {
+	private int getPropertyForAWT(Properties p, String key) throws IOException {
 		String s = p.getProperty(key);
 
 		if (s == null)
-			throw new RuntimeException("Config Parameter not found or invalid: " + key);
+			throw new IOException("Config Parameter not found or invalid: " + key);
 
 		try {
 			return Integer.parseInt(s);
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("Config Parameter not found or invalid: " + e.getMessage());
+			throw new IOException("Config Parameter not found or invalid: " + e.getMessage());
 		}
 
 	}
