@@ -364,7 +364,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	}
 
-	// TODO is this still needed?
 	public void conceptDeleted(ConceptViewController cv, User u) {
 
 		if (u == null || !u.equals(this.user))
