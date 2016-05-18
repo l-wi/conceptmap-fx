@@ -191,7 +191,7 @@ public class LinkViewController implements ConceptMovingListener, InputClosedLis
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/LinkView.fxml"));
 
 			this.linkCaption = loader.load();
-			// TODO this is only a workaround
+
 			linkCaption.getCaption().setMaxHeight(25);
 
 			this.editable = CollaborativeStringTextFieldBinding.createBinding(this.link, this.linkCaption.getCaption());
