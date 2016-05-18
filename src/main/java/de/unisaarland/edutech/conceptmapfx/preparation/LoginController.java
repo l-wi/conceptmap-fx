@@ -79,8 +79,6 @@ public class LoginController {
 	}
 
 	public Parent getView() {
-		// TODO call this not when getting view but on a better place, e.g. when
-		// controller is added to view
 		picker.loadUsers();
 		return root;
 	}
