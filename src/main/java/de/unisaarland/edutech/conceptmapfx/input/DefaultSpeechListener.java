@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.unisaarland.edutech.conceptmapfx.event.SpeechRecognitionListner;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
 import de.unisaarland.edutech.conceptmapping.User;
@@ -24,6 +27,10 @@ import javafx.util.Duration;
 
 public class DefaultSpeechListener implements SpeechRecognitionListner {
 
+	private static final String ERROR_MSG = "Cannot inialize speech recognition";
+
+	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
+
 	private static final String CODEC = "audio/x-wav;codec=pcm;bit=16;rate=16000";
 
 	private static final int MILLIS_ANIMATION_FRAME = 500;
@@ -40,7 +47,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 
 	private CollaborativeStringTextFieldBinding binding;
 
-	private boolean  isProcessing;
+	private boolean isProcessing;
 
 	private Button btnNew;
 
@@ -97,8 +104,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 			nuanceClient = new NuanceClient(creds);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(ERROR_MSG, e);
 		}
 	}
 
@@ -106,7 +112,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 	public void speechRecognitionStarted(User u) {
 		if (!u.equals(user))
 			this.btnSpeak.setDisable(true);
-		
+
 		else if (!isProcessing) {
 			btnNew.setDisable(true);
 			startRecording();
@@ -138,14 +144,13 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 			recordingTransition.play();
 
 		} catch (IOException e) {
-			// TODO exception handling
-			e.printStackTrace();
+			LOG.error(ERROR_MSG, e);
+
 		}
 	}
 
 	private void requestRecognition(User u) {
 		try {
-			// TODO error handling
 
 			listenTransition.play();
 			nuanceClient.requestAsync(new FileInputStream(recording), CODEC, (c) -> {
@@ -154,8 +159,8 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 				});
 			});
 		} catch (FileNotFoundException e) {
-			// TODO exception handling
-			e.printStackTrace();
+			LOG.error(ERROR_MSG, e);
+
 		}
 	}
 
@@ -187,8 +192,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 		try {
 			recorder.stop();
 		} catch (RecordingException e) {
-			// TODO exception handling
-			e.printStackTrace();
+			LOG.error(ERROR_MSG, e);
 		}
 	}
 
