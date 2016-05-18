@@ -3,9 +3,6 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import de.unisaarland.edutech.conceptmapfx.datalogging.UserSummary;
@@ -13,7 +10,6 @@ import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.chart.PieChart;
@@ -81,6 +77,9 @@ public class SummaryViewController {
 
 		initCharts();
 
+		ConceptMapEmail email = new ConceptMapEmail(e.getReseacher().getEmail());
+		email.sendData();
+
 	}
 
 	private void initCharts() {
@@ -118,7 +117,7 @@ public class SummaryViewController {
 
 	@FXML
 	public void onTopEmail() {
-		runEmailAsync(btnTop,0);	
+		runEmailAsync(btnTop, 0);
 	}
 
 	private void runEmailAsync(Button btn, int i) {
@@ -127,26 +126,24 @@ public class SummaryViewController {
 		CompletableFuture<Boolean> task = CompletableFuture
 				.supplyAsync(() -> sendEmailTo(experiment.getParticipants().get(i)));
 
-		task.thenAccept( (b) -> Platform.runLater(() -> indicateSuccess(b, btn)));
+		task.thenAccept((b) -> Platform.runLater(() -> indicateSuccess(b, btn)));
 	}
 
 	@FXML
 	public void onLeftEmail() {
-		runEmailAsync(btnLeft,2);	
-
+		runEmailAsync(btnLeft, 2);
 
 	}
 
 	@FXML
 	public void onRightEmail() {
-		runEmailAsync(btnRight,3);	
+		runEmailAsync(btnRight, 3);
 
 	}
 
 	@FXML
 	public void onBottomEmail() {
-		runEmailAsync(btnBottom,1);	
-
+		runEmailAsync(btnBottom, 1);
 
 	}
 

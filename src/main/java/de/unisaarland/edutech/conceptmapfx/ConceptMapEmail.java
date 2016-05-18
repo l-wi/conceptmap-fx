@@ -3,6 +3,8 @@ package de.unisaarland.edutech.conceptmapfx;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -15,10 +17,13 @@ import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+import de.unisaarland.edutech.conceptmapfx.datalogging.CSVExporter;
 
 public class ConceptMapEmail {
 
@@ -29,6 +34,12 @@ public class ConceptMapEmail {
 	private String userText;
 
 	private Properties properties;
+
+	private String examinerText;
+
+	private String examinerSubject;
+
+	private boolean isSendingDataEmail;
 
 	public ConceptMapEmail(String address) {
 		this.to = address;
@@ -43,6 +54,9 @@ public class ConceptMapEmail {
 			from = p.getProperty("from");
 			subject = p.getProperty("subject");
 			userText = p.getProperty("userMessage");
+			examinerText = p.getProperty("examinerMessage");
+			examinerSubject = p.getProperty("examinerSubject");
+			isSendingDataEmail = Boolean.parseBoolean(p.getProperty("sendDataViaEmail"));
 
 		} catch (IOException e) {
 			// TODO error handling
@@ -51,30 +65,57 @@ public class ConceptMapEmail {
 
 	}
 
-	public boolean sendConceptMap() {
-		String username = properties.getProperty("username");
-		String password = properties.getProperty("password");
-
-		Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
-			}
-		});
-
+	public boolean sendData() {
 		try {
-			// Create a default MimeMessage object.
-			MimeMessage message = new MimeMessage(session);
+			if (!isSendingDataEmail)
+				return false;
 
-			// Set From: header field of the header.
-			message.setFrom(new InternetAddress(from));
+			MimeMessage message = initEmail();
 
-			// Set To: header field of the header.
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			Multipart multipart = initMessageText(message, examinerSubject, examinerText);
 
-			initMessageText(message, this.userText);
+			addFileAttachment(multipart, getSummaryDataFile(), "summary.csv");
+			addFileAttachment(multipart, getProcessDataFile(), "process.csv");
+			addFileAttachment(multipart, getCoreDataFile(), "core.csv");
 
-			// Send message
-			Transport.send(message);
+			sendEmail(message, multipart);
+
+			return true;
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
+	private File getCoreDataFile() {
+		Path path = Paths.get(SessionSaver.getWorkingDir().getAbsolutePath(), CSVExporter.DATA_DIR_NAME,
+				CSVExporter.CORE_FILE_NAME);
+		return path.toFile();
+	}
+
+	private File getProcessDataFile() {
+		Path path = Paths.get(SessionSaver.getWorkingDir().getAbsolutePath(), CSVExporter.DATA_DIR_NAME,
+				CSVExporter.PROCESS_FILE_NAME);
+		return path.toFile();
+	}
+
+	private File getSummaryDataFile() {
+		Path path = Paths.get(SessionSaver.getWorkingDir().getAbsolutePath(), CSVExporter.DATA_DIR_NAME,
+				CSVExporter.SUMMARY_FILE_NAME);
+		return path.toFile();
+	}
+
+	public boolean sendConceptMap() {
+		try {
+			MimeMessage message = initEmail();
+
+			Multipart multipart = initMessageText(message, this.subject, this.userText);
+
+			addFileAttachment(multipart, getConceptMapFileName(), "conceptMap.cxl");
+
+			sendEmail(message, multipart);
 			return true;
 
 		} catch (MessagingException mex) {
@@ -85,7 +126,38 @@ public class ConceptMapEmail {
 
 	}
 
-	private void initMessageText(MimeMessage message, String text) throws MessagingException {
+	private void sendEmail(MimeMessage message, Multipart multipart) throws MessagingException {
+		message.setContent(multipart);
+		Transport.send(message);
+	}
+
+	private void addFileAttachment(Multipart multipart, File f, String name) throws MessagingException {
+		if (f != null)
+			addAttachment(multipart, f.getAbsolutePath(), name);
+	}
+
+	private MimeMessage initEmail() throws MessagingException, AddressException {
+		String username = properties.getProperty("username");
+		String password = properties.getProperty("password");
+
+		Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		});
+
+		// Create a default MimeMessage object.
+		MimeMessage message = new MimeMessage(session);
+
+		// Set To: header field of the header.
+		message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+		// Set From: header field of the header.
+		message.setFrom(new InternetAddress(from));
+		return message;
+	}
+
+	private Multipart initMessageText(MimeMessage message, String subject, String text) throws MessagingException {
 		// Set Subject: header field
 		message.setSubject(subject);
 
@@ -95,26 +167,28 @@ public class ConceptMapEmail {
 		Multipart multipart = new MimeMultipart();
 		multipart.addBodyPart(messageBodyPart);
 
-		String conceptMapFileName = getConceptMapFileName();
-
-		if (conceptMapFileName != null)
-			addAttachment(multipart, conceptMapFileName);
-
-		message.setContent(multipart);
+		return multipart;
+		// File conceptMapFileName = getConceptMapFileName();
+		//
+		// if (conceptMapFileName != null)
+		// addAttachment(multipart, conceptMapFileName.getAbsolutePath(),
+		// "conceptMap.cxl");
+		//
+		// message.setContent(multipart);
 	}
 
-	private String getConceptMapFileName() {
+	private File getConceptMapFileName() {
 		File[] list = SessionSaver.getCXLDir().listFiles();
 
-		return (list.length == 0) ? null : list[list.length - 1].getAbsolutePath();
+		return (list.length == 0) ? null : list[list.length - 1];
 	}
 
-	private static void addAttachment(Multipart multipart, String filename) throws MessagingException {
-		DataSource source = new FileDataSource(filename);
+	private static void addAttachment(Multipart multipart, String path, String title) throws MessagingException {
+		DataSource source = new FileDataSource(path);
 		BodyPart messageBodyPart = new MimeBodyPart();
 		messageBodyPart.setDataHandler(new DataHandler(source));
-		messageBodyPart.setFileName("conceptMap.cxl");
-		
+		messageBodyPart.setFileName(title);
+
 		multipart.addBodyPart(messageBodyPart);
 	}
 }
