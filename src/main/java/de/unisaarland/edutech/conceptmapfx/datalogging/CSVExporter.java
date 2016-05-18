@@ -8,75 +8,63 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapfx.SessionSaver;
-import de.unisaarland.edutech.conceptmapping.ConceptMap;
+import de.unisaarland.edutech.conceptmapfx.preparation.LoginController;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.User;
 
 public class CSVExporter {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CSVExporter.class);
+
+	public static final String CORE_FILE_NAME = "coreData.csv";
+	public static final String PROCESS_FILE_NAME = "processData.csv";
+	public static final String SUMMARY_FILE_NAME = "summaryData.csv";
+	public static final String DATA_DIR_NAME = "data";
 	private CSVPrinter processPrinter;
 	private CSVPrinter summaryPrinter;
 	private CSVPrinter corePrinter;
 	private File wd;
 
 	public CSVExporter() {
-		wd = new File(SessionSaver.getWorkingDir(), "data");
+		wd = new File(SessionSaver.getWorkingDir(), DATA_DIR_NAME);
 
 		wd.mkdir();
 
-		initProcessPrinter();
+		processPrinter = initPrinter(PROCESS_FILE_NAME);
 	}
 
-	private void initUserSummaryPrinter() {
+	private CSVPrinter initPrinter(String filename) {
 		try {
-			summaryPrinter = new CSVPrinter(new FileWriter(new File(wd, "summaryData.csv")), CSVFormat.EXCEL);
+			return new CSVPrinter(new FileWriter(new File(wd, filename)), CSVFormat.EXCEL);
 		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
-		}
-	}
-
-	private void initProcessPrinter() {
-		try {
-			processPrinter = new CSVPrinter(new FileWriter(new File(wd, "processData.csv")), CSVFormat.EXCEL);
-		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
-		}
-	}
-
-	private void initCorePrinter() {
-		try {
-			corePrinter = new CSVPrinter(new FileWriter(new File(wd, "coreData.csv")), CSVFormat.EXCEL);
-		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
+			throw new RuntimeException("Cannot log data! ", e);
 		}
 	}
 
 	public void printUserSummary(Collection<UserSummary> collection) {
-		initUserSummaryPrinter();
+		summaryPrinter = initPrinter(SUMMARY_FILE_NAME);
 		printUserSummaryHeader();
 		collection.forEach(e -> printUserSummaryEntry(e));
+		closePrinter(summaryPrinter);
+	}
+
+	private void closePrinter(CSVPrinter printer) {
 		try {
-			summaryPrinter.close();
-		} catch (IOException e1) {
-			// TODO error handling
-			e1.printStackTrace();
+			printer.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	public void printCoreData(Experiment e) {
-		initCorePrinter();
+		corePrinter = initPrinter(CORE_FILE_NAME);
 		printCoreHeader();
 		printCore(e);
-		try {
-			corePrinter.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		closePrinter(corePrinter);
 	}
 
 	private void printCore(Experiment e) {
@@ -100,9 +88,8 @@ public class CSVExporter {
 			corePrinter.print(getPrompt(participants, 2));
 			corePrinter.print(getPrompt(participants, 3));
 
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException ex) {
+			LOG.error("Cannot write data", ex);
 		}
 	}
 
@@ -133,8 +120,7 @@ public class CSVExporter {
 			corePrinter.println();
 			corePrinter.flush();
 		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
+			LOG.error("Cannot write data", e);
 		}
 	}
 
@@ -155,8 +141,7 @@ public class CSVExporter {
 			processPrinter.println();
 			processPrinter.flush();
 		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
+			LOG.error("Cannot write data", e);
 		}
 	}
 
@@ -173,12 +158,10 @@ public class CSVExporter {
 			summaryPrinter.print("Awareness_score");
 			summaryPrinter.print("Votes");
 
-
 			summaryPrinter.println();
 			summaryPrinter.flush();
 		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
+			LOG.error("Cannot write data", e);
 		}
 	}
 
@@ -213,12 +196,10 @@ public class CSVExporter {
 			summaryPrinter.print(s.getAwarenessScore());
 			summaryPrinter.print(s.getVotingCount());
 
-
 			summaryPrinter.println();
 			summaryPrinter.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Cannot write data", e);
 		}
 	}
 
@@ -258,8 +239,7 @@ public class CSVExporter {
 			processPrinter.flush();
 
 		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
+			LOG.error("Cannot write data", e);
 		}
 	}
 
