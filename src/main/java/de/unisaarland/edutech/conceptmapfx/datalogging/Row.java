@@ -15,7 +15,7 @@ public class Row {
 	// the first concept under edit
 	private ConceptData conceptData1;
 
-	// only set when we are linking TODO source or dest
+	// only set when we are linking 
 	private ConceptData conceptData2;
 
 	// the link under edit
