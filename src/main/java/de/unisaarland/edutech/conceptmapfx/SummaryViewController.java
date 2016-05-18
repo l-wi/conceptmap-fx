@@ -2,12 +2,18 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import de.unisaarland.edutech.conceptmapfx.datalogging.UserSummary;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.chart.PieChart;
@@ -112,34 +118,41 @@ public class SummaryViewController {
 
 	@FXML
 	public void onTopEmail() {
-		boolean state = sendEmailTo(experiment.getParticipants().get(0));
-		indicateSuccess(state, btnTop);
+		runEmailAsync(btnTop,0);	
+	}
+
+	private void runEmailAsync(Button btn, int i) {
+		btn.setDisable(true);
+
+		CompletableFuture<Boolean> task = CompletableFuture
+				.supplyAsync(() -> sendEmailTo(experiment.getParticipants().get(i)));
+
+		task.thenAccept( (b) -> Platform.runLater(() -> indicateSuccess(b, btn)));
 	}
 
 	@FXML
 	public void onLeftEmail() {
-		boolean state = sendEmailTo(experiment.getParticipants().get(2));
-		indicateSuccess(state,btnLeft);
+		runEmailAsync(btnLeft,2);	
+
 
 	}
 
 	@FXML
 	public void onRightEmail() {
-		boolean state = sendEmailTo(experiment.getParticipants().get(3));
-		indicateSuccess(state,btnRight);
+		runEmailAsync(btnRight,3);	
 
 	}
 
 	@FXML
 	public void onBottomEmail() {
-		boolean state = sendEmailTo(experiment.getParticipants().get(1));
-		indicateSuccess(state,btnBottom);
+		runEmailAsync(btnBottom,1);	
+
 
 	}
 
 	private void indicateSuccess(boolean success, Button b) {
 		b.setText("");
-		if(success)
+		if (success)
 			b.getStyleClass().add("success");
 		else
 			b.getStyleClass().add("failure");
@@ -149,7 +162,7 @@ public class SummaryViewController {
 
 	private boolean sendEmailTo(User user) {
 		ConceptMapEmail e = new ConceptMapEmail(user.getEmail());
-		
+
 		return e.sendConceptMap();
 	}
 }
