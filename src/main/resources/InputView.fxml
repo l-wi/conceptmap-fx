@@ -83,7 +83,7 @@
 										prefHeight="50.0" />
 
 
-									<ToggleButton id="voice" fx:id="btnSpeak"
+									<ToggleButton id="voice" fx:id="btnSpeak" disable="true"
 										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"
 										onAction="#onSpeechAction" />
 

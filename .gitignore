@@ -13,3 +13,4 @@ buildNumber.properties
 /reports/
 /credentials.properties
 /mail.properties
+/nuanceCredentials.properties
