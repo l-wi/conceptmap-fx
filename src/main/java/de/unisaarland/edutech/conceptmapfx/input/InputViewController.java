@@ -164,9 +164,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		keyboard.load();
 
 		/*
-		 * FIXME: Workaround to allow multitouch input while moving an element:
-		 * - this only works for short press events, it does not work for long
-		 * press (e.g. Ä)
+		 *  Workaround to allow multitouch input while moving an element:
+	
 		 */
 		addTouchListenerToKeyboard();
 		keyboard.setKeyboardType(KeyboardType.TEXT_SHIFT);
