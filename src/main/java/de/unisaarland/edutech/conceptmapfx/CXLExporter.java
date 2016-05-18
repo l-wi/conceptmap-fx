@@ -1,17 +1,16 @@
 package de.unisaarland.edutech.conceptmapfx;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
@@ -22,6 +21,10 @@ import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
 
 public class CXLExporter {
+
+	private static final String ERROR_MESSAGE = "Exporting concept map to CXL failed:";
+
+	private static final Logger LOG = LoggerFactory.getLogger(CXLExporter.class);
 
 	private ConceptMap cmap;
 	private XMLStreamWriter out;
@@ -51,19 +54,8 @@ public class CXLExporter {
 			out.writeEndDocument();
 
 			out.flush();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FactoryConfigurationError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (Exception e) {
+			LOG.error(ERROR_MESSAGE, e);
 		}
 	}
 
@@ -133,7 +125,7 @@ public class CXLExporter {
 
 	public static void main(String[] args) {
 		User u = new User("Tim", "Tim@tim.de");
-		ConceptMap map = new ConceptMap(new Experiment(u, new FocusQuestion("Test", u), 3, false,false));
+		ConceptMap map = new ConceptMap(new Experiment(u, new FocusQuestion("Test", u), 3, false, false));
 
 		Concept dog = new Concept(new CollaborativeString(u, "Hund"));
 		map.addConcept(dog);
