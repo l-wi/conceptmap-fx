@@ -23,9 +23,16 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.unisaarland.edutech.conceptmapfx.datalogging.CSVExporter;
 
 public class ConceptMapEmail {
+
+	private static final String ERROR_MSG = "Failed to send email";
+
+	private static final Logger LOG = LoggerFactory.getLogger(ConceptMapEmail.class);
 
 	private String to;
 
@@ -59,8 +66,7 @@ public class ConceptMapEmail {
 			isSendingDataEmail = Boolean.parseBoolean(p.getProperty("sendDataViaEmail"));
 
 		} catch (IOException e) {
-			// TODO error handling
-			e.printStackTrace();
+			LOG.error(ERROR_MSG , e);
 		}
 
 	}
@@ -82,8 +88,7 @@ public class ConceptMapEmail {
 
 			return true;
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(ERROR_MSG, e);
 			return false;
 		}
 
@@ -118,9 +123,8 @@ public class ConceptMapEmail {
 			sendEmail(message, multipart);
 			return true;
 
-		} catch (MessagingException mex) {
-			// TODO exception handling
-			mex.printStackTrace();
+		} catch (MessagingException e) {
+			LOG.error(ERROR_MSG, e);
 			return false;
 		}
 
@@ -146,19 +150,15 @@ public class ConceptMapEmail {
 			}
 		});
 
-		// Create a default MimeMessage object.
 		MimeMessage message = new MimeMessage(session);
 
-		// Set To: header field of the header.
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
-		// Set From: header field of the header.
 		message.setFrom(new InternetAddress(from));
 		return message;
 	}
 
 	private Multipart initMessageText(MimeMessage message, String subject, String text) throws MessagingException {
-		// Set Subject: header field
 		message.setSubject(subject);
 
 		BodyPart messageBodyPart = new MimeBodyPart();
@@ -168,13 +168,6 @@ public class ConceptMapEmail {
 		multipart.addBodyPart(messageBodyPart);
 
 		return multipart;
-		// File conceptMapFileName = getConceptMapFileName();
-		//
-		// if (conceptMapFileName != null)
-		// addAttachment(multipart, conceptMapFileName.getAbsolutePath(),
-		// "conceptMap.cxl");
-		//
-		// message.setContent(multipart);
 	}
 
 	private File getConceptMapFileName() {
