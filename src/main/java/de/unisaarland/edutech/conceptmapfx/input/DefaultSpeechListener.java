@@ -27,6 +27,8 @@ import javafx.util.Duration;
 
 public class DefaultSpeechListener implements SpeechRecognitionListner {
 
+	private static final int SHOW_RECOGNITION_RESULT_TIME = 2500;
+
 	private static final String ERROR_MSG = "Cannot inialize speech recognition";
 
 	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
@@ -167,7 +169,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 	private void finishRecognition(User u, Result c) {
 		listenTransition.stop();
 
-		PauseTransition p = new PauseTransition(Duration.millis(1500));
+		PauseTransition p = new PauseTransition(Duration.millis(SHOW_RECOGNITION_RESULT_TIME));
 		p.setOnFinished((e) -> {
 			btnSpeak.setStyle("");
 			btnNew.setDisable(false);
