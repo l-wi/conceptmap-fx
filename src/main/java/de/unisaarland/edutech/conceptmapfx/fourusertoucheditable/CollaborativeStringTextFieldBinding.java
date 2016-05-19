@@ -45,7 +45,7 @@ public class CollaborativeStringTextFieldBinding {
 	public void append(User u, char c) {
 		collaborativeString.append(u, String.valueOf(c));
 		update(u, c);
-		logInteraction(u);
+		logInteraction(u,false);
 
 	}
 
@@ -53,7 +53,7 @@ public class CollaborativeStringTextFieldBinding {
 		if (collaborativeString.length() > 0) {
 			collaborativeString.removeLast(1);
 			caption.getChildren().remove(caption.getChildren().size() - 1);
-			logInteraction(u);
+			logInteraction(u,true);
 
 		}
 	}
@@ -75,11 +75,11 @@ public class CollaborativeStringTextFieldBinding {
 
 	}
 
-	private void logInteraction(User u) {
+	private void logInteraction(User u,boolean isDeletion) {
 		if (this.c != null)
-			INTERACTION_LOGGER.contentConceptData(this.c, u);
+			INTERACTION_LOGGER.contentConceptData(this.c, u,isDeletion);
 		else
-			INTERACTION_LOGGER.contentLinkData(this.l, u);
+			INTERACTION_LOGGER.contentLinkData(this.l, u,isDeletion);
 	}
 
 	public static CollaborativeStringTextFieldBinding createBinding(Concept source, ConceptViewController dest) {

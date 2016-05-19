@@ -17,7 +17,7 @@ import de.unisaarland.edutech.conceptmapping.User;
 public class InteractionLogger {
 
 	public enum Event {
-		NEW_CONCEPT, POSITION_CONCEPT, CONTENT_CONCEPT, DELETE_CONCEPT, NEW_LINK, CONTENT_LINK, DELETE_LINK, DIRECTION_LINK, VOTING
+		NEW_CONCEPT, POSITION_CONCEPT, CONTENT_CONCEPT, CONTENT_CONCEPT_DELETE, DELETE_CONCEPT, NEW_LINK, CONTENT_LINK, CONTENT_DELETE_LINK, DELETE_LINK, DIRECTION_LINK, VOTING
 	}
 
 	private List<Row> rows = new ArrayList<Row>();
@@ -78,8 +78,16 @@ public class InteractionLogger {
 		addRow(Event.POSITION_CONCEPT, c, null, null, null);
 	}
 
-	public void contentConceptData(Concept c, User u) {
+	public void contentConceptData(Concept c, User u, boolean isDeletion) {
 
+		if (isDeletion)
+			addRow(Event.CONTENT_CONCEPT_DELETE, c, null, null, u);
+		else
+			concentEditAdd(c, u);
+
+	}
+
+	private void concentEditAdd(Concept c, User u) {
 		UserSummary userSummary = getUserSummaryForUser(u);
 
 		if (c.getOwner().equals(u)) {
@@ -91,7 +99,6 @@ public class InteractionLogger {
 		}
 
 		addRow(Event.CONTENT_CONCEPT, c, null, null, u);
-
 	}
 
 	public void deleteConceptData(Concept c) {
@@ -120,14 +127,21 @@ public class InteractionLogger {
 
 	}
 
-	public void contentLinkData(Link l, User u) {
+	public void contentLinkData(Link l, User u, boolean isDeletion) {
+		if (isDeletion)
+			addRow(Event.CONTENT_DELETE_LINK, null, null, l, u);
+		else
+			linkContentAdd(l, u);
+
+	}
+
+	private void linkContentAdd(Link l, User u) {
 		UserSummary userSummary = getUserSummaryForUser(u);
 
 		userSummary.incLinkEdits();
 		totalSummary.incLinkEdits();
 
 		addRow(Event.CONTENT_LINK, null, null, l, u);
-
 	}
 
 	public void deleteLinkData(Concept c1, Concept c2, Link l) {
