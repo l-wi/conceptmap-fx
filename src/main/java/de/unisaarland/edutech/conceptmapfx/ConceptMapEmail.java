@@ -66,7 +66,7 @@ public class ConceptMapEmail {
 			isSendingDataEmail = Boolean.parseBoolean(p.getProperty("sendDataViaEmail"));
 
 		} catch (IOException e) {
-			LOG.error(ERROR_MSG , e);
+			LOG.error(ERROR_MSG, e);
 		}
 
 	}
@@ -83,6 +83,7 @@ public class ConceptMapEmail {
 			addFileAttachment(multipart, getSummaryDataFile(), "summary.csv");
 			addFileAttachment(multipart, getProcessDataFile(), "process.csv");
 			addFileAttachment(multipart, getCoreDataFile(), "core.csv");
+			addFileAttachment(multipart, getScreenshot(), "conceptMap.png");
 
 			sendEmail(message, multipart);
 
@@ -119,7 +120,7 @@ public class ConceptMapEmail {
 			Multipart multipart = initMessageText(message, this.subject, this.userText);
 
 			addFileAttachment(multipart, getConceptMapFileName(), "conceptMap.cxl");
-
+			addFileAttachment(multipart, getScreenshot(), "conceptMap.png");
 			sendEmail(message, multipart);
 			return true;
 
@@ -128,6 +129,10 @@ public class ConceptMapEmail {
 			return false;
 		}
 
+	}
+
+	private File getScreenshot() {
+		return new File(SessionSaver.getWorkingDir(), Main.FINAL_MAP_SCREENSHOT);
 	}
 
 	private void sendEmail(MimeMessage message, Multipart multipart) throws MessagingException {

@@ -1,15 +1,25 @@
 package de.unisaarland.edutech.conceptmapfx;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.unisaarland.edutech.conceptmapfx.awt.AWTConfig;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapViewBuilder;
 import de.unisaarland.edutech.conceptmapfx.datalogging.InteractionLogger;
+import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.FourUserTouchEditable;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptFactory;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableConceptMap;
 import de.unisaarland.edutech.conceptmapfx.observablemap.ObservableLinkFactory;
@@ -19,14 +29,21 @@ import de.unisaarland.edutech.conceptmapfx.prompts.PromptLoader;
 import de.unisaarland.edutech.conceptmapping.Experiment;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+
+	public static final String FINAL_MAP_SCREENSHOT = "finalMap.png";
 
 	public static void main(String[] args) {
 		launch(args);
@@ -251,6 +268,7 @@ public class Main extends Application {
 	private void showSummaryView(Stage primaryStage) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/SummaryView.fxml"));
 		tryLoadingFXMLOrThrow(loader);
+		takeScreenshot(primaryStage);
 
 		SummaryViewController controller = loader.getController();
 		controller.setUserSummary(conceptMap.getExperiment(), InteractionLogger.getInstance().getStatistics());
@@ -259,6 +277,21 @@ public class Main extends Application {
 
 		primaryStage.setScene(s);
 		primaryStage.setFullScreen(true);
+	}
+
+	private void takeScreenshot(Stage primaryStage) {
+		try {
+			File finalMapPng = new File(SessionSaver.getWorkingDir(), FINAL_MAP_SCREENSHOT);
+
+			WritableImage image = primaryStage.getScene().getRoot().snapshot(new SnapshotParameters(), null);
+			BufferedImage fromFXImage = SwingFXUtils.fromFXImage(image, null);
+			ImageOutputStream outputStream = new FileImageOutputStream(finalMapPng);
+
+			ImageIO.write(fromFXImage, "png", outputStream);
+			outputStream.flush();
+		} catch (IOException e) {
+			LOG.error("could not take screenshot", e);
+		}
 	}
 
 	private void initColors() {
