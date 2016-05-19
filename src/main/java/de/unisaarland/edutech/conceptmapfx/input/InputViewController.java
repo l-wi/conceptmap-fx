@@ -162,6 +162,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		// FIXME currently removing undo function because it is buggy and is
 		// hard to fix
 		btnUndo.setVisible(false);
+		btnUndo.setManaged(false);
 		this.btnVote.setVisible(isUsingVoting);
 
 		btnAlign.setOnTouchPressed(e -> setTouchHighlightAndFire(e, btnAlign));

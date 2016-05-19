@@ -20,32 +20,33 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleButton?>
 
-<AnchorPane minHeight="380" scaleX="1.2" scaleY="1.2"
+<AnchorPane minHeight="300" scaleX="1.2" scaleY="1.2"
 	styleClass="input" fx:id="inputPane" xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/8.0.40" fx:controller="de.unisaarland.edutech.conceptmapfx.input.InputViewController">
 	<!-- TODO Add Nodes -->
 	<children>
-		<HBox fx:id="inputControls">
-			<VBox>
+		<HBox alignment="BOTTOM_LEFT" fx:id="inputControls">
+			<VBox alignment="BOTTOM_LEFT">
 				<children>
-					<HBox>
-						<Button styleClass="hideable" id="btnClose" fx:id="btnClose"
-							onTouchPressed="#onCloseTouchPressed" mnemonicParsing="false"
-							onAction="#onCloseAction" prefHeight="80.0" prefWidth="80.0"
-							text="" />
-
-					</HBox>
+					<VBox >
+						<children>
+							<Button styleClass="hideable" id="btnClose" fx:id="btnClose"
+								onTouchPressed="#onCloseTouchPressed" mnemonicParsing="false"
+								onAction="#onCloseAction" prefHeight="60.0" prefWidth="60.0"
+								text="" />
+						</children>
+					</VBox>
 					<HBox>
 						<children>
 
-							<VBox>
+							<VBox alignment="BOTTOM_CENTER">
 								<children>
 									<Pane>
 										<KeyboardPane styleClass="hideable" id="keyboard"
 											fx:id="keyboard" />
 
 									</Pane>
-									<AnchorPane id="ownerPane" prefHeight="60">
+									<AnchorPane id="ownerPane" prefHeight="67">
 										<HBox>
 											<children>
 												<BorderPane fx:id="ownerBox" prefWidth="60">
@@ -75,16 +76,16 @@
 
 									<ToggleButton styleClass="hideable" id="vote"
 										fx:id="btnVote" onAction="#onVoteAction" mnemonicParsing="false"
-										prefWidth="100.0" prefHeight="50.0" />
+										prefWidth="100.0" prefHeight="45.0" />
 
 
 									<Button id="align" fx:id="btnAlign" text=""
 										onAction="#onAlignAction" mnemonicParsing="false" prefWidth="100.0"
-										prefHeight="50.0" />
+										prefHeight="45.0" />
 
 
 									<ToggleButton id="voice" fx:id="btnSpeak" disable="true"
-										mnemonicParsing="false" prefWidth="100.0" prefHeight="50.0"
+										mnemonicParsing="false" prefWidth="100.0" prefHeight="45.0"
 										onAction="#onSpeechAction" />
 
 									<Button fx:id="btnNewConcept" text="+" onAction="#onNewAction"

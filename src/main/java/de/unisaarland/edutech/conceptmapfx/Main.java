@@ -55,7 +55,7 @@ public class Main extends Application {
 	private PromptLoader promptLoader;
 
 	// FIXME load colors from css to have them at a central location.
-	private static final Color userTop = Color.web("#2400F0");
+	private static final Color userTop = Color.web("#0C8CFF");
 	private static final Color userLeft = Color.web("#F00054");
 	private static final Color userRight = Color.web("#CCF000");
 	private static final Color userBottom = Color.web("#00F09C");
