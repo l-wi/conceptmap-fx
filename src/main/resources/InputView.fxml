@@ -68,7 +68,7 @@
 								</children>
 							</VBox>
 
-							<VBox>
+							<VBox style="-fx-background-color:#222222">
 								<children>
 									<Button styleClass="hideable" id="undo" fx:id="btnUndo"
 										text="Undo" onAction="#onUndoAction" mnemonicParsing="false"
