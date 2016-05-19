@@ -103,6 +103,7 @@ public class ConceptMapViewBuilder {
 
 		for (int i = 0; i < count; i++) {
 			awarenessTools[i] = new AwarenessBars(count, barWidth, barHeight, zpdLower, zpdUpper);
+			awarenessTools[i].setOwnersBar(i);
 			InteractionLogger.getInstance().bindAWT(awarenessTools[i]);
 
 		}

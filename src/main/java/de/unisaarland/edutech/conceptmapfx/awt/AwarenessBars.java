@@ -125,6 +125,8 @@ public class AwarenessBars extends AnchorPane {
 	private void initStyle(int i, ProgressBar bar) {
 		bar.getStylesheets().add("/css/awt.css");
 
+		bar.getStyleClass().add("defaultColoring");
+
 		if (i == 0)
 			bar.getStyleClass().add("userTop");
 		else if (i == 1)
@@ -152,5 +154,7 @@ public class AwarenessBars extends AnchorPane {
 	}
 
 	public void setOwnersBar(int i) {
+		bars[i].getStyleClass().remove("defaultColoring");
+		bars[i].getStyleClass().add("highlightColoring");
 	}
 }
