@@ -2,6 +2,7 @@ package de.unisaarland.edutech.conceptmapfx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -73,8 +74,10 @@ public class SummaryViewController {
 
 		// remove the total entry
 		this.summary = summary;
-		summary.remove(0);
-
+		
+		Optional<UserSummary> findFirst = summary.stream().filter(( c ) -> c.getUser().equals("total")).findFirst();
+		summary.remove(findFirst.get());
+		
 		initCharts();
 
 		ConceptMapEmail email = new ConceptMapEmail(e.getReseacher().getEmail());
@@ -102,7 +105,8 @@ public class SummaryViewController {
 		chart.setPrefWidth(50);
 		chart.setPrefHeight(50);
 
-		chart.setLabelLineLength(10);
+		chart.setLabelsVisible(false);
+//		chart.setLabelLineLength(10);
 		chart.setLegendSide(Side.BOTTOM);
 
 		chart.setData(FXCollections.observableList(data));

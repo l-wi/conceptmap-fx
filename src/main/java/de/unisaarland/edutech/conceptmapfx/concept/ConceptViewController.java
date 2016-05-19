@@ -295,6 +295,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		conceptCaption.selectionChangedProperty().addListener((l, o, n) -> {
 			if (n.isSelected) {
 				this.fireEditRequested(participants.get(n.index));
+				this.animateEditRequest();
 
 			}
 		});
@@ -302,6 +303,23 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		initToggleTexts(participants);
 
 		conceptCaption.setUserCount(participants.size());
+	}
+
+	private void animateEditRequest() {
+
+		RotateTransition rt = new RotateTransition(Duration.millis(100), conceptCaption);
+		double rotate = conceptCaption.getRotate();
+		int wiggle = 10;
+		rt.setFromAngle(rotate - wiggle);
+		rt.setToAngle(rotate + wiggle);
+		rt.setCycleCount(4);
+		rt.setAutoReverse(true);
+		rt.setOnFinished(f -> conceptCaption.setRotate(rotate));
+		rt.play();
+
+		// ParallelTransition pl = new ParallelTransition(fd, rt);
+		// pl.setOnFinished(f -> conceptCaption.setRotate(rotate));
+		// pl.play();
 	}
 
 	private void initToggleTexts(List<User> participants) {
@@ -373,7 +391,7 @@ public class ConceptViewController implements ConceptMovingListener, InputClosed
 		ObservableList<Node> children = this.getTextFlow().getChildren();
 		for (Node n : children) {
 			Text t = (Text) n;
-			Font f = new Font(20 + 15 * (concept.getVotes()));
+			Font f = new Font(20 + 10 * (concept.getVotes()));
 			t.setFont(f);
 		}
 	}

@@ -74,7 +74,7 @@
 										text="Undo" onAction="#onUndoAction" mnemonicParsing="false"
 										prefWidth="100.0" prefHeight="50.0" />
 
-									<ToggleButton styleClass="hideable" id="vote"
+									<ToggleButton id="vote"
 										fx:id="btnVote" onAction="#onVoteAction" mnemonicParsing="false"
 										prefWidth="100.0" prefHeight="45.0" />
 

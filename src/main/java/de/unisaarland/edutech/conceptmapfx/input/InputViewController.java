@@ -544,6 +544,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void useVoting() {
 		isUsingVoting = true;
+		this.btnVote.setVisible(isUsingVoting);
+		this.btnVote.setDisable(true);
+
 	}
 
 	public Button getNewButton() {
