@@ -35,6 +35,7 @@ import javafx.util.Duration;
 
 public class FourUserTouchEditable extends BorderPane {
 
+	private static final String GENERAL_INPUT_HIGHLIGHTING_CSS = "belongsToLefShadow";
 	private static final int RIGHT_TOGGLE_INDEX = 3;
 	private static final int BOTTOM_TOGGLE_INDEX = 1;
 	private static final int LEFT_TOGGLE_INDEX = 2;
@@ -545,17 +546,19 @@ public class FourUserTouchEditable extends BorderPane {
 		if (inputEnabled) {
 			underlineOnEditToggle = true;
 			removeUnderlineTimeline(cssClass, caption);
-			underlineAnimation = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
+			underlineAnimation = new Timeline(new KeyFrame(Duration.millis(1000), (e) -> {
 
-				@Override
-				public void handle(ActionEvent event) {
+			
 					if (underlineOnEditToggle) {
 						caption.getStyleClass().add(cssClass);
+						this.getStyleClass().add(GENERAL_INPUT_HIGHLIGHTING_CSS);
 					} else {
 						caption.getStyleClass().remove(cssClass);
+						this.getStyleClass().remove(GENERAL_INPUT_HIGHLIGHTING_CSS);
+
 					}
 					underlineOnEditToggle = !underlineOnEditToggle;
-				}
+				
 			}));
 			underlineAnimation.setCycleCount(Timeline.INDEFINITE);
 			underlineAnimation.play();
@@ -583,5 +586,7 @@ public class FourUserTouchEditable extends BorderPane {
 			return;
 		underlineAnimation.stop();
 		caption.getStyleClass().remove(cssClass);
+		this.getStyleClass().remove(GENERAL_INPUT_HIGHLIGHTING_CSS);
+
 	}
 }

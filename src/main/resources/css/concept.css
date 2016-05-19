@@ -38,6 +38,10 @@
 	-fx-border-width : 0 3.0 0 0 ;	
 }
 
+.belongsToLefShadow{
+	-fx-effect: dropshadow(three-pass-box, white, 15, 0, 0, 0);
+}
+
 .belongsToRightUnderline{
 	-fx-border-color: userRight;
 	-fx-border-width : 0 3.0 0 0 ;	
