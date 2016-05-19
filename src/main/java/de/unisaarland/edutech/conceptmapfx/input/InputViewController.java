@@ -125,15 +125,20 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	private void initDragging() {
-		inputPane.setOnTouchPressed((e) -> {
+		inputControls.setOnTouchPressed((e) -> {
+			if (e.getSource().equals(this.inputControls))
+				;
 			translateX = e.getTouchPoint().getX();
 
 		});
 
 		inputControls.setOnTouchMoved((e) -> {
 			TouchPoint touchPoint = e.getTouchPoint();
-			if (Math.abs(touchPoint.getX() - translateX) > 30)
-				inputControls.setTranslateX(inputControls.getTranslateX() + touchPoint.getX() - translateX);
+			if (Math.abs(touchPoint.getX() - translateX) > 30) {
+				double absoluteX = inputControls.getTranslateX();
+				double dX = touchPoint.getX() - translateX;
+				inputControls.setTranslateX(absoluteX + dX);
+			}
 		});
 	}
 
@@ -164,8 +169,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		keyboard.load();
 
 		/*
-		 *  Workaround to allow multitouch input while moving an element:
-	
+		 * Workaround to allow multitouch input while moving an element:
+		 * 
 		 */
 		addTouchListenerToKeyboard();
 		keyboard.setKeyboardType(KeyboardType.TEXT_SHIFT);
