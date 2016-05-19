@@ -18,6 +18,7 @@ import de.unisaarland.edutech.conceptmapping.ConceptMap;
 import de.unisaarland.edutech.conceptmapping.User;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
 public class ConceptViewBuilder {
@@ -122,31 +123,17 @@ public class ConceptViewBuilder {
 
 	private void moveConceptToRightPosition(InputViewController inputViewController, Pane conceptViewPane) {
 
-		Point2D p = new Point2D(0, -50);
-		Point2D pScene = inputViewController.transformLocalToScene(p);
-
-		Pane n = conceptViewPane;
-
-		double x = pScene.getX();
-		double y = pScene.getY();
-
-		if (inputViewController.getPosition() == Position.TOP) {
-			x = x - n.getWidth();
-		} else if (inputViewController.getPosition() == Position.LEFT) {
-			x = x - n.getWidth() / 2 + n.getHeight() / 2;
-			y = y + n.getWidth() / 2 - n.getHeight() / 2;
-		} else if (inputViewController.getPosition() == Position.RIGHT) {
-			x = x - n.getWidth() / 2 - n.getHeight() / 2;
-			y = y - n.getWidth() / 2 - n.getHeight() / 2;
-		} else if (inputViewController.getPosition() == Position.BOTTOM) {
-			y = y - n.getHeight();
-		}
-
-		conceptViewPane.setTranslateX(x);
-		conceptViewPane.setTranslateY(y);
-
+		Node n = inputViewController.getNewButton();
+		
+		double height = inputViewController.getView().getHeight();
+		
+		Point2D p = n.getLocalToSceneTransform().transform(0,-(height-80));
+		
+		conceptViewPane.setTranslateX(p.getX());
+		conceptViewPane.setTranslateY(p.getY());
+		
 		conceptViewPane.setRotate(inputViewController.getRotate());
-
+		
 	}
 
 	public void addListenersToController() {

@@ -145,8 +145,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 				double parentWidth = ((Pane) inputPane.getParent()).getWidth();
 				double parentHeight = ((Pane) inputPane.getParent()).getHeight();
 
-	
-
 				if (exceedsBounds(p1, parentWidth, parentHeight) || exceedsBounds(p2, parentWidth, parentHeight))
 					return;
 
@@ -545,5 +543,13 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public void useVoting() {
 		isUsingVoting = true;
+	}
+
+	public Button getNewButton() {
+		return btnNewConcept;
+	}
+
+	public Pane getView() {
+		return inputPane;
 	}
 }
