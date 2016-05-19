@@ -9,6 +9,8 @@ import javafx.scene.shape.Path;
 
 public class AwarenessBars extends AnchorPane {
 
+	private static final int BORDER_SIZE = 9;
+	private static final int ZPD_STROKE_WIDTH = 3;
 	private ProgressBar[] bars;
 	private String[] styles;
 
@@ -23,14 +25,13 @@ public class AwarenessBars extends AnchorPane {
 
 	public AwarenessBars(int count, int barHeight, int barWidth, double zpdLower, double zpdUpper) {
 		throwIfInvalidZPD(zpdLower, zpdUpper);
-		this.count =count;
+		this.count = count;
 		this.barHeight = barHeight;
 		this.barWidth = barWidth;
 		this.zpdLower = zpdLower;
 		this.zpdUpper = zpdUpper;
 
 		this.setMinHeight(barHeight);
-		this.setMinWidth(count * (barWidth + spacing));
 
 		initBars(count);
 		initZPD(zpdLower, zpdUpper);
@@ -53,29 +54,34 @@ public class AwarenessBars extends AnchorPane {
 	private void initZPD(double zpdLower, double zpdUpper) {
 
 		double zpdLowerY = barHeight - (zpdLower * barHeight + 4);
-		int zpdLowerX =  count * (spacing + barWidth);
 
-		Path zpdLowerPath = initLine(zpdLowerX, zpdLowerY);
+		initZPDLine(zpdLowerY);
 
 		double zpdUpperY = barHeight - (zpdUpper * barHeight);
-		int zpdUpperX = count * (spacing + barWidth);
 
-		Path zpdUpperPath = initLine(zpdUpperX, zpdUpperY);
-
-		this.getChildren().add(zpdLowerPath);
-		this.getChildren().add(zpdUpperPath);
+		initZPDLine(zpdUpperY);
 
 	}
 
-	private Path initLine(int zpdLowerX, double zpdLowerY) {
-		Path p = new Path();
+	private void initZPDLine(double y) {
 
-		MoveTo m = new MoveTo(0, zpdLowerY);
+		double lineWidth = barWidth - 2 * BORDER_SIZE;
 
-		LineTo l = new LineTo(zpdLowerX, zpdLowerY);
-		p.setStrokeWidth(5);
-		p.getElements().addAll(m, l);
-		return p;
+		for (int i = 0; i < count; i++) {
+			Path p = new Path();
+
+			double barStart = (i + 1) * spacing + i * barWidth + BORDER_SIZE;
+			double barEnd = barStart + lineWidth;
+
+			MoveTo m = new MoveTo(barStart, y);
+
+			LineTo l = new LineTo(barEnd, y);
+
+			p.setStrokeWidth(ZPD_STROKE_WIDTH);
+			p.getElements().addAll(m, l);
+
+			this.getChildren().add(p);
+		}
 	}
 
 	private void initBars(int count) {
@@ -104,7 +110,6 @@ public class AwarenessBars extends AnchorPane {
 		bar.setTranslateY(barHeight / 2.0 - barWidth / 2);
 		bar.setTranslateX(-barHeight / 2.0 + barWidth / 2);
 		bar.setLayoutX(spacing + i * (barWidth + spacing));
-
 
 		bar.progressProperty().addListener((c, o, n) -> {
 			if (n.doubleValue() >= zpdLower && n.doubleValue() <= zpdUpper) {
@@ -144,5 +149,8 @@ public class AwarenessBars extends AnchorPane {
 	private void throwIfBarNotExisting(int i) {
 		if (i >= bars.length)
 			throw new RuntimeException("there is no Bar " + i);
+	}
+
+	public void setOwnersBar(int i) {
 	}
 }
