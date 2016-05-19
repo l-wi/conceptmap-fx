@@ -57,7 +57,7 @@
 			<children>
 				<HBox rotate="180" alignment="CENTER">
 					<children>
-						<Button rotate="180" fx:id="btnTop" styleClass="top"
+						<Button fx:id="btnTop" styleClass="top"
 							text="email me the map" onAction="#onTopEmail" />
 						<Button text="rotate" onAction="#onRotateAction"></Button>
 					</children>
