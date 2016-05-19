@@ -137,9 +137,26 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			if (Math.abs(touchPoint.getX() - translateX) > 30) {
 				double absoluteX = inputControls.getTranslateX();
 				double dX = touchPoint.getX() - translateX;
-				inputControls.setTranslateX(absoluteX + dX);
+				double translation = absoluteX + dX;
+
+				Point2D p1 = inputPane.getLocalToSceneTransform().transform(translation, 0);
+				Point2D p2 = inputPane.getLocalToSceneTransform().transform(translation + inputPane.getWidth(), 0);
+
+				double parentWidth = ((Pane) inputPane.getParent()).getWidth();
+				double parentHeight = ((Pane) inputPane.getParent()).getHeight();
+
+	
+
+				if (exceedsBounds(p1, parentWidth, parentHeight) || exceedsBounds(p2, parentWidth, parentHeight))
+					return;
+
+				inputControls.setTranslateX(translation);
 			}
 		});
+	}
+
+	private boolean exceedsBounds(Point2D p, double width, double height) {
+		return (p.getX() < 0 || p.getX() >= width || p.getY() < 0 || p.getY() >= height);
 	}
 
 	private void initButtons() {
