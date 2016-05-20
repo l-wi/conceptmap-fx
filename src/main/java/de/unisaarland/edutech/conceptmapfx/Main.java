@@ -96,6 +96,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
+		LOG.info("starting...");
 		showOnfirstOrPrimaryDisplay(primaryStage);
 
 		restorer = new SessionRestoreState();
