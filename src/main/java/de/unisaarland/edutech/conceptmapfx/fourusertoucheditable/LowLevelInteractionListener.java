@@ -49,6 +49,8 @@ public class LowLevelInteractionListener {
 
 	private VoidFunction doubleTapFunction;
 
+	private boolean isAlreadyMoving;
+
 	@FunctionalInterface
 	public interface VoidFunction {
 		public void apply();
@@ -162,8 +164,10 @@ public class LowLevelInteractionListener {
 
 		double d = new Point2D(p.getX(), p.getY()).distance(new Point2D(this.dragX, this.dragY));
 
-		if (d < JITTER_THRESHOLD)
+		if (d < JITTER_THRESHOLD && !isAlreadyMoving)
 			return;
+		
+		isAlreadyMoving = true;
 
 		onMoving(p.getX(), p.getY(), 0);
 		evt.consume();
@@ -181,9 +185,11 @@ public class LowLevelInteractionListener {
 		if (showSelectedTransition != null)
 			showSelectedTransition.stop();
 
-		if (fourUserTouchEditable.getState() == State.UNSELECTED)
+		State state = fourUserTouchEditable.getState();
+		
+		if (state == State.UNSELECTED)
 			fourUserTouchEditable.toMovingState();
-		if (fourUserTouchEditable.getState() == State.MOVING)
+		if (state == State.MOVING)
 			this.moving(x - dragX, y - dragY, r);
 	}
 
@@ -204,13 +210,14 @@ public class LowLevelInteractionListener {
 	}
 
 	private void onReleased() {
-
+	
 		touchEventsActive--;
 
 		if (touchEventsActive >= 1)
 			return;
 
 		isPressed = false;
+		isAlreadyMoving = false;
 
 		showRotateTransition.stop();
 
