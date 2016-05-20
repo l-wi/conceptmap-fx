@@ -7,6 +7,7 @@ import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.PauseTransition;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -21,6 +22,8 @@ public class CollaborativeStringTextFieldBinding {
 	private Link l;
 
 	private ConceptViewController controller;
+
+	private PauseTransition releaseTransition;
 
 	private CollaborativeStringTextFieldBinding(Link l, TextFlow caption) {
 		this.l = l;
@@ -46,7 +49,12 @@ public class CollaborativeStringTextFieldBinding {
 		collaborativeString.append(u, String.valueOf(c));
 		update(u, c);
 		logInteraction(u,false);
+		resetPause();
+	}
 
+	private void resetPause() {
+		releaseTransition.stop();
+		releaseTransition.play();
 	}
 
 	public void removeLast(User u) {
@@ -54,6 +62,7 @@ public class CollaborativeStringTextFieldBinding {
 			collaborativeString.removeLast(1);
 			caption.getChildren().remove(caption.getChildren().size() - 1);
 			logInteraction(u,true);
+			resetPause();
 
 		}
 	}
@@ -99,6 +108,11 @@ public class CollaborativeStringTextFieldBinding {
 
 	public boolean hasVoted(User u) {
 		return (c != null) ? this.c.hasVoted(u) : false;
+	}
+
+	public void setPauseTransition(PauseTransition realeaseTransition) {
+		this.releaseTransition = realeaseTransition;
+		releaseTransition.play();
 	}
 
 }

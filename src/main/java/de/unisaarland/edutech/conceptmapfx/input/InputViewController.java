@@ -30,6 +30,8 @@ import de.unisaarland.edutech.conceptmapfx.event.SpeechRecognitionListner;
 import de.unisaarland.edutech.conceptmapfx.fourusertoucheditable.CollaborativeStringTextFieldBinding;
 import de.unisaarland.edutech.conceptmapfx.link.LinkViewController;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.collections.ObservableList;
@@ -52,6 +54,8 @@ import javafx.util.Duration;
 
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
 		LinkDeletedListener, ConceptDeletedListener, SpeechRecognitionListner {
+
+	private static final int FADE_OUT_TIME_CLOSE = 800;
 
 	private static final Logger LOG = LoggerFactory.getLogger(InputViewController.class);
 
@@ -92,6 +96,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private ToggleButton btnSpeak;
 	@FXML
 	private Label lblPrompts;
+	@FXML
+	private Button btnClose;
 
 	private Position position;
 
@@ -109,9 +115,16 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private boolean isUsingVoting;
 
+	private PauseTransition realeaseTransition;
+
 	@FXML
 	public void initialize() {
 		try {
+			realeaseTransition = new PauseTransition(Duration.seconds(5));
+			realeaseTransition.setOnFinished(e -> {
+				this.onCloseAction();
+			});
+
 			initKeyboard();
 			initButtons();
 			initQuestion();
@@ -119,7 +132,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			initDragging();
 
 		} catch (IOException | URISyntaxException e) {
-			LOG.error("Program cannot run!", e);
 			throw new RuntimeException("Program cannot run!", e);
 		}
 	}
@@ -262,9 +274,24 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	public void onCloseAction() {
 
-		hideInput();
+		FadeTransition fd1 = new FadeTransition(Duration.millis(FADE_OUT_TIME_CLOSE), btnClose);
+		fd1.setToValue(0);
 
-		releaseInput();
+		FadeTransition fd2 = new FadeTransition(Duration.millis(FADE_OUT_TIME_CLOSE), keyboard);
+		fd2.setToValue(0);
+
+		ParallelTransition p = new ParallelTransition();
+
+		p.setOnFinished(e -> {
+			hideInput();
+			releaseInput();
+			keyboard.setOpacity(1);
+			btnClose.setOpacity(1);
+		});
+
+		p.getChildren().addAll(fd1, fd2);
+		p.play();
+
 	}
 
 	@FXML
@@ -340,8 +367,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private void acquireInput(CollaborativeStringTextFieldBinding cv, User u) {
 
-		LOG.info("acquiring input for user:\t" + this.user);
-
 		currentRobotHandler = new UserRobotHandler(cv, u);
 		this.keyboard.addRobotHandler(currentRobotHandler);
 		this.collaborativeStringBinding = cv;
@@ -358,6 +383,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		// hard to fix
 		btnUndo.setVisible(false);
 
+		cv.setPauseTransition(realeaseTransition);
+
 	}
 
 	private void unhideInputControl(Set<Node> hiddenNodes) {
@@ -371,7 +398,6 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private void releaseInput() {
 
 		if (currentRobotHandler != null && closedListener != null) {
-			LOG.info("releasing input for user:\t" + this.user);
 			this.keyboard.removeRobotHandler(currentRobotHandler);
 			closedListener.inputClosed(this.user);
 			currentRobotHandler = null;
@@ -527,13 +553,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@Override
 	public void speechRecognitionStarted(User u) {
+		realeaseTransition.stop();
 		speechListener.speechRecognitionStarted(u);
 	}
 
 	@Override
 	public void speechRecognitionFinished(User u) {
 		speechListener.speechRecognitionFinished(u);
-
+		realeaseTransition.playFromStart();
 	}
 
 	public void setPrompt(String text) {
