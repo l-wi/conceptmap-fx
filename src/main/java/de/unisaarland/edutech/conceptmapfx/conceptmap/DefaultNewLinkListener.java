@@ -36,8 +36,6 @@ public class DefaultNewLinkListener implements NewLinkListener {
 			return;
 		}
 
-		LOG.info("adding new link between:\t" + cv1.getConcept().getName().getContent() + " <-> "
-				+ cv2.getConcept().getName().getContent());
 
 		LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, cv1, cv2);
 		builder.withDirectionListener(controller).forNewLink().withDeletedListener(controller);
