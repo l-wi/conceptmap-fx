@@ -104,6 +104,7 @@ public class DefaultSpeechListener implements SpeechRecognitionListner {
 		try {
 			NuanceCredentials creds = NuanceCredentials.construct();
 			nuanceClient = new NuanceClient(creds);
+			LOG.info("Speech recognition initialized in: " + creds.getLang());
 
 		} catch (IOException e) {
 			LOG.error(ERROR_MSG, e);
