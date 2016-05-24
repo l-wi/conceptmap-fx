@@ -89,6 +89,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	@FXML
 	private Pane ownerBox;
 	@FXML
+	private Pane ownerPane;
+	@FXML
 	private Label question;
 	@FXML
 	private Button btnAlign;
@@ -137,14 +139,35 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	private void initDragging() {
-		inputControls.setOnTouchPressed((e) -> {
-			if (e.getSource().equals(this.inputControls))
-				;
-			translateX = e.getTouchPoint().getX();
-
+		ownerPane.setOnMousePressed((e) -> {
+			translateX = e.getX();
 		});
 
-		inputControls.setOnTouchMoved((e) -> {
+		ownerPane.setOnTouchPressed((e) -> {
+			translateX = e.getTouchPoint().getX();
+		});
+
+		ownerPane.setOnMouseDragged((e) -> {
+
+			if (Math.abs(e.getX() - translateX) > 30) {
+				double absoluteX = inputControls.getTranslateX();
+				double dX = e.getX() - translateX;
+				double translation = absoluteX + dX;
+
+				Point2D p1 = inputPane.getLocalToSceneTransform().transform(translation, 0);
+				Point2D p2 = inputPane.getLocalToSceneTransform().transform(translation + inputPane.getWidth(), 0);
+
+				double parentWidth = ((Pane) inputPane.getParent()).getWidth();
+				double parentHeight = ((Pane) inputPane.getParent()).getHeight();
+
+				if (exceedsBounds(p1, parentWidth, parentHeight) || exceedsBounds(p2, parentWidth, parentHeight))
+					return;
+
+				inputControls.setTranslateX(translation);
+			}
+		});
+
+		ownerPane.setOnTouchMoved((e) -> {
 			TouchPoint touchPoint = e.getTouchPoint();
 			if (Math.abs(touchPoint.getX() - translateX) > 30) {
 				double absoluteX = inputControls.getTranslateX();

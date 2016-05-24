@@ -46,7 +46,7 @@
 											fx:id="keyboard" />
 
 									</Pane>
-									<AnchorPane id="ownerPane" prefHeight="67">
+									<AnchorPane fx:id="ownerPane" id="ownerPane" prefHeight="67">
 										<HBox>
 											<children>
 												<BorderPane fx:id="ownerBox" prefWidth="60">
