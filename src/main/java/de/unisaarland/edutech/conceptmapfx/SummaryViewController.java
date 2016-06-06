@@ -74,10 +74,18 @@ public class SummaryViewController {
 
 		// remove the total entry
 		this.summary = summary;
-		
-		Optional<UserSummary> findFirst = summary.stream().filter(( c ) -> c.getUser().equals("total")).findFirst();
+
+		Optional<UserSummary> findFirst = summary.stream().filter((c) -> c.getUser().equals("total")).findFirst();
 		summary.remove(findFirst.get());
-		
+
+		List<User> participants = e.getParticipants();
+
+		// sort to prevent that the first user doing interaction get assigned
+		// the color of the first user of participants
+		summary.sort((UserSummary c1, UserSummary c2) -> {
+			return participants.indexOf(c1.getUser()) - participants.indexOf(c2.getUser());
+		});
+
 		initCharts();
 
 		ConceptMapEmail email = new ConceptMapEmail(e.getReseacher().getEmail());
@@ -106,7 +114,7 @@ public class SummaryViewController {
 		chart.setPrefHeight(50);
 
 		chart.setLabelsVisible(false);
-//		chart.setLabelLineLength(10);
+		// chart.setLabelLineLength(10);
 		chart.setLegendSide(Side.BOTTOM);
 
 		chart.setData(FXCollections.observableList(data));
