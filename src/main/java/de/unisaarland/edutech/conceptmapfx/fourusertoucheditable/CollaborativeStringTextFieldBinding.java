@@ -23,7 +23,6 @@ public class CollaborativeStringTextFieldBinding {
 
 	private ConceptViewController controller;
 
-	private PauseTransition releaseTransition;
 
 	private CollaborativeStringTextFieldBinding(Link l, TextFlow caption) {
 		this.l = l;
@@ -49,22 +48,16 @@ public class CollaborativeStringTextFieldBinding {
 		collaborativeString.append(u, String.valueOf(c));
 		update(u, c);
 		logInteraction(u,false);
-		resetPause();
 	}
 
-	private void resetPause() {
-		releaseTransition.stop();
-		releaseTransition.play();
-	}
+	
 
 	public void removeLast(User u) {
 		if (collaborativeString.length() > 0) {
 			collaborativeString.removeLast(1);
 			caption.getChildren().remove(caption.getChildren().size() - 1);
 			logInteraction(u,true);
-			resetPause();
-
-		}
+			}
 	}
 
 	public boolean isLinkEditing() {
@@ -110,9 +103,5 @@ public class CollaborativeStringTextFieldBinding {
 		return (c != null) ? this.c.hasVoted(u) : false;
 	}
 
-	public void setPauseTransition(PauseTransition realeaseTransition) {
-		this.releaseTransition = realeaseTransition;
-		releaseTransition.play();
-	}
-
+	
 }

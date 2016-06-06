@@ -96,6 +96,11 @@ Label{
 -fx-border-color:white;
 -fx-border-radius: 10.0;
 -fx-background-radius: 10.0;
+-fx-background-repeat: no-repeat;
+-fx-background-size: 30.0 30.0;
+-fx-background-position: center;
+-fx-background-image: url("/gfx/circle.png");
+
 
 }
 

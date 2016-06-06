@@ -117,16 +117,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private boolean isUsingVoting;
 
-	private PauseTransition realeaseTransition;
 
 	@FXML
 	public void initialize() {
 		try {
-			realeaseTransition = new PauseTransition(Duration.seconds(5));
-			realeaseTransition.setOnFinished(e -> {
-				this.onCloseAction();
-			});
-
+			
 			initKeyboard();
 			initButtons();
 			initQuestion();
@@ -296,7 +291,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@FXML
 	public void onCloseAction() {
-
+		//TODO revert back to close on button click 
 		FadeTransition fd1 = new FadeTransition(Duration.millis(FADE_OUT_TIME_CLOSE), btnClose);
 		fd1.setToValue(0);
 
@@ -406,7 +401,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		// hard to fix
 		btnUndo.setVisible(false);
 
-		cv.setPauseTransition(realeaseTransition);
+//		cv.setPauseTransition(realeaseTransition);
 
 	}
 
@@ -576,14 +571,12 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@Override
 	public void speechRecognitionStarted(User u) {
-		realeaseTransition.stop();
 		speechListener.speechRecognitionStarted(u);
 	}
 
 	@Override
 	public void speechRecognitionFinished(User u) {
 		speechListener.speechRecognitionFinished(u);
-		realeaseTransition.playFromStart();
 	}
 
 	public void setPrompt(String text) {
