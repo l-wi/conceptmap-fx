@@ -121,6 +121,8 @@ public class InteractionLogger {
 		if (!c1.getOwner().equals(c2.getOwner())) {
 			userSummary = getUserSummaryForUser(c2.getOwner());
 			userSummary.incLinkCount();
+			totalSummary.incLinkCount();
+
 		}
 
 		addRow(Event.NEW_LINK, c1, c2, l, null);
@@ -153,6 +155,8 @@ public class InteractionLogger {
 		if (!c1.getOwner().equals(c2.getOwner())) {
 			userSummary = getUserSummaryForUser(c2.getOwner());
 			userSummary.incLinkDeletes();
+			totalSummary.incLinkDeletes();
+
 		}
 
 		addRow(Event.DELETE_LINK, c1, c2, l, null);
