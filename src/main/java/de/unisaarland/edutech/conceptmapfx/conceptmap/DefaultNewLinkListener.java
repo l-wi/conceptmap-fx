@@ -36,7 +36,6 @@ public class DefaultNewLinkListener implements NewLinkListener {
 			return;
 		}
 
-
 		LinkViewBuilder builder = new LinkViewBuilder(conceptMap, conceptMapPane, cv1, cv2);
 		builder.withDirectionListener(controller).forNewLink().withDeletedListener(controller);
 
@@ -72,10 +71,21 @@ public class DefaultNewLinkListener implements NewLinkListener {
 		double translateX = viewToMove.getTranslateX();
 		double translateY = viewToMove.getTranslateY();
 
-		for (double r = heightResting; r < 20 * heightResting; r++) {
-			for (double i = 0; i < 300; i++) {
+		// TODO CODE for debug printing that might be useful one time again.
 
-				double angle = 2 * Math.PI * i / 300;
+		// Path debugPath = new Path();
+		// debugPath.setStroke(javafx.scene.paint.Color.YELLOW);
+		// debugPath.setStrokeWidth(3);
+		// MoveTo debugMove = new MoveTo(translateX, translateY);
+		// debugPath.getElements().add(debugMove);
+		// this.controller.getView().getChildren().add(debugPath);
+
+		final int circleStep = 25;
+		for (double r = heightResting; r < 20 * heightResting; r += 0.2 * heightResting) {
+
+			for (double i = 0; i < circleStep; i++) {
+
+				double angle = 2 * Math.PI * i / circleStep;
 
 				double x = pDelta.getX() * Math.cos(angle) - pDelta.getY() * Math.sin(angle);
 				double y = pDelta.getX() * Math.sin(angle) + pDelta.getY() * Math.cos(angle);
@@ -90,7 +100,14 @@ public class DefaultNewLinkListener implements NewLinkListener {
 					controller.getLinkControllers().forEach((l) -> l.layout());
 					return;
 				}
+				
+				// TODO CODE for debug printing that might be useful one time
+				// again.
 
+				// LOG.warn("adding line at" + x + " / " + y);
+				// LineTo debugLine = new LineTo(translateX + x,translateY + y);
+
+				// debugPath.getElements().add(debugLine);
 			}
 		}
 
