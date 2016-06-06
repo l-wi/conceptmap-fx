@@ -7,6 +7,8 @@ import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
@@ -23,6 +25,8 @@ public class CollaborativeStringTextFieldBinding {
 	private Link l;
 
 	private ConceptViewController controller;
+
+	private StringProperty textBinding;
 
 	private CollaborativeStringTextFieldBinding(Link l, TextFlow caption) {
 		this.l = l;
@@ -42,12 +46,16 @@ public class CollaborativeStringTextFieldBinding {
 
 		for (int i = 0; i < collaborativeString.length(); i++)
 			update(collaborativeString.getOwner(), collaborativeString.getContent().charAt(i));
+
+		textBinding = new SimpleStringProperty(collaborativeString.getContent());
 	}
 
 	public void append(User u, char c) {
 		collaborativeString.append(u, String.valueOf(c));
 		update(u, c);
 		logInteraction(u, false);
+
+		textBinding.set(collaborativeString.getContent());
 	}
 
 	public void removeLast(User u) {
@@ -55,6 +63,7 @@ public class CollaborativeStringTextFieldBinding {
 			collaborativeString.removeLast(1);
 			removeFromCaption();
 			logInteraction(u, true);
+			textBinding.set(collaborativeString.getContent());
 		}
 	}
 
@@ -128,4 +137,9 @@ public class CollaborativeStringTextFieldBinding {
 	public TextFlow getCaption() {
 		return caption;
 	}
+
+	public StringProperty textProperty() {
+		return textBinding;
+	}
+
 }

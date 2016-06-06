@@ -106,6 +106,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private Label lblPrompts;
 	@FXML
 	private Button btnClose;
+	@FXML
+	private Label lblMirroring;
 
 	private Position position;
 
@@ -136,6 +138,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			initQuestion();
 			hideInput();
 			initDragging();
+			initMirrorLabel();
 
 		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException("Program cannot run!", e);
@@ -168,6 +171,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 					return;
 
 				inputControls.setTranslateX(translation);
+
+				computeHighlightPoints(this.collaborativeStringBinding);
+
 			}
 		});
 
@@ -412,14 +418,23 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 		// cv.setPauseTransition(realeaseTransition);
 
+		lblMirroring.setVisible(true);
+		lblMirroring.textProperty().bind(cv.textProperty());
 		showHighlightingLights(cv);
 
 	}
 
+	private void initMirrorLabel() {
+		lblMirroring.setVisible(false);
+		lblMirroring.translateXProperty().bind(
+				inputControls.widthProperty().divide(2).subtract(lblMirroring.widthProperty().divide(2)).subtract(50));
+		lblMirroring.setTranslateY(10);
+	}
+
 	private void showHighlightingLights(CollaborativeStringTextFieldBinding cv) {
 		highlightPolygon = new Polygon();
-		highlightPolygon.setOpacity(0.2);
-		highlightPolygon.setFill(Color.WHITESMOKE);
+		highlightPolygon.setOpacity(0.5);
+		highlightPolygon.setFill(Color.BLACK);
 
 		computeHighlightPoints(cv);
 
@@ -466,6 +481,8 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			btnVote.setSelected(false);
 			this.conceptMapView.remove(highlightPolygon);
 			highlightPolygon = null;
+			lblMirroring.setVisible(false);
+
 		}
 
 	}

@@ -28,14 +28,19 @@
 		<HBox alignment="BOTTOM_LEFT" fx:id="inputControls">
 			<VBox alignment="BOTTOM_LEFT">
 				<children>
-					<VBox >
+					<HBox>
 						<children>
 							<Button styleClass="hideable" id="btnClose" fx:id="btnClose"
 								onTouchPressed="#onCloseTouchPressed" mnemonicParsing="false"
 								onAction="#onCloseAction" prefHeight="60.0" prefWidth="60.0"
 								text="" />
+							<AnchorPane>
+								<children>
+									<Label id="lblMirroring" fx:id="lblMirroring" visible="false" text="test" />
+								</children>
+							</AnchorPane>
 						</children>
-					</VBox>
+					</HBox>
 					<HBox>
 						<children>
 
@@ -46,7 +51,8 @@
 											fx:id="keyboard" />
 
 									</Pane>
-									<AnchorPane fx:id="ownerPane" id="ownerPane" prefHeight="67">
+									<AnchorPane fx:id="ownerPane" id="ownerPane"
+										prefHeight="67">
 										<HBox>
 											<children>
 												<BorderPane fx:id="ownerBox" prefWidth="60">
@@ -74,9 +80,8 @@
 										text="Undo" onAction="#onUndoAction" mnemonicParsing="false"
 										prefWidth="100.0" prefHeight="50.0" />
 
-									<ToggleButton id="vote"
-										fx:id="btnVote" onAction="#onVoteAction" mnemonicParsing="false"
-										prefWidth="100.0" prefHeight="45.0" />
+									<ToggleButton id="vote" fx:id="btnVote" onAction="#onVoteAction"
+										mnemonicParsing="false" prefWidth="100.0" prefHeight="45.0" />
 
 
 									<Button id="align" fx:id="btnAlign" text=""

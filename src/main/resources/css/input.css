@@ -61,6 +61,11 @@
 	-fx-padding: 10.0 0.0 0.0 50.0;
 }
 
+#lblMirroring{
+	-fx-font-size: 1.2em;
+	-fx-text-fill: #d3d7cf;
+}
+
 .letter {
 	-fx-font-size: 1.8em;
 	-fx-text-fill: white;
