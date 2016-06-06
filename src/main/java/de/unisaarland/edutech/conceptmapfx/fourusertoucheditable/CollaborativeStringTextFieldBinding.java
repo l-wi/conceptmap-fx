@@ -7,7 +7,8 @@ import de.unisaarland.edutech.conceptmapping.CollaborativeString;
 import de.unisaarland.edutech.conceptmapping.Concept;
 import de.unisaarland.edutech.conceptmapping.Link;
 import de.unisaarland.edutech.conceptmapping.User;
-import javafx.animation.PauseTransition;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -22,7 +23,6 @@ public class CollaborativeStringTextFieldBinding {
 	private Link l;
 
 	private ConceptViewController controller;
-
 
 	private CollaborativeStringTextFieldBinding(Link l, TextFlow caption) {
 		this.l = l;
@@ -47,17 +47,29 @@ public class CollaborativeStringTextFieldBinding {
 	public void append(User u, char c) {
 		collaborativeString.append(u, String.valueOf(c));
 		update(u, c);
-		logInteraction(u,false);
+		logInteraction(u, false);
 	}
-
-	
 
 	public void removeLast(User u) {
 		if (collaborativeString.length() > 0) {
 			collaborativeString.removeLast(1);
-			caption.getChildren().remove(caption.getChildren().size() - 1);
-			logInteraction(u,true);
-			}
+			removeFromCaption();
+			logInteraction(u, true);
+		}
+	}
+
+	private void removeFromCaption() {
+		ObservableList<Node> children = caption.getChildren();
+		Text text = (Text) children.get(children.size() - 1);
+
+		// case: text length > 1
+		String content = text.getText();
+		if (content.length() > 1)
+			text.setText(content.substring(0, content.length() - 1));
+		// case: text length == 1
+		else
+			children.remove(children.size() - 1);
+
 	}
 
 	public boolean isLinkEditing() {
@@ -65,23 +77,33 @@ public class CollaborativeStringTextFieldBinding {
 	}
 
 	private void update(User u, char c) {
-		Text t = new Text(String.valueOf(c));
 
-		t.setFill(Main.userColors.get(u));
-		t.setStrokeWidth(0.2);
-		t.setStroke(javafx.scene.paint.Color.BLACK);
-		caption.getChildren().add(t);
+		ObservableList<Node> children = caption.getChildren();
+
+		Text t = null;
+		// case: no text or text of another user
+		if (children.size() == 0 || !children.get(children.size() - 1).getUserData().equals(u)) {
+			t = new Text(String.valueOf(c));
+			t.setFill(Main.userColors.get(u));
+			t.setStrokeWidth(0.2);
+			t.setStroke(javafx.scene.paint.Color.BLACK);
+			t.setUserData(u);
+			children.add(t);
+		} else {
+			t = (Text) children.get(children.size() - 1);
+			t.setText(t.getText() + c);
+		}
 
 		if (controller != null)
 			controller.adjustFontSizeToVotes();
 
 	}
 
-	private void logInteraction(User u,boolean isDeletion) {
+	private void logInteraction(User u, boolean isDeletion) {
 		if (this.c != null)
-			INTERACTION_LOGGER.contentConceptData(this.c, u,isDeletion);
+			INTERACTION_LOGGER.contentConceptData(this.c, u, isDeletion);
 		else
-			INTERACTION_LOGGER.contentLinkData(this.l, u,isDeletion);
+			INTERACTION_LOGGER.contentLinkData(this.l, u, isDeletion);
 	}
 
 	public static CollaborativeStringTextFieldBinding createBinding(Concept source, ConceptViewController dest) {
@@ -103,5 +125,4 @@ public class CollaborativeStringTextFieldBinding {
 		return (c != null) ? this.c.hasVoted(u) : false;
 	}
 
-	
 }
