@@ -19,9 +19,11 @@ import org.slf4j.LoggerFactory;
 import de.unisaarland.edutech.conceptmapfx.UndoHistory;
 import de.unisaarland.edutech.conceptmapfx.awt.AwarenessBars;
 import de.unisaarland.edutech.conceptmapfx.concept.ConceptViewController;
+import de.unisaarland.edutech.conceptmapfx.conceptmap.ConceptMapView;
 import de.unisaarland.edutech.conceptmapfx.event.AlignListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.ConceptEditRequestedListener;
+import de.unisaarland.edutech.conceptmapfx.event.ConceptMovingListener;
 import de.unisaarland.edutech.conceptmapfx.event.InputClosedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkDeletedListener;
 import de.unisaarland.edutech.conceptmapfx.event.LinkEditRequestedListener;
@@ -39,6 +41,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
@@ -50,10 +53,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 public class InputViewController implements ConceptEditRequestedListener, LinkEditRequestedListener,
-		LinkDeletedListener, ConceptDeletedListener, SpeechRecognitionListner {
+		LinkDeletedListener, ConceptDeletedListener, SpeechRecognitionListner, ConceptMovingListener {
 
 	private static final int FADE_OUT_TIME_CLOSE = 800;
 
@@ -117,11 +123,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	private boolean isUsingVoting;
 
+	private ConceptMapView conceptMapView;
+
+	private Polygon highlightPolygon;
 
 	@FXML
 	public void initialize() {
 		try {
-			
+
 			initKeyboard();
 			initButtons();
 			initQuestion();
@@ -291,7 +300,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	@FXML
 	public void onCloseAction() {
-		//TODO revert back to close on button click 
+		// TODO revert back to close on button click
 		FadeTransition fd1 = new FadeTransition(Duration.millis(FADE_OUT_TIME_CLOSE), btnClose);
 		fd1.setToValue(0);
 
@@ -401,8 +410,39 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 		// hard to fix
 		btnUndo.setVisible(false);
 
-//		cv.setPauseTransition(realeaseTransition);
+		// cv.setPauseTransition(realeaseTransition);
 
+		showHighlightingLights(cv);
+
+	}
+
+	private void showHighlightingLights(CollaborativeStringTextFieldBinding cv) {
+		highlightPolygon = new Polygon();
+		highlightPolygon.setOpacity(0.2);
+		highlightPolygon.setFill(Color.WHITESMOKE);
+
+		computeHighlightPoints(cv);
+
+		conceptMapView.add(highlightPolygon);
+	}
+
+	private void computeHighlightPoints(CollaborativeStringTextFieldBinding cv) {
+		TextFlow caption = cv.getCaption();
+		Point2D centerOfCaption = caption.getParent().getLocalToSceneTransform().transform(caption.getWidth() / 2,
+				caption.getHeight() / 2);
+
+		int widthOfHighlight = 50;
+
+		Point2D p3 = this.inputControls.getLocalToSceneTransform()
+				.transform(this.inputControls.getWidth() / 2 - widthOfHighlight / 2, 0);
+		Point2D p4 = this.inputControls.getLocalToSceneTransform()
+				.transform(this.inputControls.getWidth() / 2 + widthOfHighlight / 2, 0);
+
+		highlightPolygon.getPoints().clear();
+		highlightPolygon.getPoints().addAll(centerOfCaption.getX(), centerOfCaption.getY(), centerOfCaption.getX(),
+				centerOfCaption.getY(), p3.getX(), p3.getY(), p4.getX(), p4.getY());
+
+		// highlightPolygon.setStroke(Color.YELLOW);
 	}
 
 	private void unhideInputControl(Set<Node> hiddenNodes) {
@@ -424,8 +464,14 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 			btnSpeak.setDisable(true);
 			btnVote.setDisable(true);
 			btnVote.setSelected(false);
+			this.conceptMapView.remove(highlightPolygon);
+			highlightPolygon = null;
 		}
 
+	}
+
+	public void setConceptMapView(ConceptMapView v) {
+		this.conceptMapView = v;
 	}
 
 	public void conceptDeleted(ConceptViewController cv, User u) {
@@ -598,5 +644,11 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 
 	public Pane getView() {
 		return inputPane;
+	}
+
+	@Override
+	public void conceptMoving(double x, double y, double rotate, ConceptViewController cv, User u) {
+		if (highlightPolygon != null)
+			computeHighlightPoints(this.collaborativeStringBinding);
 	}
 }

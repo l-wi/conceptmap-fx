@@ -69,18 +69,25 @@ public class ConceptMapViewBuilder {
 	public Scene build() {
 		attachSpeechListenerToInputControllers();
 
+		controller.getInputControllers().forEach((i) -> {
+			i.setConceptMapView(controller.getView());
+			conceptViewBuilder.withMovingListener(i);
+		});
+
 		attachToReloadedMap();
 		controller.setConceptMap(conceptMap);
 		if (history.isPresent())
 			history.get().activate();
 		if (saver.isPresent())
 			saver.get().activate();
+
 		return scene;
 	}
 
 	private void attachSpeechListenerToInputControllers() {
 		controller.getInputControllers().forEach((c) -> {
 			controller.getInputControllers().forEach(cA -> c.addSpeechListener(cA));
+
 		});
 	}
 

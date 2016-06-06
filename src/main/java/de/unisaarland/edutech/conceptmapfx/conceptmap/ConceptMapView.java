@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Polygon;
 
 public class ConceptMapView extends Pane {
 
@@ -73,4 +74,6 @@ public class ConceptMapView extends Pane {
 
 		getChildren().remove(n);
 	}
+
+	
 }
