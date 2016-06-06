@@ -15,6 +15,7 @@ import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.util.Duration;
 
+//HERE BE DRAGONS! TODO:REFACTOR to use ids 
 public class LowLevelInteractionListener {
 
 	private static final int ROTATE_DINSTANCE_TO_NODES_CENTER = 100;
@@ -50,6 +51,8 @@ public class LowLevelInteractionListener {
 	private VoidFunction doubleTapFunction;
 
 	private boolean isAlreadyMoving;
+
+	private int currentTouchId;
 
 	@FunctionalInterface
 	public interface VoidFunction {
@@ -167,9 +170,20 @@ public class LowLevelInteractionListener {
 		if (d < JITTER_THRESHOLD && !isAlreadyMoving)
 			return;
 		
+		
 		isAlreadyMoving = true;
+		
+		//TODO here is the untested code that might safe the flickering thingy on rotation attempt
+		
+		final int NO_TOUCH = 0;
+		if(p.getId() != currentTouchId && currentTouchId != NO_TOUCH)
+			return; 
+					
+		currentTouchId = p.getId();
+		
+		//end
 
-		onMoving(p.getX(), p.getY(), 0);
+		onMoving(p.getX(), p.getY(), NO_TOUCH);
 		evt.consume();
 	}
 
@@ -205,6 +219,12 @@ public class LowLevelInteractionListener {
 	}
 
 	public void onTouchReleased(TouchEvent evt) {
+		//TODO here is the untested code that might safe the flickering thingy on rotation attempt
+		TouchPoint touchPoint = evt.getTouchPoint();
+		
+		if(touchPoint.getId() == currentTouchId)
+			currentTouchId = 0;
+		//end
 		onReleased();
 		evt.consume();
 	}
