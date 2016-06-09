@@ -97,7 +97,18 @@ public class LowLevelInteractionListener {
 	@FXML
 	public void onTouchPressed(TouchEvent evt) {
 
-		onPressed(evt.getTouchPoint().getX(), evt.getTouchPoint().getY(), true);
+		
+		TouchPoint p = evt.getTouchPoint();
+		
+		final int NO_TOUCH = 0;
+		
+		
+		if(currentTouchId == NO_TOUCH)
+			currentTouchId = p.getId();
+		
+		
+		
+		onPressed(p.getX(), p.getY(), true);
 	}
 
 	public void onPressed(double x, double y, boolean isTouch) {
@@ -165,6 +176,9 @@ public class LowLevelInteractionListener {
 	public void onTouchMoving(TouchEvent evt) {
 		TouchPoint p = evt.getTouchPoint();
 
+		if(p.getId() != currentTouchId && currentTouchId != 0)
+			return; 
+		
 		double d = new Point2D(p.getX(), p.getY()).distance(new Point2D(this.dragX, this.dragY));
 
 		if (d < JITTER_THRESHOLD && !isAlreadyMoving)
@@ -172,22 +186,15 @@ public class LowLevelInteractionListener {
 		
 		
 		isAlreadyMoving = true;
-		
-		//TODO here is the untested code that might safe the flickering thingy on rotation attempt
-		
-		final int NO_TOUCH = 0;
-		if(p.getId() != currentTouchId && currentTouchId != NO_TOUCH)
-			return; 
-					
-		currentTouchId = p.getId();
-		
-		//end
+   
+		LOG.info("moving on" + p.getId());
 
-		onMoving(p.getX(), p.getY(), NO_TOUCH);
+		onMoving(p.getX(), p.getY(), 0);
 		evt.consume();
 	}
 
 	private void onMoving(double x, double y, double r) {
+		LOG.info("pressed" + isPressed  );
 		if (!isPressed)
 			return;
 
@@ -201,6 +208,7 @@ public class LowLevelInteractionListener {
 
 		State state = fourUserTouchEditable.getState();
 		
+		LOG.info(state.toString());
 		if (state == State.UNSELECTED)
 			fourUserTouchEditable.toMovingState();
 		if (state == State.MOVING)
@@ -219,12 +227,15 @@ public class LowLevelInteractionListener {
 	}
 
 	public void onTouchReleased(TouchEvent evt) {
-		//TODO here is the untested code that might safe the flickering thingy on rotation attempt
 		TouchPoint touchPoint = evt.getTouchPoint();
 		
-		if(touchPoint.getId() == currentTouchId)
+		LOG.info("releasing: "+ touchPoint.getId());
+		if(touchPoint.getId() == currentTouchId){
 			currentTouchId = 0;
-		//end
+
+			LOG.info("reseting to NO_TOUCH as release of: "+ touchPoint.getId());
+		}
+
 		onReleased();
 		evt.consume();
 	}

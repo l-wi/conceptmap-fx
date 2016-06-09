@@ -80,8 +80,8 @@ public class DefaultNewLinkListener implements NewLinkListener {
 		// debugPath.getElements().add(debugMove);
 		// this.controller.getView().getChildren().add(debugPath);
 
-		final int circleStep = 25;
-		for (double r = heightResting; r < 20 * heightResting; r += 0.2 * heightResting) {
+		final int circleStep = 12;
+		for (double r = heightResting; r < 20 * heightResting; r += 0.25 * heightResting) {
 
 			for (double i = 0; i < circleStep; i++) {
 
