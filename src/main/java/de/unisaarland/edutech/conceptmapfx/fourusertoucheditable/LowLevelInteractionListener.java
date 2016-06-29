@@ -187,14 +187,12 @@ public class LowLevelInteractionListener {
 		
 		isAlreadyMoving = true;
    
-		LOG.info("moving on" + p.getId());
 
 		onMoving(p.getX(), p.getY(), 0);
 		evt.consume();
 	}
 
 	private void onMoving(double x, double y, double r) {
-		LOG.info("pressed" + isPressed  );
 		if (!isPressed)
 			return;
 
@@ -208,7 +206,6 @@ public class LowLevelInteractionListener {
 
 		State state = fourUserTouchEditable.getState();
 		
-		LOG.info(state.toString());
 		if (state == State.UNSELECTED)
 			fourUserTouchEditable.toMovingState();
 		if (state == State.MOVING)
@@ -229,11 +226,8 @@ public class LowLevelInteractionListener {
 	public void onTouchReleased(TouchEvent evt) {
 		TouchPoint touchPoint = evt.getTouchPoint();
 		
-		LOG.info("releasing: "+ touchPoint.getId());
 		if(touchPoint.getId() == currentTouchId){
 			currentTouchId = 0;
-
-			LOG.info("reseting to NO_TOUCH as release of: "+ touchPoint.getId());
 		}
 
 		onReleased();

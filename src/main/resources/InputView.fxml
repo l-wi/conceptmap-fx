@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import java.net.* ?>
+<?import java.lang.Double ?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -19,8 +20,9 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="300" scaleX="1.2" scaleY="1.2"
+<AnchorPane minHeight="330" scaleX="1.2" scaleY="1.2"
 	styleClass="input" fx:id="inputPane" xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/8.0.40" fx:controller="de.unisaarland.edutech.conceptmapfx.input.InputViewController">
 	<!-- TODO Add Nodes -->
@@ -41,10 +43,10 @@
 							</AnchorPane>
 						</children>
 					</HBox>
-					<HBox>
+					<HBox >
 						<children>
 
-							<VBox alignment="BOTTOM_CENTER">
+							<VBox  alignment="BOTTOM_CENTER">
 								<children>
 									<Pane>
 										<KeyboardPane styleClass="hideable" id="keyboard"
@@ -52,8 +54,8 @@
 
 									</Pane>
 									<AnchorPane fx:id="ownerPane" id="ownerPane"
-										prefHeight="67">
-										<HBox>
+										>
+										<HBox >
 											<children>
 												<BorderPane fx:id="ownerBox" prefWidth="60">
 													<center>
@@ -63,8 +65,8 @@
 												<VBox>
 													<children>
 														<Label fx:id="owner" id="owner" />
-														<Label fx:id="question" id="question" wrapText="true"
-															prefWidth="390" />
+														<Label  fx:id="question" id="question" wrapText="true"
+															prefWidth="450" minHeight="60" />
 
 													</children>
 												</VBox>
@@ -108,8 +110,8 @@
 				<children>
 					<AnchorPane id="awtPane" fx:id="awtPane">
 					</AnchorPane>
-					<Label wrapText="true" style="-fx-padding:20;" visible="false"
-						managed="false" fx:id="lblPrompts" id="lblPrompts" prefWidth="250">
+					<Label wrapText="true" style="-fx-padding:40,0,0,40;" visible="false"
+						managed="false" fx:id="lblPrompts" id="lblPrompts" prefWidth="300">
 
 					</Label>
 				</children>

@@ -194,6 +194,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 					return;
 
 				inputControls.setTranslateX(translation);
+				
+				computeHighlightPoints(this.collaborativeStringBinding);
+
 			}
 		});
 	}
@@ -434,7 +437,7 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	private void showHighlightingLights(CollaborativeStringTextFieldBinding cv) {
 		highlightPolygon = new Polygon();
 		highlightPolygon.setOpacity(0.5);
-		highlightPolygon.setFill(Color.BLACK);
+		highlightPolygon.setFill(Color.WHEAT);
 
 		computeHighlightPoints(cv);
 
@@ -442,6 +445,9 @@ public class InputViewController implements ConceptEditRequestedListener, LinkEd
 	}
 
 	private void computeHighlightPoints(CollaborativeStringTextFieldBinding cv) {
+		if(highlightPolygon== null)
+			return;
+		
 		TextFlow caption = cv.getCaption();
 		Point2D centerOfCaption = caption.getParent().getLocalToSceneTransform().transform(caption.getWidth() / 2,
 				caption.getHeight() / 2);
